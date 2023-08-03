@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+	<!-- BOOTSTRAP 5 CDN -->
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	<!-- JQUERY AJAX CDN -->
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- jQuery CDN -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-eoIsAZa7iLW10Q+RY5CAvrDein9o4Vefc8iBRoKUQ7g=" crossorigin="anonymous"></script>
+
+
+
+	<!-- Internal CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Internal js -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+</head>
+
+<body>
+	<nav class="nvbr">
+		<div class="logo">
+			<img src="logo.svg" alt="Logo Image">
+		</div>
+		<div>
+
+			<form action="" method="" class="nav-search-form" id="nav-search1">
+				<input type="search" placeholder="Search Cities" id="nav-search-box" class="form-control" />
+				<input type="submit" value="GO" id="nav-search-submit" />
+			</form>
+
+		</div>
+		<div class="hamburger">
+			<div class="line1"></div>
+			<div class="line2"></div>
+			<div class="line3"></div>
+		</div>
+		<ul class="nav-links">
+			<li>
+				<form action="" method="" class="nav-search-form" id="nav-search2">
+					<input type="search" placeholder="Search Cities" id="nav-search-box" class="form-control" />
+					<input type="submit" value="GO" id="nav-search-submit" />
+				</form>
+			</li>
+			<li><a href="{{ url_for('home') }}">Home</a></li>
+			<li><a href="#">Things to Do</a></li>
+			<li><a href="#">About us</a></li>
+			<li><a href="#">Blog</a></li>
+			<li><a href="#">Profile</a></li>
+			<li><a class="login-button" href="{{ url_for('login') }}">Login</a></li>
+			<li><a class="join-button" href="{{ url_for('signup') }}">Signup</a></li>
+		</ul>
+	</nav>
+	{% block content %}
+
+	{% endblock %}
+</body>
+</html>
+
+

@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Home</title>
+	<!-- css link -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<!-- font family link -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+	<style type="text/css">
+		.section{
+background: white;
+    height: 101vh;
+    width: 100%;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.full-centerbox{
+	border-radius: 25px;
+		position: relative;
+    display: flex;
+	align-content: center;
+	justify-content: center;
+	align-items: center;
+}
+.center-flex{
+		display: flex;
+	align-content: center;
+	justify-content: center;
+	align-items: center;
+}
+.intro-box-size{
+	height: 80vh;
+	width: 89%;
+
+}
+.bgvid {
+	filter: blur(1px);
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  	z-index: 0;
+  	position: fixed;
+  	top: 0;
+}
+.intro-caption-box{
+	z-index: 1;
+	position: absolute;
+	width: 50%;
+
+}
+.heading-victor{
+	font-family: Victor Mono;
+	font-size: 6rem;
+	font-weight: 700;
+
+}
+.intro-caption-box >div{
+	    display: flex;
+    text-align: center;
+}
+/*section2 begin*/
+.section2{
+background: white;
+    height: 87vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px 50px 0px 0px;
+    }
+
+.ai-box-size{
+    background: rgb(180,184,213);
+    background: linear-gradient(0deg, rgba(180,184,213,1) 0%, rgb(43 94 94) 100%);
+    height: 60vh;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+
+}
+.ai-box-size>div{
+	width: 50%;
+
+}
+.ai-head-size{
+	font-size: 3rem;
+    color: black;        
+}
+.sub-paragraph{
+    font-size: 21px;
+}
+.ai-sub-content{
+	text-align: center;
+}
+.button-div1{
+	width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    transition: 1s;
+}
+.button-1{
+background: #000000;
+    width: fit-content;
+    height: 6vh;
+    padding: 4px 13px;
+    border-radius: 43px;
+    box-shadow: 0px 0px 2px 0px black;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    text-transform: capitalize;
+    text-decoration: auto;
+    cursor: context-menu;
+}
+
+.button-1:hover{
+
+}
+
+/*for intro heading*/
+.waviy {
+  position: relative;
+  -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,.2));
+  font-size: 60px;
+}
+.waviy span {
+  font-family:Victor Mono;
+  position: relative;
+  display: inline-block;
+  color: black;
+  text-transform: uppercase;
+  animation: waviy 5s infinite ;
+  animation-delay: calc(.1s * var(--i));
+  
+}
+@keyframes waviy {
+  0%,40%,100% {
+    transform: translateY(0)
+  }
+  20% {
+    transform: translateY(-20px)
+  }
+}
+/*end */
+
+
+@keyframes textclip {
+  to {
+    background-position: 100% center;
+  }
+}
+
+
+	</style>
+
+<!-- section 1 -->
+<section class="section">
+		<!-- bg video -->
+		<video playsinline autoplay muted loop  class="bgvid">
+			<source src="intro.webm" type="video/webm">
+				<source src="./static/videos/intro.mp4" type="video/mp4">
+				</video>
+				<!-- endvideo -->
+
+				<!-- intro content area -->
+				<div class="intro-caption-box">
+					 <div class="waviy heading-victor">
+   <span style="--i:1">L</span>
+   <span style="--i:2">I</span>
+   <span style="--i:3">V</span>
+   <span style="--i:4">E</span>
+   <span style="--i:5"> &nbsp;</span>
+   <span style="--i:6">Y</span>
+   <span style="--i:7">O</span>
+   <span style="--i:8">U</span>
+   <span style="--i:9">R</span>
+   <span style="--i:10">&nbsp; </span>
+   <span style="--i:11">A </span>
+   <span style="--i:12">D </span>
+   <span style="--i:13">V </span>
+   <span style="--i:14">E </span>
+   <span style="--i:15">N </span>
+   <span style="--i:16">T </span>
+   <span style="--i:17">U </span>
+   <span style="--i:18">R </span>
+   <span style="--i:19">E </span>
+
+  </div>
+					<div><p class="sub-paragraph">Dont wait until tomorrow, discover your adventure now and feel the sensation of closeness to nature around you</p></div>
+				</div>
+				<!--end intro content area -->
+		
+		</section>
+		<!-- end of section 1 -->
+
+<!-- section 2 -->
+<section class="section2">
+	<div class="full-centerbox ai-box-size">
+		<div><h1 class="heading-victor ai-head-size animate-charcter">AI-Powered Trip Planner</h1></div>
+		<div><p class="ai-sub-content animate-charcter">Fast-track your travel planning. Personalized itineraries in an instant with Trip Planner AI.</p></div>
+		<!-- div for start my plan  -->
+		<div class="button-div1">
+		<div><a class="button-1">start my plan</a></div>
+	    </div>
+	    <!-- end div start my plan -->
+</section>
+</body>
+</html>
+
+{% endblock %}
