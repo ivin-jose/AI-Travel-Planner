@@ -111,7 +111,10 @@ Blog -->
             <h4 class="mb-4 mb-lg-5 fw-600">Leave a Reply</h4>
             <p></p>
             <!-- comment form -->
-            <form name="blog-comment-form" id="blog-comment-form">
+          {% for row in blog_data %}
+            <form name="blog-comment-form" id="blog-comment-form" action="{{ url_for('blog_upload_comment') }}" method="POST">
+              <input type="hidden" name="blog_id" value="{{ row[0] }}">
+              <input type="hidden" name="user_id" value="{{ session['userid'] }}">
               <div class="row">
                 <div class="mb-3 col-md-12">
                   <textarea rows="8" class="form-control" id="blog_comment" name="blog_comment" placeholder="Comment"></textarea>
@@ -121,8 +124,10 @@ Blog -->
                 <div class=" mb-3 col-md-12">
                 </div>
               </div>
-              <a href="#" class="btn btn-primary" id="blog_comment_btn">Post Comment</a>
+              <input href="#" class="btn btn-primary" id="blog_comment_btn" type="submit" value="Post Comment">
             </form>
+          {% endfor %}
+
           </div>
         </div>
       </div>

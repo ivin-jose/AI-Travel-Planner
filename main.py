@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 from flask_mysqldb import MySQL
 from datetime import datetime
 import mysql.connector
@@ -339,6 +339,8 @@ def blog_single(blog_id):
 
     return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog)
 
+''' Blog Categories '''
+
 @app.route('/blog_categories/<categorie>', methods=['POST', 'GET'])
 def blog_categories(categorie):
     cursor = mysql.connection.cursor()
@@ -445,6 +447,28 @@ def blog_upload():
     result = cursor.fetchall()
 
     return render_template('blog_upload.html', data=result)
+
+''' Blog Comments Uploading '''
+
+@app.route('/blog_upload_comment', methods=['GET', 'POST'])
+def blog_upload_comment():
+    blog_id = request.form.get("blog_id")
+    if request.method == 'POST':
+        comment = request.form.get("blog_comment")
+        blog_id = request.form.get("blog_id")
+        user_id = request.form.get("user_id")
+
+        if 'userid' not in session:
+            return render_template('login.html')
+        else:
+            cursor = mysql.connection.cursor()
+            query = "INSERT INTO blog_comment (blogid, userid, comment) VALUES(%s, %s, %s)"
+            values = (blog_id, session['userid'], comment)
+            cursor.execute(query, values)
+            mysql.connection.commit()
+            cursor.close()
+
+    return redirect(url_for('blog_single', blog_id=blog_id))
 
 
 
