@@ -17,11 +17,5 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
-// on scrolling changing bg of navbar
-
-$(window).on("scroll", function() {
-    $("nav").css("background-color: red;")
-});
-
 
 

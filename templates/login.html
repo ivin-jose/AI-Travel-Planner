@@ -1,182 +1,174 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>login</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="keywords" content="HTML5 Template" />
+        <meta name="description" content="Ciyatrip - Tour & Travel Hotel Booking HTML Template" />
+        <meta name="author" content="potenzaglobalsolutions.com" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Login</title>
+        <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<style type="text/css">
+    <!-- CSS Global Compulsory (Do not remove)-->
 
-
-		main {
-			overflow: hidden;
-		}
-		body {
-			background-color: rgb(20, 20, 34);
-		}
-
-		.login-main {
-			background-image: url('./static/images/bg2.jpg');
-			background-size: cover;
-			height: 100vh;
-			width: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			opacity: 0.1;
-		}
-
-		.login-main-1 {
-			width: 30%;
-			height: 50vh;
-			background-color: #20293f;
-			border: 1px solid violet;
-			border-radius: 6px;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-evenly;
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			margin: auto;
-		}
-
-		.login-main-1 h2 {
-			text-align: center;
-			color: whitesmoke;
-		}
-
-		.login-form {
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			align-items: center;
-		}
-		.login-form label {
-			text-align: right;
-			color: red;
-			font-size: 10px;
-		}
-		.login-main-1 .form-control {
-			width: 90% !important;
-			margin: 10px 5px;
-		}
-
-		#loginsubmitbtn {
-			background: #970097;
-			border: 0px;
-			width: 64%;
-			height: 35px;
-			border-radius: 6px;
-			color: white;
-			margin-top: 10px;
-		}
-
-		#loginsubmitbtn:hover {
-			background-color: #be03be;
-		}
-		.signinchangespan {
-			color: #a796b7;
-			font-size: 13px;
-			padding-top: 10px;
-			padding-bottom: 10px;
-		}
-
-/*		Responsive page*/
-		@media screen and (max-width: 950px) {
-			.login-main-1 {
-				width: 50%;
-				height: 45vh;
-			}
-		}
-		@media screen and (max-width: 500px) {
-			.login-main-1 {
-				width: 80%;
-				height: 45vh;
-			}
-		}
-	</style>
-</head>
-<main>
-	<body>
-		<div class="login-main">
-			
-		</div>
-		<div class="login-main-1">
-			<h2>LOGIN</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" />
+    <!-- Page CSS Implementing Plugins (Remove the plugin CSS here if site does not use that feature)-->
 
 
-			<form name="login-form" class="login-form" method="POST">
+  <!-- Internal CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
-				<label class="error-message">{{ error_message }}</label>
+    <!-- Internal js -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        </head>
+        <body>
+        <!--=================================
+        Header -->
+        <header class="header header-transparent-2 sign-header">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-end">
+              <div class="col-lg-12">
+                <a class="navbar-brand" href="index.html">
+                  <img class="img-fluid" src="{{ url_for('static', filename='images/logo-white.svg') }}" alt="logo">
+                </a>
+              </div>
+              </div>
+            </div>
+       </header>
+        <!--=================================
+        Header -->
 
-				<label class="loginname-label"></label>
-				<input type="text" name="loginname" placeholder="Enter your username/email" class="form-control loginname" />
+       <!--=================================
+        sign in -->
+          <section class="sign-in bg-holder vh-100">
+            <div class="container-fluid">
+              <div class="row justify-content-between vh-100">
+                <div class="col-lg-12 col-xl-4 g-0">
+                  <div class="sign-in-bg h-100 px-5 py-5 align-items-center justify-content-center d-flex text-center"  style="background-image: url(./static/images/error/01.png);">
+                   <div class="sing-title">
+                      <h1 class="text-white mb-0">Hello, Friend!</h1>
+                      <p class="text-white">Enter your personal details and start journey with us</p>
+                      <a href="{{ url_for('signup') }}" class="btn btn-primary">Sign Up</a>
+                   </div>
+                  </div>
+                </div>
+                <div class="col-lg-12 col-xl-7 align-self-center">
+                  <div class="sign-in-content h-100">
+                   <div class="section-title text-center">
+                    <h2 class="primary-text">Sign in Account</h2>
+                   </div>
 
-				<label class="loginpassword-label"></label>
-				<input type="password" name="loginpassword" placeholder="Enter password"  class="form-control loginpassword" />
+                      <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style login-form" method="POST">
+                        <div class="mb-3 col-sm-12">
+                          <label class="error-message" style="color: orange;">{{ error_message }}</label><br>
+                          <label class="form-label">Username: </label>
+                          <label class="loginname-label" style="color: red;"></label>
+                          <input type="text" class="form-control loginname" placeholder="" name="loginname">
+                        </div>
+                        <div class="mb-3 col-sm-12">
+                          <label class="form-label">Password: </label>
+                          <label class="loginpassword-label" style="color: red;"></label>
+                          <input type="Password" class="form-control loginpassword" placeholder="" name="loginpassword">
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-6 mb-3 text-md-end"><a href="#">Forget Password?</a></div>
+                        <div class="col-sm-6 d-grid">
+                          <button type="submit" class="btn btn-primary btn-flat" id="loginsubmitbtn">Sign in</button>
+                        </div>
+                        <div class="col-sm-6">
+                          <ul class="list-unstyled d-flex mb-1 mt-sm-0 mt-3 justify-content-sm-end">
+                            <li class="me-1">Don't have an account? <a class="text-dark" href="{{ url_for('signup') }}">Create Account</a></li>
+                          </ul>
+                        </div>
+                      </form>
+                      <div class="login-social-media border ps-4 pe-4 pb-4 pt-0 rounded-sm border-radius">
+                        <div class="mb-4 d-block text-center"><b class="bg-white ps-2 pe-2 mt-3 d-block">Login or Sign in with</b></div>
+                      <form class="row">
+                          <div class="col-sm-6 d-grid">
+                            <a class="btn facebook-bg social-bg-hover mb-3" href="#"><span><i class="fab fa-facebook-f me-2"></i>Login with Facebook</span></a>
+                          </div>
+                          <div class="col-sm-6 d-grid">
+                            <a class="btn twitter-bg social-bg-hover mb-3" href="#"><span><i class="fab fa-twitter me-2"></i>Login with Twitter</span></a>
+                          </div>
+                          <div class="col-sm-6 d-grid">
+                            <a class="btn instagram-bg social-bg-hover mb-3 mb-sm-0" href="#"><span><i class="fab fa-instagram me-2"></i>Login with Instagram</span></a>
+                          </div>
+                          <div class="col-sm-6 d-grid">
+                            <a class="btn linkedin-bg social-bg-hover" href="#"><span><i class="fab fa-linkedin-in me-2"></i>Login with Linkedin</span></a>
+                          </div>
+                        </form> 
+                      </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </section>
+      <!--=================================
+        sign in -->
 
-				<input type="submit" name="name" placeholder="Enter your name" id="loginsubmitbtn" />
-				<span class="signinchangespan">Don't have an account? <a href="signup">Sign up</a></span>
-			</form>
+<!-- Javascript -->
+<!-- JS Global Compulsory (Do not remove)-->
+<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.appear.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+<!-- Page JS Implementing Plugins (Remove the plugin script here if site does not use that feature)-->
 
+<!-- Template Scripts (Do not remove)-->
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
-
-		</div>
-	</body>	
-</main>
-
-</html>
+<!-- Login form validation -->
 
 <script type="text/javascript">
-	 $(document).ready(function() {
-	 	function login_form_validation(){
-	 		var username_email = $(".loginname").val();
-	 		var password = $(".loginpassword").val();
+   $(document).ready(function() {
+    function login_form_validation(){
+      var username_email = $(".loginname").val();
+      var password = $(".loginpassword").val();
 
-	 		if (username_email == '') {
-	 			$(".loginname-label").text("Enter username or email")
-	 			$(".loginname").focus()
-	 			return false
-	 		}
-	 		else {
-	 			$(".loginname-label").text("")
-	 		}
+      if (username_email == '') {
+        $(".loginname-label").text("Enter username or email")
+        $(".loginname").focus()
+        return false
+      }
+      else {
+        $(".loginname-label").text("")
+      }
 
-	 		if (password == '') {
-	 			$(".loginpassword-label").text("Enter password")
-	 			$(".loginpassword").focus()
-	 			return false
-	 		}
-	 		else {
-	 			$(".loginpassword-label").text("")
-	 		}
-	 		return true
-	 	}
+      if (password == '') {
+        $(".loginpassword-label").text("Enter password")
+        $(".loginpassword").focus()
+        return false
+      }
+      else {
+        $(".loginpassword-label").text("")
+      }
+      return true
+    }
 
-	 	$("#loginsubmitbtn").click(function(event){
-	 		event.preventDefault();
-	 		if (login_form_validation()) {
-	 			$(".login-form").submit();
-	 		}
-	 	})
+    $("#loginsubmitbtn").click(function(event){
+      event.preventDefault();
+      if (login_form_validation()) {
+        $(".login-form").submit();
+      }
+    })
 
-	 	// hiding error msges when form is focused 
-	 	$(".loginname").focus(function() {
-	 		$(".error-message").hide()
-	 	})
-	 	$(".loginemail").focus(function() {
-	 		$(".error-message").hide()
-	 	})
-	 });
-
-	 
-
-	
+    // hiding error msges when form is focused 
+    $(".loginname").focus(function() {
+      $(".error-message").hide()
+    })
+    $(".loginemail").focus(function() {
+      $(".error-message").hide()
+    })
+   });  
 </script>
-
+    </body>
+</html>

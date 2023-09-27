@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!--=================================
+Tour Grid -->
+<section class="space-ptb">
+  <div class="container">
+   <div class="row justify-content-center">
+    <div class="col-md-6">
+      <img class="img-fluid" src="images/error/404.png" alt="">
+    </div>
+   </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center contant-404 mt-5">
+              <h2 class="mb-4">Opps! Page Not Found</h2>
+              <p class="mb-5 px-3">Can't find what you looking for? Take a moment and do a search below or start from our <a href="{{ url_for('home') }}">Home Page</a></p>
+              <a href="{{ url_for('home') }}" class="btn btn-primary"><i class="fas fa-home me-2"></i>Back to Home</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+
+

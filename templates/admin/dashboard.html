@@ -1,0 +1,192 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<title>Admin</title>
+<body>
+<main>
+
+    <style type="text/css">
+        .sidebar-menu .active {
+    background-color: red; /* Set the background color to red */
+    color: white; /* Set the text color to white or any other color you prefer */
+}
+    </style>
+
+<div class="row">
+    <div class="col-lg-6">
+     <!--sidebar start-->
+     <aside>
+      <div id="sidebar"  class="nav-collapse ">
+        <!-- sidebar menu start-->
+        <ul class="sidebar-menu">
+        <li class="{% if 'admin_dashboard' in request.url_rule.endpoint %}active{% endif %}">
+          <a class="" href="{{url_for('admin_dashboard')}}">
+              <i class="icon_house_alt"></i>
+              <span>Manage Admins</span>
+          </a>
+       </li>
+      <li class="{% if 'admin_blog' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('admin_blog')}}">
+          <i class="icon_house_alt"></i>
+          <span>Blogs</span>
+        </a>
+      </li>
+
+      <li class="">
+        <a class="" href="">
+          <i class="icon_house_alt"></i>
+          <span>HOTELS</span>
+        </a>
+      </li>
+     </ul>
+  <!-- sidebar menu end-->
+</div>
+</aside>
+</div>
+
+<div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 900" id="adminAddPlus">+</button>
+
+<button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD ADMIN</button>
+
+
+
+<!-- admin adding status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: green;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ add_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- admin deleting status Modal -->
+<div class="modal fade" id="dltErrorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: red;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ dlt_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal add admins form  -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Admin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url_for('add_admin')}}" method="POST" id="admin_Add_Form" onsubmit="return validateAdminAddForm()">
+            <span id="nameError" class="error"></span> <!-- Error message container -->
+            <input type="text" placeholder="Admin Name" name="admin_name" value="" class="form-control space" required>
+
+            <!-- <label>min 6 characters</label> -->
+            <span id="passwordError" class="error"></span> <!-- Error message container -->
+            <input type="password" name="admin_password" placeholder="Password" value="" class="form-control space" required>
+
+            <input type="text" name="type" value="admin" class="form-control space" readonly>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary main_theme">Save</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+    <div>
+      <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">admin</th>
+      <th scope="col">More</th>
+    </tr>
+  </thead>
+
+
+    <tbody>
+{% for row in admins %}
+<tr>
+  <th scope="row">{{ row[0] }}</th>
+  <td>{{ row[1] }}</td>
+  
+  <!-- Add unique IDs for the Remove link and its associated close button -->
+  <td>
+    <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="adminRemoveConfirmation" href="{{ url_for('delete_admin', aid=row[0]) }}">
+      <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+    </a>
+
+    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="adminRemoveConfirmation" href="#">
+      <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+    </a>
+  
+{% endfor %}
+  </tbody>
+  
+
+</table>
+    </div>
+</div>
+</div>
+
+
+</main>
+
+<script>
+    $(document).ready(function () {
+        {% if add_status_message %}
+            $('#statusModal').modal('show');
+            $('#admin_Add_Form')[0].reset();
+        {% endif %}
+        {% if dlt_status_message %}
+            $('#dltErrorModal').modal('show');
+            $('#admin_Add_Form')[0].reset();
+        {% endif %}
+    });
+
+    $(document).ready(function() {
+        $(".adminRemoveConfirmation").click(function() {
+            $(".adminRemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
+
+        $("#adminAddPlus").hover(function() {
+            $("#adminAddText").show()
+        })
+         $("#adminAddPlus").mouseleave(function() {
+            $("#adminAddText").hide()
+        })
+    })
+</script>
+
+
+
+{% endblock %}

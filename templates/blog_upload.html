@@ -1,0 +1,512 @@
+{% extends 'base.html' %}
+{% block content %}
+<style type="text/css">
+  .profile-pic {
+    border: 1px solid #3dd1d5;
+    border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply;
+    vertical-align: middle;
+    text-align: center;
+    color: transparent;
+    transition: all .3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.profile-pic:hover {
+    background-color: rgba(0,0,0,.5);
+    z-index: 10000;
+    color: #fff;
+    transition: all .3s ease;
+    text-decoration: none;
+}
+
+.profile-pic span {
+    display: inline-block;
+    padding-top: 4.5em;
+    padding-bottom: 4.5em;
+}
+
+form input[type="file"] {
+          display: none;
+          cursor: pointer;
+ }
+   .checkbox-label {
+    display: block;
+    margin-bottom: 10px;
+  }
+/*  .checkbox-input {
+    display: none;
+  }*/
+  .custom-checkbox {
+    position: relative;
+    padding-left: 30px;
+    margin-right: 15px;
+  }
+  .custom-checkbox::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #3dd1d5;
+    background-color: white;
+  }
+  .custom-checkbox:checked::before {
+    background-color: #3dd1d5;
+  }
+  .checkbox-label-text {
+    margin-left: 35px;
+  }
+
+/*  Multiple Image Uploading */
+.upload__box {
+  padding: 40px;
+}
+
+.upload__inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.upload__btn {
+  display: inline-block;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  min-width: 116px;
+  padding: 5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid;
+  background-color: #4045ba;
+  border-color: #4045ba;
+  border-radius: 10px;
+  line-height: 26px;
+  font-size: 14px;
+}
+
+.upload__btn:hover {
+  background-color: unset;
+  color: #4045ba;
+  transition: all 0.3s ease;
+}
+
+.upload__btn-box {
+  margin-bottom: 10px;
+}
+
+.upload__img-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.upload__img-box {
+  width: 200px;
+  padding: 0 10px;
+  margin-bottom: 12px;
+}
+
+.upload__img-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  text-align: center;
+  line-height: 24px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.upload__img-close:after {
+  content: '\2716';
+  font-size: 14px;
+  color: white;
+}
+
+.img-bg {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  padding-bottom: 100%;
+}
+
+
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="row flex-lg-nowrap">
+  <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
+    <div class="card p-3">
+      <div class="e-navlist e-navlist--active-bg">
+        <ul class="nav">
+          <li class="nav-item"><a class="nav-link px-2 active" href="{{ url_for('userprofile') }}"><i class="fa fa-fw fa-bar-chart mr-1"></i><span>{{ session['username']}}</span></a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('blog_home') }}" target="__blank"><i class="fa fa-fw fa-th mr-1"></i><span>Blogs</span></a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="https://www.bootdey.com/snippets/view/bs4-edit-profile-page" target="__blank"><i class="fa fa-fw fa-cog mr-1"></i><span>Settings</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="row">
+      <div class="col mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="e-profile">
+              <div class="row">
+                <div class="col-12 col-sm-auto mb-3">
+                	{% for row in data %}
+                  <div class="mx-auto" style="width: 140px;">
+                     <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="">
+                      <span>
+                       <input type="file" name="file" autocomplete="off" required id="fileToUpload" accept="image">
+                      </span>
+                    <!-- </form> -->
+                  </div>
+                </div>
+                <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                  <div class="text-center text-sm-left mb-2 mb-sm-0">
+                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap" style="text-transform: capitalize;">{{ row[1] }}</h4>
+                    <p class="mb-0"></p>
+                    <div class="text-muted"><small>{{ row[6] }}</small></div>
+                     </form><!-- End avatar form -->
+                  </div>
+                  <div class="text-center text-sm-right">
+                    <span class="badge badge-secondary">User</span>
+                    <div class="text-muted"><small>Joined {{ row[4] }}</small></div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="" class="active nav-link">Create Your Blog</a></li>
+              </ul>
+              <div class="tab-content pt-3">
+                <div class="tab-pane active">
+                  <form class="form" name="blog-create-form" method="POST" enctype="multipart/form-data" action="" id="blog-create-form">
+                    <div class="row">
+                      <div class="col">
+                        <div class="row">
+                        	 {% for row in data %}
+                          
+                          <div class="col">
+                            <!-- Add a file input for uploading a new profile image -->
+                            <div class="form-group">
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <label>Heading :<span class="blog_heading-label" style="color: red;"></span></label>
+                              <input class="form-control" type="text" placeholder="" value="" name="blog_heading" id="blog_heading">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <label>Blog Content: <span class="blog_content-label" style="color: red;"></span></label>
+                              <textarea class="form-control" rows="5" placeholder="Blog Content.." name="blog_content" id="blog_content"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <h6>Catagories</h6><br>
+                              <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="adventure">
+                                  <span class="checkbox-label-text">Adventure</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="business-trips">
+                                  <span class="checkbox-label-text">Business Trips</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="cruises">
+                                  <span class="checkbox-label-text">Cruises</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="solo-trip">
+                                  <span class="checkbox-label-text">Solo Trip</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="nature">
+                                  <span class="checkbox-label-text">Nature</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="honeymoon">
+                                  <span class="checkbox-label-text">Honeymoon</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="vacations">
+                                  <span class="checkbox-label-text">Vacations</span>
+                                </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <h6>Add #HashTags</h6><br>
+                              <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="adventure">
+                                  <span class="checkbox-label-text">#Adventure</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="business-trips">
+                                  <span class="checkbox-label-text">#Business Trips</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="cruises">
+                                  <span class="checkbox-label-text">#Cruises</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="solo-trip">
+                                  <span class="checkbox-label-text">#Solo Trip</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="nature">
+                                  <span class="checkbox-label-text">#Nature</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="honeymoon">
+                                  <span class="checkbox-label-text">#Honeymoon</span>
+                                </label>
+
+                                <label class="checkbox-label">
+                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="vacations">
+                                  <span class="checkbox-label-text">#Vacations</span>
+                                </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+
+                            <div class="form-group">
+                              <div class="upload__box">
+                                <div class="upload__btn-box">
+                                  <label class="upload__btn">
+                                    <p>Image +</p>
+                                    <input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
+                                  </label>
+                                </div>
+                                <div class="upload__img-wrap"></div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                      <div class="col d-flex justify-content-end">
+                        <input class="btn btn-primary" type="submit" value="Create " name="blogSubmitButton" id="blogSubmitButton">
+                      </div>
+                    </div>
+                  </form><!-- End data form -->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3 mb-3">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="px-xl-3">
+              <a href="{{ url_for('logout') }}">
+              <button class="btn btn-block btn-secondary">
+                <i class="fa fa-sign-out"></i>
+                <span>Logout</span>
+              </button>
+            </a>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title font-weight-bold">Support</h6>
+            <p class="card-text">Get fast, free help from our friendly assistants.</p>
+            <button type="button" class="btn btn-primary">Contact Us</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    // When the file input changes
+    $("#fileToUpload").change(function() {
+        // Check if a file is selected
+        if ($(this).val() !== "") {
+            // Show the "Change" button
+            $("#Useravatarbtn").show();
+        } else {
+            // Hide the "Change" button if no file is selected
+            $("#Useravatarbtn").hide();
+        }
+    });
+});
+
+$(document).ready(function() {
+   function userUpdatevalidate() {
+
+      var heading = $("#blog_heading").val();
+      var content = $("#blog_content").val();
+      var bio = $("#update-bio").val();
+
+      // name validation
+      if (heading == '') {
+        $(".blog_heading-label").text("Make a heading");
+        $("#blog_heading").focus();
+        return false; // Return false to indicate validation failure
+      }
+      else {
+        if (heading.length > 30) {
+          $(".blog_heading-label").text("Max 30 charaters");
+          $("#blog_heading").focus();
+          return false;
+        }
+        else {
+          $(".blog_heading-label").text("");
+        }
+        $(".blog_heading-label").text("");
+      }
+
+      // Content validation
+
+      if (content == '') {
+        $(".blog_content-label").text("Please Fill this");
+        $("#blog_content").focus();
+        return false; // Return false to indicate validation failure
+      }
+      else {
+        if (content.length < 15) {
+          $(".blog_content-label").text("min 15 words need");
+          $("#blog_content").focus();
+          return false;
+        }
+        else {
+          $(".blog_content-label").text("");
+        }
+        $(".blog_content-label").text("");
+      }
+
+      // Password is valid
+      return true;
+    }
+
+      // Form submission with validation
+    $("#blogSubmitButton").click(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+
+      // Validate the form
+      if (userUpdatevalidate()) {
+        // If the form is valid, submit it
+        $("#blog-create-form").submit();
+      }
+    });
+})
+
+// Multiple  Image uploading
+jQuery(document).ready(function () {
+  ImgUpload();
+});
+
+function ImgUpload() {
+  var imgWrap = "";
+  var imgArray = [];
+
+  $('.upload__inputfile').each(function () {
+    $(this).on('change', function (e) {
+      imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
+      var maxLength = $(this).attr('data-max_length');
+
+      var files = e.target.files;
+      var filesArr = Array.prototype.slice.call(files);
+      var iterator = 0;
+      filesArr.forEach(function (f, index) {
+
+        if (!f.type.match('image.*')) {
+          return;
+        }
+
+        if (imgArray.length > maxLength) {
+          return false
+        } else {
+          var len = 0;
+          for (var i = 0; i < imgArray.length; i++) {
+            if (imgArray[i] !== undefined) {
+              len++;
+            }
+          }
+          if (len > maxLength) {
+            return false;
+          } else {
+            imgArray.push(f);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+              imgWrap.append(html);
+              iterator++;
+            }
+            reader.readAsDataURL(f);
+          }
+        }
+      });
+    });
+  });
+
+  $('body').on('click', ".upload__img-close", function (e) {
+    var file = $(this).parent().data("file");
+    for (var i = 0; i < imgArray.length; i++) {
+      if (imgArray[i].name === file) {
+        imgArray.splice(i, 1);
+        break;
+      }
+    }
+    $(this).parent().parent().remove();
+  });
+}
+</script>
+{% endblock %}

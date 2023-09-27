@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block content %}
+
+ <!--=================================
+  Blog -->
+
+
+  <section class="space-ptb">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+
+            {% for row in blog_data%}
+          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+            <div class="blog">
+              <div class="blog-img">
+                <img class="img-fluid rounded" src="{{ row[7] }}" alt="#" style="    width: 100%; height: 400px; object-fit: fill;">
+              </div>
+              <div class="blog-body d-flex flex-wrap align-items-center">
+                <div class="time-card me-3 d-flex align-items-center">
+                  <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
+                  <span>{{row[1]}} By</span>
+                </div>
+                <div class="user d-flex align-items-center me-3">
+                  <div class="user-img me-2"><img class="img-fluid" src="{{row[4]}}" alt="#"></div>
+                  <span style="text-transform: capitalize;">{{row[5]}}</span>
+                </div>
+                <div class="comment d-flex align-items-center">
+                  <i class="fa-regular fa-comment me-2"></i>
+                  20
+                </div>
+              </div>
+              <a class="title" href="{{ url_for('blog_single', blog_id = row[0] )}}">{{row[2]}}</a>
+              <p class="mt-3">{{row[3]}} ...............</a></p>
+              <p class="mt-3" style="text-transform: capitalize;">{{row[6]}}</p>
+            </div>
+          </div>
+            {% endfor %}
+
+          <div class="blog blog-post-quote p-4 p-md-5 mb-4 mb-sm-5">
+            <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+            <a class="title mt-0" href="#">You are now free to move about the country.</a>
+            <p class="mt-3 mb-0  text-white">Was this just another little prank, courtesy of a mischievous Universe? Or is it possible to get good things coming your way with only mild desire — maybe even a calm indifference? Many inspirational writers, including Napoleon Hill, have assured us that a burning desire is one of the prerequisites of acquiring a fortune.</p>
+            <div class="blog-body d-flex flex-wrap align-items-center">
+              <div class="time-card d-flex align-items-center me-3 text-white">
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>
+                <span class="text-white">Feb 4, 2022 By</span>
+              </div>
+              <div class="user d-flex align-items-center me-3">
+                <div class="user-img me-2"><img class="img-fluid" src="images/avatar/04.jpg" alt="#"></div>
+                <span class="text-white">Sara Lisbon</span>
+              </div>
+              <div class="comment d-flex align-items-center text-white">
+                <i class="fa-regular fa-comment me-2"></i>
+                20
+              </div>
+            </div>
+          </div>
+
+          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+            <div class="blog">
+              <iframe class="border-radius" style="width: 100%; height:420px;" src="https://www.youtube.com/embed/n_Cn8eFo7u8" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+              <div class="blog-body d-flex flex-wrap align-items-center">
+                <div class="time-card me-3 d-flex align-items-center">
+                  <img class="img-fluid rounded me-2" src="images/on-time.svg" alt="#">
+                  <span>Feb 4, 2022 By</span>
+                </div>
+                <div class="user d-flex align-items-center me-3">
+                  <div class="user-img me-2"><img class="img-fluid" src="images/avatar/04.jpg" alt="#"></div>
+                  <span>Sara Lisbon</span>
+                </div>
+                <div class="comment d-flex align-items-center">
+                  <i class="fa-regular fa-comment me-2"></i>
+                  20
+                </div>
+              </div>
+              <a class="title" href="#">How Google’s BERT Algorithm Affects Your Website Traffic</a>
+              <p class="mt-3">There are basically six key areas to higher achievement. Some people will tell you there are four while others may tell you there are eight. One thing for certain though, is that irrespective of the number of steps the experts talk about, they all originate from the same roots.</p>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-12 text-center mt-4 mt-sm-5">
+              <nav>
+                <ul class="pagination justify-content-center mb-0">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">«</span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item active"><span class="page-link">1<span class="sr-only">(current)</span></span></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">4</a></li>
+                  <li class="page-item"><a class="page-link" href="#">5</a></li>
+                  <li class="page-item"><a class="page-link" href="#">6</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mt-5 mt-lg-0">
+          <div class="sidebar">
+            <div class="widget">
+              <div class="widget-title">
+                <h5 class="fw-600">Search</h5>
+              </div>
+              <div class="search">
+                <i class="fas fa-search"></i>
+                <input type="text" class="form-control" placeholder="Search">
+              </div>
+            </div>
+            <div class="widget">
+              <div class="widget-title">
+                <h5 class="widget-title fw-600">Recent Post</h5>
+              </div>
+              {% for row in latest_blog %}
+              <div class="blog blog-style-2 d-flex align-items-center mb-4">
+                <div class="blog-img me-3">
+                  <img  class="img-fluid" src="{{ row[3] }}" alt="#">
+                </div>
+                <div class="blog-body pt-0">
+                  <div class="time-card me-3 d-flex align-items-center">
+                    <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
+                    <span>{{ row[2] }}</span>
+                  </div>
+                  <a href="{{ url_for('blog_single', blog_id=row[0]) }}">{{ row[1] }}</a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="widget">
+              <div class="widget-title">
+                <h5 class="fw-600">Categories</h5>
+              </div>
+              <div class="widget-categories">
+                <ul class="list-unstyled list-style list-style-underline mb-0">
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='adventure')}} ">Adventure <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='business')}}">Business Travel <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='solo')}}">Solo Trip<span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='cruises')}}">Cruises <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='honeymoons')}}">Honeymoons <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='nature')}}">Nature <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                  <li><a class="d-flex" href="{{ url_for('blog_categories', categorie='vacation')}}">Vacation <span class="ms-auto"><i class="fa-solid fa-chevron-right"></i></span></a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="widget">
+              <h5 class="widget-title fw-600"> Subscribe & Follow</h5>
+              <div class="widget-content mt-4">
+                <div class="social">
+                  <ul class="list-unstyled mb-0">
+                    <li class="facebook">
+                      <a href="#"> <i class="fab fa-facebook-f me-3"></i>Facebook</a>
+                      <a class="follow ms-auto" href="#">Like </a>
+                    </li>
+                    <li class="twitter">
+                      <a href="#"> <i class="fab fa-twitter me-3"></i>twitter</a>
+                      <a class="follow ms-auto" href="#">followers </a>
+                    </li>
+                    <li class="youtube">
+                      <a href="#"> <i class="fab fa-youtube me-3"></i>youtube</a>
+                      <a class="follow ms-auto" href="#">Subscribers </a>
+                    </li>
+                    <li class="instagram">
+                      <a href="#"> <i class="fab fa-instagram me-3"></i>instagram</a>
+                      <a class="follow ms-auto" href="#">followers </a>
+                    </li>
+                    <li class="linkedIn mb-0">
+                      <a href="#"> <i class="fab fa-linkedin-in me-3"></i>linkedIn</a>
+                      <a class="follow ms-auto" href="#">followers </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="widget mb-0">
+              <h5 class="widget-title fw-600">Tags</h5>
+              <div class="widget-content mt-4">
+                <div class="popular-tag">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="#"> Blog</a></li>
+                    <li><a href="#"> Adventure</a></li>
+                    <li><a href="#"> WordPress</a></li>
+                    <li><a href="#"> Blogger</a></li>
+                    <li><a href="#"> Food</a></li>
+                    <li><a href="#"> Tourism</a></li>
+                    <li><a href="#"> Fashion</a></li>
+                    <li><a href="#"> Travel</a></li>
+                    <li><a href="#"> Magazine</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--=================================
+  Blog -->
+
+
+{% endblock %}

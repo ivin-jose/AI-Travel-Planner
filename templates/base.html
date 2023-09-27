@@ -13,57 +13,316 @@
 	<!-- JQUERY AJAX CDN -->
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 	<!-- jQuery CDN -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-eoIsAZa7iLW10Q+RY5CAvrDein9o4Vefc8iBRoKUQ7g=" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS Global Compulsory (Do not remove)-->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" />
+    <!-- Page CSS Implementing Plugins (Remove the plugin CSS here if site does not use that feature)-->
 
 
-
-	<!-- Internal CSS -->
+	  <!-- Internal CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
     <!-- Internal js -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.appear.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+        
 </head>
 
 <body>
-	<nav class="nvbr">
-		<div class="logo">
-			<img src="logo.svg" alt="Logo Image">
-		</div>
-		<div>
 
-			<form action="" method="" class="nav-search-form" id="nav-search1">
-				<input type="search" placeholder="Search Cities" id="nav-search-box" class="form-control" />
-				<input type="submit" value="GO" id="nav-search-submit" />
-			</form>
+	<header class="header header-sticky default">
+      <div class="topbar d-none d-md-block">
+        <div class="container">
+          <div class="topbar-inner">
+            <div class="row">
+              <div class="col-12">
+                <div class="d-lg-flex align-items-center text-center">
+                  <div class="topbar-left mb-2 mb-lg-0">
+                    <div class="topbar-call d-inline-flex">
+                      <a href="mailto:info@example.com"><img src="images/phone.svg" alt="#"> Call Services  +126-632-2345</a>
+                    </div>
+                    <div class="me-auto d-inline-flex">
+                      <a href="tel:1-800-555-1234"><i class="fa-solid fa-location-dot me-2"></i>220E Front St. Burlington NC 27215</a>
+                    </div>
+                  </div>
+                  <div class="topbar-right ms-auto justify-content-center">
+                    <div class="social d-inline-flex">
+                      <ul class="list-unstyled">
+                        <li><a href="#"> <i class="fa-brands fa-facebook-f"></i> </a></li>
+                        <li><a href="#"> <i class="fab fa-twitter"></i> </a></li>
+                        <li><a href="#"> <i class="fa-brands fa-linkedin"></i> </a></li>
+                        <li><a href="#"> <i class="fab fa-instagram"></i> </a></li>
+                      </ul>
+                    </div>
 
-		</div>
-		<div class="hamburger">
-			<div class="line1"></div>
-			<div class="line2"></div>
-			<div class="line3"></div>
-		</div>
-		<ul class="nav-links">
-			<li>
-				<form action="" method="" class="nav-search-form" id="nav-search2">
-					<input type="search" placeholder="Search Cities" id="nav-search-box" class="form-control" />
-					<input type="submit" value="GO" id="nav-search-submit" />
-				</form>
-			</li>
-			<li><a href="{{ url_for('home') }}">Home</a></li>
-			<li><a href="#">Things to Do</a></li>
-			<li><a href="#">About us</a></li>
-			<li><a href="#">Blog</a></li>
-			<li><a href="#">Profile</a></li>
-			<li><a class="login-button" href="{{ url_for('login') }}">Login</a></li>
-			<li><a class="join-button" href="{{ url_for('signup') }}">Signup</a></li>
-		</ul>
-	</nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav class="navbar navbar-static-top navbar-expand-lg">
+        <div class="container main-header position-relative">
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"><i class="fas fa-align-left"></i></button>
+          <a class="navbar-brand" href="index.html">
+            <img class="img-fluid" src="images/logo.png" alt="logo">
+          </a>
+          <div class="navbar-collapse collapse justify-content-end justify-content-lg-center">
+            <ul class="nav navbar-nav">
+              <li class="nav-item dropdown active">
+                <a class="nav-link" href="{{ url_for('home') }}" role="button" >Home</i></a>
+              </li>
+
+              <li class="nav-item dropdown ">
+                <a class="nav-link" href="portfolio-5-masonry.html" role="button" >Portfolio</i></a>
+              </li>
+
+              <li class="nav-item dropdown ">
+                <a class="nav-link" href="tour-search.html" role="button">Tour Packages</i></a>
+              </li>
+
+              <li class="nav-item dropdown ">
+                <a class="nav-link" href="{{ url_for('blog_home') }}" role="button" >Blog</i></a>
+              </li>
+
+              <li class="nav-item dropdown ">
+                <a class="nav-link" href="contact-us.html">Contact Us</i></a>
+              </li>
+              <li class="nav-item dropdown ">
+                <a class="nav-link" href="about-us.html">About Us</i></a>
+              </li>
+              <li class="nav-item dropdown">
+                <!-- inner -->
+                <div class="add-listing nav-link">
+                  <div class="woo-action">
+                    <ul class="list-unstyled">
+                      <li class="cart dropdown">
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="cart-icon"><i class="fa-regular fa-bell" style="color: #050505;"></i></object></span>
+                          <span class="cart-count">2</span></button>
+                          <div class="dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <!-- list -->
+                            <ul class="cart-list ps-0">
+                              <!-- 1 -->
+                              <li class="d-flex">
+                                <a class="remove-item" href="#"><i class="fas fa-times"></i></a>
+                                <h6 class="noti-date">10-Jan-2021</h6>
+                                <div class="cart-info">
+                                  <a href="#">You Created a blog</a>
+                                </div>
+
+                              </li>                      <!--  -->
+                            </ul>
+                            <!--end  list  -->
+                            <div class="cart-footer">
+                              <div class="d-inline-block d-sm-flex">
+                                <a class="col btn btn-secondary btn-sm me-2 px-4" href="#">View more</a>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>                
+                </li>
+            
+
+                <li class="nav-item dropdown">
+                 <!-- user  -->
+                 <div class="add-listing nav-link">
+                  <div class="woo-action">
+                    <ul class="list-unstyled">
+                      <li class="cart dropdown">
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="cart-icon"><i class="fa-regular fa-user" style="color: #050505;"></i></object></span>
+                          <span class="cart-count">2</span></button>
+                          <div class="dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="width: 201px;">
+                            <!-- list -->
+                            <ul class="cart-list ps-0">
+                              <!-- 1 -->
+                              {% if 'username' in session %}
+	                               <li class="d-flex">
+	                                <div class="cart-info">
+	                                  <a href="{{ url_for('userprofile') }}" style="text-transform: capitalize; color: #029094;"> {{ session['username'] }}</a>
+	                                </div>
+	                              </li>
+	                              <li class="d-flex">
+		                            <div class="cart-info">
+		                              <a href="#"> Saved Blogs </a>
+		                            </div>
+		                          </li>                      
+		                          <!--2  -->
+		                          <li class="d-flex">
+		                            <div class="cart-info">
+		                              <a href="#"> Saved Packages</a>
+		                            </div>
+		                          </li>
+		                          <!--  -->
+		                          <li class="d-flex">
+		                            <div class="cart-info">
+		                              <a href="#"> Setting</a>
+		                            </div>
+		                          </li>
+                              {% else %}
+		                           <li class="d-flex">
+		                            <div class="cart-info">
+		                              <a href="{{ url_for('login') }}"> Login </a>
+		                            </div>
+		                          </li>                      
+		                          <!--2  -->
+		                          <li class="d-flex">
+		                            <div class="cart-info">
+		                              <a href="{{ url_for('signup') }}"> Sign Up</a>
+		                            </div>
+		                          </li>
+		                          <!--  -->
+                              {% endif %}
+
+                              <!--  -->
+
+                            </ul>
+                            <!--end  list  -->
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!-- end user -->
+                </li>
+               <!-- <a href="sign-up.html" class="btn btn-primary menu-btn ms-4 d-none d-xl-block">Sign In</a> -->
+            </div>
+
+            <!-- box user+notification -->
+
+              <!--end box  -->
+            </ul>
+          </div>
+        </nav>
+    </header>
+      
+    <!--=================================
+    Header -->
+
+
 	{% block content %}
 
 	{% endblock %}
+	      <!--=================================
+footer-->
+<footer class="footer">
+  <div class="min-footer bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="newsletter">
+            <h3 class="fw-bold mb-0 newsletter-title">Newsletter</h3>
+            <div class="footer-subscribe">
+              <form>
+                <input type="email" class="form-control border-0" placeholder="Email">
+                <button type="submit" class="btn btn-primary">Get Notified</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-12">
+          <a class="footer-logo" href="index.html">
+            <img class="img-fluid" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+          </a>
+          <p class="mt-4 mb-0">Give yourself the power of responsibility. Remind yourself the only thing stopping you is yourself.</p>
+          <div class="social-icon mt-4 mt-lg-5">
+            <ul>
+              <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
+              <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+              <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+              <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mt-4 mt-md-5 mt-lg-0">
+          <div class="footer-link">
+            <h6 class="footer-title fw-600">Contact Travel</h6>
+            <div class="footer-contact-info">
+              <ul class="list-unstyled mb-0">
+                <li><img class="img-fluid" src="{{ url_for('static', filename='images/address.png') }}" alt="#"><span class="address">17504 Carlton Cuevas Rd, Gulfport, MS, 39503</span></li>
+                <li><img class="img-fluid" src="{{ url_for('static', filename='images/phone.png') }}" alt="#"><span class="phone">+(704) 279-1249</span></li>
+                <li><img class="img-fluid" src="{{ url_for('static', filename='images/email.png') }}" alt="#"><span class="email">letstalk@Ciyatrip.com</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mt-4 mt-md-5 mt-lg-0 position-relative">
+          <img class="img-fluid footer-map" src="{{ url_for('static', filename='images/footer-map.png') }}" alt="logo">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center copyright">
+        <div class="col-12 col-md-6 text-center text-md-start">
+          <div class="copyright-menu footer-menu">
+            <ul class="mb-0 justify-content-center justify-content-md-start">
+              <li><a class="text-black" href="#">Term & Conditions</a></li>
+              <li><a class="text-black" href="#">Privacy Policy </a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-end mt-2 mt-md-0">
+          <p class="mb-0"> &copy; Copyright <span id="copyright"> <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script></span> <a href="index.html"> Ciyatrip </a> All Rights Reserved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--=================================
+footer-->
+
+<!--=================================
+Back To Top-->
+<div id="back-to-top" class="back-to-top">
+  <a href="#"><i class="fas fa-angle-up"></i></a>
+</div>
+<!--=================================
+Back To Top-->
 </body>
 </html>
+ <!-- JS Global Compulsory (Do not remove)--> 
+
+<!-- Page JS Implementing Plugins (Remove the plugin script here if site does not use that feature)-->
+<script src="{{ url_for('static', filename='js/select2/select2.full.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datetimepicker/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datetimepicker/datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/owl-carousel/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/horizontal-timeline/horizontal-timeline.js') }}"></script>
+<!-- Javascript -->
+<!-- JS Global Compulsory (Do not remove)-->
+<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.appear.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+<!-- Page JS Implementing Plugins (Remove the plugin script here if site does not use that feature)-->
+
+<!-- Template Scripts (Do not remove)-->
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
 

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Signup</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<style type="text/css">
+
+
+		main {
+			overflow: hidden;
+		}
+		body {
+			background-color: rgb(20, 20, 34);
+		}
+
+		.signup-main {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			margin: auto;
+		}
+
+		.signup-main-1 {
+			width: 28%;
+			height: 75vh;
+			background-color: #20293f;
+			/* opacity: 0.5; */
+			border: 1px solid violet;
+			border-radius: 6px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+		}
+
+		.signup-main-1 h2 {
+			text-align: center;
+			color: whitesmoke;
+		}
+
+		.signup-form {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			align-items: center;
+		}
+		.signup-form label {
+			text-align: right;
+			color: red;
+			margin-right: 0px;
+			font-size: 10px;
+		}
+		.signup-main-1 .form-control {
+			width: 90% !important;
+			margin: 10px 5px;
+		}
+
+		#signupsubmitbtn {
+			background: #970097;
+			border: 0px;
+			width: 64%;
+			height: 35px;
+			border-radius: 6px;
+			color: white;
+			margin-top: 10px;
+		}
+
+		#signupsubmitbtn:hover {
+			background-color: #be03be;
+		}
+		.signinchangespan {
+			color: #a796b7;
+			font-size: 13px;
+			margin-top: 10px;
+		}
+		.signup-main-1-1 {
+
+			background-image: url('./static/images/bg2.jpg');
+			background-size: cover;
+			height: 100vh;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			opacity: 0.1;
+		
+		}
+
+/*		Responosvness of page*/
+
+		@media screen and (max-width: 950px) {
+			.signup-main-1 {
+				width: 50%;
+				height: 80vh;
+			}
+		}
+		@media screen and (max-width: 500px) {
+			.signup-main-1 {
+				width: 80%;
+				height: 70vh;
+			}
+		}
+
+	</style>
+</head>
+<main>
+	<body>
+		<div class="signup-main-1-1">
+			
+		</div>
+		<div class="signup-main">
+			<div class="signup-main-1">
+			
+				<h2>SIGNUP</h2>
+				<form name="signup-form" class="signup-form" method="POST">
+					<label class="signupname-label"></label>
+					<input type="text" name="signupname" placeholder="Enter your user name" class="form-control signupname" value="{{username}}" />
+
+					<label class="error-message">{{ email_exist_msg }}</label>
+					<label class="signupemail-label"></label>
+					<input type="email" name="signupemail" placeholder="Enter your email" class="form-control signupemail" value="{{email}}" />
+
+					<label class="signupsecuritycode-label"></label>
+					<input type="text" name="signupsecuritycode" placeholder="Enter a security code" class="form-control signupsecuritycode" value="{{security_q}}" />
+
+					<label class="signuppassword-label"></label>
+					<input type="password" name="signuppassword" placeholder="Enter password"  class="form-control signuppassword" value="{{password}}" />
+
+					<label class="confirmpassword-label"></label>
+					<input type="password" name="confirmpassword" placeholder="Renter password"  class="form-control confirmpassword" value="{{password}}" />
+
+					<input type="submit" name="name" placeholder="Enter your name" id="signupsubmitbtn" />
+					<span class="signinchangespan">already have a account <a href="login">Login</a></span>
+				</form>
+			</div>
+		</div>
+	</body>	
+</main>
+
+</html>
+
+<script type="text/javascript">
+  $(document).ready(function() { 
+    function signupformvalidation() {
+      var name = $(".signupname").val();
+      var email = $(".signupemail").val();
+      var password = $(".signuppassword").val();
+      var confirm_password = $(".confirmpassword").val();
+
+      // name validation
+      if (name == '') {
+        $(".signupname-label").text("Enter User name");
+        $(".signupname").focus();
+        return false; // Return false to indicate validation failure
+      }
+      else {
+      	if (name.length <= 3) {
+        	$(".signupname-label").text("Min 4 charater's need");
+          $(".signupname").focus();
+          return false;
+        }
+        else {
+        	$(".signupname-label").text("");
+        }
+        $(".signupname-label").text("");
+      }
+
+      // email validation
+      if (email == '') {
+        $(".signupemail-label").text("Enter Email");
+        $(".signupemail").focus();
+        return false;
+      } else {
+        $(".signupemail-label").text("");
+      }
+
+      //password validation
+      if (password == '') {
+      	$(".signuppassword-label").text("Enter password");
+      	$(".signuppassword").focus();
+      	return false;
+      } else {
+      	if (password.length <= 6) {
+      		$(".signuppassword-label").text("Min 6 characters needed");
+      		$(".signuppassword").focus();
+      		return false;
+      	} else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
+      		$(".signuppassword-label").text("Password must include uppercase and lowercase characters");
+      		$(".signuppassword").focus();
+      		return false;
+      	} else {
+      		$(".signuppassword-label").text("");
+      	}
+      }
+
+      if (password != confirm_password) {
+      	$(".confirmpassword-label").text("Password not matching");
+      	$(".confirmpassword").focus();
+      	return false;
+      } else {
+      	$(".confirmpassword-label").text("");
+      }
+
+  		// Password is valid
+      return true;
+    }
+
+    // Form submission with validation
+    $("#signupsubmitbtn").click(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+
+      // Validate the form
+      if (signupformvalidation()) {
+        // If the form is valid, submit it
+        $(".signup-form").submit();
+      }
+    });
+
+    // hiding error msg of duplicate email
+
+    $(".signupemail").focus(function() {
+	 		$(".error-message").hide()
+	 	})
+  });
+</script>
+
+
