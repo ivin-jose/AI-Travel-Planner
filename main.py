@@ -337,7 +337,24 @@ def blog_single(blog_id):
     cursor.execute(query)
     related_blog= cursor.fetchall()
 
-    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog)
+    # Fetching Comments
+
+    cursor = mysql.connection.cursor()
+    query = """
+            SELECT blog_comment.comment, blog_comment.userid, blog_comment.date, users.profile_pic, users.username
+            FROM blog_comment AS blog_comment
+            JOIN users AS users ON blog_comment.userid = users.user_id
+            WHERE blog_comment.blogid = %s
+            """
+    cursor.execute(query, (blog_id,))
+    comments = cursor.fetchall()
+    # Get the number of comments
+    num_comments = len(comments)
+    cursor.close()
+
+
+
+    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog, comments=comments, num_comments=num_comments)
 
 ''' Blog Categories '''
 
@@ -462,8 +479,8 @@ def blog_upload_comment():
             return render_template('login.html')
         else:
             cursor = mysql.connection.cursor()
-            query = "INSERT INTO blog_comment (blogid, userid, comment) VALUES(%s, %s, %s)"
-            values = (blog_id, session['userid'], comment)
+            query = "INSERT INTO blog_comment (blogid, userid, comment, date) VALUES(%s, %s, %s, %s)"
+            values = (blog_id, session['userid'], comment, today_date)
             cursor.execute(query, values)
             mysql.connection.commit()
             cursor.close()

@@ -74,41 +74,23 @@ Blog -->
           <hr class="my-4 my-sm-5">
           <div class="row mt-4 mt-sm-5">
             <div class="col-sm-12">
-              <h4 class="mb-4 mb-lg-5 fw-600">Comments (3)</h4>
+              <h4 class="mb-4 mb-lg-5 fw-600">Comments ({{num_comments}})</h4>
               <!-- comment start -->
+              {% for row in comments %}
               <div class="d-sm-flex">
-                <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="images/avatar/01.jpg" alt="...">
-                <div class="bg-white border border-radius p-3 mt-3 mt-sm-0">
-                  <h6 class="mt-0 mb-3 fw-600">John Doe</h6>
-                  <p>The best way is to develop and follow a plan. Start with your goals in mind and then work backwards to develop the plan. What steps are required to get you to the goals.</p>
-                  <a href="#" class="btn btn-link p-0">Reply</a>
+                <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="{{ row[3] }}" alt="..." style="width: 50px !important; height: 80px; border-radius: 60px">
+                <div class="bg-white border border-radius p-3 mt-3 mt-sm-0" style="width: 90%; margin-bottom: 15px;">
+                  <h6 class="mt-0 mb-3 fw-600" style="text-transform: capitalize;">{{ row[4] }}</h6>
+                  <p>{{ row[0] }}</p>
+                  <p>{{ row[2] }}</p>
                 </div>
               </div>
-              <div class="ps-4 ps-sm-5 mt-4 mt-sm-5">
-                <div class="d-sm-flex">
-                  <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="images/avatar/02.jpg" alt="...">
-                  <div class="bg-white border border-radius p-3 mt-3 mt-sm-0">
-                    <h6 class="mt-0 mb-3 fw-600">Paul Flavius</h6>
-                    <p>Make the plan as detailed as possible. Try to visualize and then plan for, every possible setback. Commit the plan to paper and then keep it with you at all times.</p>
-                    <a href="#" class="btn btn-link p-0">Reply</a>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-4 mt-sm-5">
-                <div class="d-sm-flex">
-                  <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="images/avatar/03.jpg" alt="...">
-                  <div class="bg-white border border-radius p-3 mt-3 mt-sm-0">
-                    <h6 class="mt-0 mb-3 fw-600">Martin Smith</h6>
-                    <p>Review it regularly and ensure that every step takes you closer to your Vision and Goals. If the plan doesn’t support the vision then change it!</p>
-                    <a href="#" class="btn btn-link p-0">Reply</a>
-                  </div>
-                </div>
-              </div>
+              {% endfor %}
               <!-- comment end -->
             </div>
           </div>
           <div class="mt-5">
-            <h4 class="mb-4 mb-lg-5 fw-600">Leave a Reply</h4>
+            <h4 class="mb-4 mb-lg-5 fw-600">Comment something</h4>
             <p></p>
             <!-- comment form -->
           {% for row in blog_data %}
