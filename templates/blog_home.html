@@ -31,52 +31,55 @@
               {% endif %}
             </div>
           </div>
-          {% for row in blog_data%}
+          {% for row in blog_data %}
           <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
-            <div class="blog">
-              <div class="blog-img">
-                <img class="img-fluid rounded" src="{{ row[7] }}" alt="#" style="    width: 100%; height: 400px; object-fit: fill;">
+              <div class="blog">
+                  <div class="blog-img">
+                      <img class="img-fluid rounded" src="{{ row[7] }}" alt="#"
+                          style="width: 100%; height: 400px; object-fit: fill;">
+                  </div>
+                  <div class="blog-body d-flex flex-wrap align-items-center">
+                      <div class="time-card me-3 d-flex align-items-center">
+                          <img class="img-fluid rounded me-2"
+                              src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
+                          <span>{{row[1]}} By</span>
+                      </div>
+                      <div class="user d-flex align-items-center me-3">
+                          <div class="user-img me-2"><img class="img-fluid" src="{{row[4]}}" alt="#"></div>
+                          <span style="text-transform: capitalize;">{{row[5]}}</span>
+                      </div>
+                      <div class="comment d-flex align-items-center">
+                          <i class="fa-regular fa-comment me-2"></i>
+                          {{ row[8] }}
+                      </div>
+                  </div>
+                  <a class="title" href="{{ url_for('blog_single', blog_id = row[0] )}}">{{row[2]}}</a>
+                  <p class="mt-3">{{row[3]}} ...............</a></p>
+                  <p class="mt-3" style="text-transform: capitalize;">{{row[6]}}</p>
               </div>
-              <div class="blog-body d-flex flex-wrap align-items-center">
-                <div class="time-card me-3 d-flex align-items-center">
-                  <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
-                  <span>{{row[1]}} By</span>
-                </div>
-                <div class="user d-flex align-items-center me-3">
-                  <div class="user-img me-2"><img class="img-fluid" src="{{row[4]}}" alt="#"></div>
-                  <span style="text-transform: capitalize;">{{row[5]}}</span>
-                </div>
-                <div class="comment d-flex align-items-center">
-                  <i class="fa-regular fa-comment me-2"></i>
-                  {{ row[8] }}
-                </div>
-              </div>
-              <a class="title" href="{{ url_for('blog_single', blog_id = row[0] )}}">{{row[2]}}</a>
-              <p class="mt-3">{{row[3]}} ...............</a></p>
-              <p class="mt-3" style="text-transform: capitalize;">{{row[6]}}</p>
-            </div>
           </div>
-            {% endfor %}
 
-          <div class="blog blog-post-quote p-4 p-md-5 mb-4 mb-sm-5">
-            <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
-            <a class="title mt-0" href="#">You are now free to move about the country.</a>
-            <p class="mt-3 mb-0  text-white">Was this just another little prank, courtesy of a mischievous Universe? Or is it possible to get good things coming your way with only mild desire — maybe even a calm indifference? Many inspirational writers, including Napoleon Hill, have assured us that a burning desire is one of the prerequisites of acquiring a fortune.</p>
-            <div class="blog-body d-flex flex-wrap align-items-center">
-              <div class="time-card d-flex align-items-center me-3 text-white">
-                <i class="fa-solid fa-clock-rotate-left me-2"></i>
-                <span class="text-white">Feb 4, 2022 By</span>
+          <!-- Check if this is the appropriate position to insert facts -->
+          {% if loop.index == 2 %} <!-- You can adjust the position as needed -->
+          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+              <div class="blog">
+                  <div class="blog-img">
+                      <!-- You can add an image for the facts section if needed -->
+                  </div>
+                  <div class="blog-body d-flex flex-wrap align-items-center">
+                      <!-- Additional code for user, time, and comment here -->
+                  </div>
+                  <a class="title mt-0" style="color: #3dd1d5 !important">RANDOM FACTS!!</a>
+                  <p class="mt-3 mb-0 text-white">
+                    {% for fact in facts %}
+                        <li style="list-style: none;">{{ fact[2] }}</li>
+                    {% endfor %}
+                  </p>
               </div>
-              <div class="user d-flex align-items-center me-3">
-                <div class="user-img me-2"><img class="img-fluid" src="images/avatar/04.jpg" alt="#"></div>
-                <span class="text-white">Sara Lisbon</span>
-              </div>
-              <div class="comment d-flex align-items-center text-white">
-                <i class="fa-regular fa-comment me-2"></i>
-                20
-              </div>
-            </div>
           </div>
+          {% endif %}
+          {% endfor %}
+
 
           <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
             <div class="blog">

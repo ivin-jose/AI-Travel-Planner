@@ -287,7 +287,13 @@ def blog_home():
     cursor.execute(query)
     latest_blog= cursor.fetchall()
 
-    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog)
+    # fetching fact
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+    cursor.execute(query)
+    facts = cursor.fetchall()
+
+    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts)
 
 # Blog Single Page
 
@@ -420,7 +426,13 @@ def blog_categories(categorie):
         cursor.execute(query)
         latest_blog= cursor.fetchall()
 
-        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog)
+        # fetching fact
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+        cursor.execute(query)
+        facts = cursor.fetchall()
+
+        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts)
     else:
         # Handle the case where an invalid category is provided in the URL
         return redirect('/blog_home')
