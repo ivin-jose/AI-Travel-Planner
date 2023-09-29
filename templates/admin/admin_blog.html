@@ -11,37 +11,7 @@
 }
     </style>
 
-<div class="row">
-    <div class="col-lg-6">
-     <!--sidebar start-->
-     <aside>
-      <div id="sidebar"  class="nav-collapse ">
-        <!-- sidebar menu start-->
-        <ul class="sidebar-menu">
-        <li class="{% if 'admin_dashboard' in request.url_rule.endpoint %}active{% endif %}">
-          <a class="" href="{{url_for('admin_dashboard')}}">
-              <i class="icon_house_alt"></i>
-              <span>Manage Admins</span>
-          </a>
-       </li>
-      <li class="{% if 'admin_blog' in request.url_rule.endpoint %}active{% endif %}">
-        <a class="" href="{{url_for('admin_blog')}}">
-          <i class="icon_house_alt"></i>
-          <span>Blogs</span>
-        </a>
-      </li>
 
-      <li class="">
-        <a class="" href="">
-          <i class="icon_house_alt"></i>
-          <span>hiyel</span>
-        </a>
-      </li>
-     </ul>
-  <!-- sidebar menu end-->
-</div>
-</aside>
-</div>
 
 <div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
 

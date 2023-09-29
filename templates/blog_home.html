@@ -4,13 +4,34 @@
  <!--=================================
   Blog -->
 
+<style type="text/css">
+  .cbs-1-a {
+  background: white !important;
+    border: 2px solid !important;
+    padding: 5px !important;
+    border-radius: 20px !important;
+}
+
+.cbs-1-a:hover {
+  padding: 7px !important;
+}
+</style>
+
 
   <section class="space-ptb">
     <div class="container">
       <div class="row">
         <div class="col-lg-8">
-
-            {% for row in blog_data%}
+          <div class="create-blog-section">
+            <div class="cbs-1">
+              {% if 'userid' in session %}
+              <a class="cbs-1-a" href="{{ url_for('blog_upload') }}">Create your blog</a>
+              {% else %}
+              <a class="cbs-1-a" href="{{ url_for('login') }}">Login to Create your blog</a>
+              {% endif %}
+            </div>
+          </div>
+          {% for row in blog_data%}
           <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
             <div class="blog">
               <div class="blog-img">
@@ -27,7 +48,7 @@
                 </div>
                 <div class="comment d-flex align-items-center">
                   <i class="fa-regular fa-comment me-2"></i>
-                  20
+                  {{ row[8] }}
                 </div>
               </div>
               <a class="title" href="{{ url_for('blog_single', blog_id = row[0] )}}">{{row[2]}}</a>

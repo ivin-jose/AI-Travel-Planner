@@ -88,7 +88,7 @@ def signup():
     password = ''
     email_exist_msg = ''
     date = today_date
-    profile_pic = "./static/images/default-avatar-profile.jpg"
+    profile_pic = "../static/images/default-avatar-profile.jpg"
     if request.method == 'POST':
         username = request.form.get('signupname')
         email = request.form.get('signupemail')
@@ -318,7 +318,6 @@ def blog_single(blog_id):
     # Latest 3 Blogs
 
     cursor = mysql.connection.cursor()
-    
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
                JOIN blog_images ON blog.blogid = blog_images.blog_id
@@ -326,6 +325,8 @@ def blog_single(blog_id):
                LIMIT 3'''
     cursor.execute(query)
     latest_blog= cursor.fetchall()
+
+    # Related Blogs
 
     query = '''
            SELECT blog.blogid, blog.heading, blog.date, blog_images.image
@@ -350,11 +351,18 @@ def blog_single(blog_id):
     comments = cursor.fetchall()
     # Get the number of comments
     num_comments = len(comments)
+
+    # fetching fact
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+    cursor.execute(query)
+    facts = cursor.fetchall()
+
     cursor.close()
 
 
 
-    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog, comments=comments, num_comments=num_comments)
+    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog, comments=comments, num_comments=num_comments, facts=facts)
 
 ''' Blog Categories '''
 
@@ -609,4 +617,51 @@ def admin_logout():
 @app.route('/admin_blog')
 def admin_blog():
    return render_template('admin/admin_blog.html')
+
+
+''' Facts Page '''
+
+@app.route('/admin_facts', methods=['GET', 'POST'])
+def admin_facts():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM facts"
+    cursor.execute(query)
+    facts = cursor.fetchall()
+    return render_template('admin/admin_facts.html', facts=facts)
+
+@app.route('/add_facts', methods=['GET', 'POST'])
+def add_facts():
+    if request.method == 'POST':
+        facts = request.form.get('facts')
+
+        # Insert the new admin into the database
+        cursor = mysql.connection.cursor()
+        insert_query = "INSERT INTO facts (adminid, fact) VALUES (%s, %s)"
+        cursor.execute(insert_query, (str(session['adminid']), facts))
+        mysql.connection.commit()
+
+        query = "SELECT * FROM facts"
+        cursor.execute(query)
+        facts = cursor.fetchall()
+
+        status_message = "Facts added successfully."
+
+    return render_template('admin/admin_facts.html', add_status_message=status_message, facts=facts)
+
+@app.route('/delete_fact/<int:fid>', methods=['GET', 'POST'])
+def delete_fact(fid):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM facts WHERE facts_id = %s"
+    delete_val = (fid,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Facts Deleted!!"
+
+    # fetching facts 
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM facts"
+    cursor.execute(query)
+    facts = cursor.fetchall()
+
+    return render_template('admin/admin_facts.html', facts = facts, dlt_status_message=status_message)
 

@@ -36,7 +36,7 @@ Blog -->
 
         <div class="d-sm-flex bg-light border-radius p-4 p-md-4 mt-md-4 mb-4 mb-lg-5">
           <i class="fas fa-quote-left pe-4 fa-5x text-primary"></i>
-          <p class="mb-0">Politics can be attributed to his perseverance to overcome his personal liabilities, and his desire to constantly become better. Next time you really want to achieve something, take time to focus on your own personal journal. What is your temptation that is standing in your wayv to greatness.</p>
+          <p class="mb-0">{% for row in facts %}{{ row[2] }} {% endfor %}</p>
         </div>
         <nav class="navigation post-navigation mb-4 mb-sm-5">
           <div class="nav-links">

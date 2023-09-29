@@ -1,24 +1,10 @@
 {% extends 'admin_base.html' %}
 {% block content %}
-<title>Admin</title>
-<body>
-<main>
-
-    <style type="text/css">
-        .sidebar-menu .active {
-    background-color: red; /* Set the background color to red */
-    color: white; /* Set the text color to white or any other color you prefer */
-}
-    </style>
-
-
-
-
 <div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 900" id="adminAddPlus">+</button>
 
-<button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD ADMIN</button>
+<button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD FACT</button>
 
 
 
@@ -58,26 +44,19 @@
 
 
 
-<!-- Modal add admins form  -->
+<!-- Modal add facts form  -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Admin</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Fact</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
 
-        <form action="{{ url_for('add_admin')}}" method="POST" id="admin_Add_Form" onsubmit="return validateAdminAddForm()">
+        <form action="{{ url_for('add_facts') }}" method="POST" id="fact_Add_Form">
             <span id="nameError" class="error"></span> <!-- Error message container -->
-            <input type="text" placeholder="Admin Name" name="admin_name" value="" class="form-control space" required>
-
-            <!-- <label>min 6 characters</label> -->
-            <span id="passwordError" class="error"></span> <!-- Error message container -->
-            <input type="password" name="admin_password" placeholder="Password" value="" class="form-control space" required>
-
-            <input type="text" name="type" value="admin" class="form-control space" readonly>
-
+            <textarea placeholder="Facts..." name="facts" value="" class="form-control space" required rows="8"></textarea>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary main_theme">Save</button>
@@ -93,57 +72,77 @@
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">admin</th>
-      <th scope="col">More</th>
+      <th scope="col">fact</th>
+      <th scope="col" style="width: 15% !important;">More</th>
     </tr>
   </thead>
 
 
     <tbody>
-{% for row in admins %}
+{% for row in facts %}
 <tr>
   <th scope="row">{{ row[0] }}</th>
-  <td>{{ row[1] }}</td>
+  <td>{{ row[2] }}</td>
   
   <!-- Add unique IDs for the Remove link and its associated close button -->
   <td>
     <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="adminRemoveConfirmation" href="{{ url_for('delete_admin', aid=row[0]) }}">
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('delete_fact', fid=row[0]) }}">
       <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
     </a>
 
-    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="adminRemoveConfirmation" href="#">
+    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
       <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
     </a>
-  
-{% endfor %}
+  {% endfor %}
   </tbody>
-  
-
 </table>
     </div>
 </div>
-</div>
 
-
-</main>
-
+<!-- Fact validating  -->
 <script>
-    $(document).ready(function () {
-        {% if add_status_message %}
-            $('#statusModal').modal('show');
-            $('#admin_Add_Form')[0].reset();
-        {% endif %}
-        {% if dlt_status_message %}
-            $('#dltErrorModal').modal('show');
-            $('#admin_Add_Form')[0].reset();
-        {% endif %}
-    });
+$(document).ready(function() {
+     {% if add_status_message %}
+        $('#statusModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
+    {% if dlt_status_message %}
+        $('#dltErrorModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
 
+    $("#fact_Add_Form").submit(function(e) {
+        // Prevent the form from submitting by default
+        e.preventDefault();
+
+        // Get the textarea value
+        var factText = $("textarea[name='facts']").val().trim();
+        var words = factText.split(/\s+/).filter(function(word) {
+            return word.length > 0;
+        });
+
+        // Perform validation
+        if (words.length < 20) {
+            $("#nameError").text("The fact should contain at least 20 words.");
+        } else if (words.length > 150) {
+            $("#nameError").text("The fact should not exceed 150 words.");
+        } else {
+           // Clear any previous error messages
+            $("#nameError").text("");
+            // Submit the form if validation passes
+            $(this).unbind("submit").submit();
+            
+            // Clear the form after successful submission
+            $(this)[0].reset();
+        }
+    });
+   
+});
     $(document).ready(function() {
-        $(".adminRemoveConfirmation").click(function() {
-            $(".adminRemoveConfirmation").hide()
+        $(".factRemoveConfirmation").click(function() {
+            $(".factRemoveConfirmation").hide()
             $(".deleteConfirmation_").show()
         })
 
@@ -155,7 +154,5 @@
         })
     })
 </script>
-
-
 
 {% endblock %}
