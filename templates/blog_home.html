@@ -32,7 +32,7 @@
             </div>
           </div>
           {% for row in blog_data %}
-          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5" id="blog_data_div">
               <div class="blog">
                   <div class="blog-img">
                       <img class="img-fluid rounded" src="{{ row[7] }}" alt="#"
@@ -72,7 +72,7 @@
                   <a class="title mt-0" style="color: #3dd1d5 !important">RANDOM FACTS!!</a>
                   <p class="mt-3 mb-0 text-white">
                     {% for fact in facts %}
-                        <li style="list-style: none;">{{ fact[2] }}</li>
+                        <li style="list-style: none;">"{{ fact[2] }}"</li>
                     {% endfor %}
                   </p>
               </div>
@@ -80,6 +80,43 @@
           {% endif %}
           {% endfor %}
 
+           <!-- Search Finding Error -->
+          {% if search_error %}
+                    <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+              <div class="blog">
+                  <div class="blog-img">
+                      <!-- You can add an image for the facts section if needed -->
+                  </div>
+                  <div class="blog-body d-flex flex-wrap align-items-center">
+                      <!-- Additional code for user, time, and comment here -->
+                  </div>
+                  <a class="title mt-0" style="color: #3dd1d5 !important">{{ search_error }}</a>
+                  <p class="mt-3 mb-0 text-white">
+                    
+                        <li style="list-style: none;"></li>
+                    
+                  </p>
+              </div>
+          </div>
+          {%endif%}
+
+          <!-- Facts  -->
+          <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
+              <div class="blog">
+                  <div class="blog-img">
+                      <!-- You can add an image for the facts section if needed -->
+                  </div>
+                  <div class="blog-body d-flex flex-wrap align-items-center">
+                      <!-- Additional code for user, time, and comment here -->
+                  </div>
+                  <a class="title mt-0" style="color: #3dd1d5 !important">RANDOM FACTS!!</a>
+                  <p class="mt-3 mb-0 text-white">
+                    {% for fact in facts %}
+                        <li style="list-style: none;">"{{ fact[2] }}"</li>
+                    {% endfor %}
+                  </p>
+              </div>
+          </div>
 
           <div class="box-shadow border-radius p-3 mb-4 mb-sm-5">
             <div class="blog">
@@ -136,8 +173,13 @@
                 <h5 class="fw-600">Search</h5>
               </div>
               <div class="search">
-                <i class="fas fa-search"></i>
-                <input type="text" class="form-control" placeholder="Search">
+                <form action="{{ url_for('blog_search') }}" method="POST" style="display: flex; align-items: center;" name="blog_search_form" id="blog_search_form">
+                    <!-- <i class="fas fa-search" style="margin-right: 10px;"></i> -->
+                    <input type="text" class="form-control" placeholder="Search" style="flex: 1;border-bottom-right-radius: 0px !important;
+                    border-top-right-radius: 0px !important;" name="blog_search_content">
+                    <button type="submit" class="btn btn-primary" style="height: 50px;border-bottom-left-radius: 0px !important;
+                    border-top-left-radius: 0px !important;"><i class="fas fa-search" style="width: 80px"></i></button>
+                </form>
               </div>
             </div>
             <div class="widget">
@@ -230,5 +272,24 @@
   <!--=================================
   Blog -->
 
+<!-- <script>
+    // Listen for the form submission event
+    $('#blog_search_form').submit(function(e) {
+        e.preventDefault(); // Prevent the default form submission
 
+        // Perform an AJAX POST request to the blog_search route
+        $.ajax({
+            type: 'POST',
+            url: '/blog_search', // Replace with your actual route
+            data: $(this).serialize(), // Serialize the form data
+            success: function(response) {
+                // Update the content on the blog_home page
+                $('#blog_home_content').html(response);
+            },
+            error: function(error) {
+                console.error('AJAX error:', error);
+            }
+        });
+    });
+</script> -->
 {% endblock %}

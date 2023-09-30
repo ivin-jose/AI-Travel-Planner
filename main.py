@@ -507,7 +507,72 @@ def blog_upload_comment():
 
     return redirect(url_for('blog_single', blog_id=blog_id))
 
+''' Blog Search '''
 
+@app.route('/blog_search', methods=['POST', 'GET'])
+def blog_search():
+    facts2 = ""
+    search_error = ""
+    if request.method == 'POST':
+        search = request.form.get("blog_search_content")
+        cursor = mysql.connection.cursor()
+        query = f'''
+        SELECT blog.blogid, blog.date, blog.heading, SUBSTRING_INDEX(blog.content, ' ', 50) AS truncated_content, users.profile_pic, users.username, CONCAT_WS(', ',
+            CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
+            CASE WHEN blog.business = 1 THEN 'business trips' ELSE NULL END,
+            CASE WHEN blog.solo = 1 THEN 'solo trip' ELSE NULL END,
+            CASE WHEN blog.cruise = 1 THEN 'cruise' ELSE NULL END,
+            CASE WHEN blog.honeymoon = 1 THEN 'honeymoon' ELSE NULL END,
+            CASE WHEN blog.nature = 1 THEN 'nature' ELSE NULL END,
+            CASE WHEN blog.vacation = 1 THEN 'vacation' ELSE NULL END
+        ) AS categories,
+        blog_images.image
+        FROM 
+        blog
+        JOIN users ON blog.userid = users.user_id
+        LEFT JOIN blog_images ON blog.blogid = blog_images.blog_id
+        WHERE 
+        (blog.adventure = 1 OR
+        blog.business = 1 OR
+        blog.solo = 1 OR
+        blog.cruise = 1 OR
+        blog.honeymoon = 1 OR
+        blog.nature = 1 OR
+        blog.vacation = 1)
+        AND
+        (blog.heading LIKE %s OR blog.content LIKE %s)
+        ORDER BY RAND() LIMIT 10
+        '''
+
+        cursor.execute(query, ('%' + search + '%', '%' + search + '%'))
+        blog_result = cursor.fetchall()
+
+        if not blog_result:
+            search_error = "Can't Find anything!!"
+            query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+            cursor.execute(query)
+            facts2 = cursor.fetchall()
+
+        # Latest 3 Blogs
+
+        cursor = mysql.connection.cursor()
+        
+        query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
+                   FROM blog
+                   JOIN blog_images ON blog.blogid = blog_images.blog_id
+                   ORDER BY blog.date DESC
+                   LIMIT 3'''
+        
+        cursor.execute(query)
+        latest_blog= cursor.fetchall()
+
+        # fetching fact
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+        cursor.execute(query)
+        facts = cursor.fetchall()
+
+    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2 = facts2, search_error=search_error)
 
 
 #---------------------------------------------------------

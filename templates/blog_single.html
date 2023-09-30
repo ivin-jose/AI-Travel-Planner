@@ -120,8 +120,13 @@ Blog -->
               <h5 class="fw-600">Search</h5>
             </div>
             <div class="search">
-              <i class="fas fa-search"></i>
-              <input type="text" class="form-control" placeholder="Search">
+               <form action="{{ url_for('blog_search') }}" method="POST" style="display: flex; align-items: center;" name="blog_search_form"      id="blog_search_form">
+                      <!-- <i class="fas fa-search" style="margin-right: 10px;"></i> -->
+                      <input type="text" class="form-control" placeholder="Search" style="flex: 1;border-bottom-right-radius: 0px !important;
+                      border-top-right-radius: 0px !important;" name="blog_search_content">
+                      <button type="submit" class="btn btn-primary" style="height: 50px;border-bottom-left-radius: 0px !important;
+                      border-top-left-radius: 0px !important;"><i class="fas fa-search" style="width: 80px"></i></button>
+                </form>
             </div>
           </div>
           <div class="widget">
