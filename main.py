@@ -698,6 +698,11 @@ def delete_blog(bid):
     delete_val = (bid,)
     cursor.execute(delete_query, delete_val)
     mysql.connection.commit()
+
+    delete_img = "DELETE FROM blog_images WHERE blog_id = %s"
+    delete_val = (bid,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
     return redirect('/profile_blogs')
 
 #---------------------------------------------------------
