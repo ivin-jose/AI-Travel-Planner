@@ -146,7 +146,16 @@ def userprofile():
     cursor.execute(query, values)
     result = cursor.fetchall()
 
-    return render_template('userprofile.html', data = result)
+    cursor = mysql.connection.cursor()
+    query = '''SELECT blog.blogid, blog.heading, blog_images.image
+                FROM blog AS blog
+                INNER JOIN blog_images AS blog_images ON blog.blogid = blog_images.blog_id
+                WHERE blog.userid = %s LIMIT 4
+            '''
+    cursor.execute(query, str(session['userid']))
+    profile_blgos = cursor.fetchall()
+
+    return render_template('userprofile.html', data = result, profile_blgos=profile_blgos)
 
 ''' Edit User Profile '''
 @app.route('/user_edit_profile', methods = ['GET', 'POST'])
@@ -277,7 +286,6 @@ def blog_home():
     # Latest 3 Blogs
 
     cursor = mysql.connection.cursor()
-    
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
                JOIN blog_images ON blog.blogid = blog_images.blog_id
@@ -511,7 +519,6 @@ def blog_upload_comment():
 
 @app.route('/blog_search', methods=['POST', 'GET'])
 def blog_search():
-    facts2 = ""
     search_error = ""
     if request.method == 'POST':
         search = request.form.get("blog_search_content")
@@ -546,9 +553,10 @@ def blog_search():
 
         cursor.execute(query, ('%' + search + '%', '%' + search + '%'))
         blog_result = cursor.fetchall()
-
+        facts2 = None
         if not blog_result:
             search_error = "Can't Find anything!!"
+            cursor = mysql.connection.cursor()
             query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
             cursor.execute(query)
             facts2 = cursor.fetchall()
@@ -574,7 +582,128 @@ def blog_search():
 
     return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2 = facts2, search_error=search_error)
 
+''' Blogs on profile page '''
+@app.route('/profile_blogs', methods=['POST', 'GET'])
+def profile_blogs():
+    search_error = ""
+    cursor = mysql.connection.cursor()
+    query = f'''
+    SELECT blog.blogid, blog.date, blog.heading, SUBSTRING_INDEX(blog.content, ' ', 50) AS truncated_content, users.profile_pic, users.username, CONCAT_WS(', ',
+        CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
+        CASE WHEN blog.business = 1 THEN 'business trips' ELSE NULL END,
+        CASE WHEN blog.solo = 1 THEN 'solo trip' ELSE NULL END,
+        CASE WHEN blog.cruise = 1 THEN 'cruise' ELSE NULL END,
+        CASE WHEN blog.honeymoon = 1 THEN 'honeymoon' ELSE NULL END,
+        CASE WHEN blog.nature = 1 THEN 'nature' ELSE NULL END,
+        CASE WHEN blog.vacation = 1 THEN 'vacation' ELSE NULL END
+    ) AS categories,
+    blog_images.image
+    FROM 
+    blog
+    JOIN users ON blog.userid = users.user_id
+    LEFT JOIN blog_images ON blog.blogid = blog_images.blog_id
+    WHERE 
+    (blog.adventure = 1 OR
+    blog.business = 1 OR
+    blog.solo = 1 OR
+    blog.cruise = 1 OR
+    blog.honeymoon = 1 OR
+    blog.nature = 1 OR
+    blog.vacation = 1)
+    AND
+    (blog.userid = %s)
+    ORDER BY RAND() LIMIT 10
+    '''
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    blog_result = cursor.fetchall()
+    facts2 = None
+    if not blog_result:
+        search_error = "Can't Find anything!!"
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+        cursor.execute(query)
+        facts2 = cursor.fetchall()
 
+    # Latest 3 Blogs
+
+    cursor = mysql.connection.cursor()
+    
+    query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
+               FROM blog
+               JOIN blog_images ON blog.blogid = blog_images.blog_id
+               WHERE userid = %s
+               ORDER BY blog.date DESC
+               LIMIT 3'''
+    
+    cursor.execute(query, str(session['userid']))
+    latest_blog= cursor.fetchall()
+
+    # fetching fact
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
+    cursor.execute(query)
+    facts = cursor.fetchall()
+
+    return render_template('blog_user_personal.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2 = facts2, search_error=search_error)
+
+''' Blogs Edit on profile page '''
+@app.route('/edit_blog/<int:blog_id>', methods=['POST', 'GET'])
+def edit_blog(blog_id):
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM users WHERE user_id = %s"
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    result = cursor.fetchall()
+
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog WHERE blogid = %s"
+    values = (blog_id,)
+    cursor.execute(query, values)
+    blog_result = cursor.fetchall()
+    return render_template("blog_edit.html", data=result, blog_result = blog_result)
+
+''' Upload Updated Blogs '''
+@app.route('/upload_updated_blogs', methods=['POST', 'GET'])
+def upload_updated_blogs():
+    if request.method == 'POST':
+        # Insert blog content
+        heading = request.form.get('blog_heading')
+        content = request.form.get('blog_content')
+        adventure = request.form.get('adventure')
+        business = request.form.get('business-trips')
+        solo = request.form.get('solo-trip')
+        cruise = request.form.get('cruises')
+        honeymoon = request.form.get('honeymoon')
+        vacation = request.form.get('vacations')
+        nature = request.form.get('nature')
+        blog_id = request.form.get('blogid')
+
+        cursor = mysql.connection.cursor()
+        update_blog_query = '''UPDATE blog SET userid = %s, heading = %s, content = %s, adventure = %s, business = %s, solo = %s,
+                            cruise = %s, honeymoon = %s, nature = %s, vacation = %s WHERE blogid = %s'''
+        update_blog_values = (session['userid'], heading, content, adventure, business, solo, cruise, honeymoon, nature, vacation, blog_id)
+
+
+        # Execute the UPDATE query
+        cursor.execute(update_blog_query, update_blog_values)
+        mysql.connection.commit()
+
+    return redirect('profile_blogs')
+
+@app.route('/delete_blog/<int:bid>', methods=['GET', 'POST'])
+def delete_blog(bid):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM blog WHERE blogid = %s"
+    delete_val = (bid,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    return redirect('/profile_blogs')
+
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

@@ -95,31 +95,19 @@
                Create New Blogs
              </a><br><br>
            </div>
-           <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
+           <p class="mb-0"><a class="text-muted" href="{{ url_for('profile_blogs') }}">Show all</a></p>
          </div>
+
             <div class="row g-2">
+              {% for row in profile_blgos %}
               <div class="col mb-2">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                  alt="image 1" class="w-100 rounded-3">
-                  <p>Posted a blog...</p>
+                 <p>{{ row[1] }}</p>
+                <img src="{{ row[2] }}"
+                  alt="image 1" class="w-100 rounded-3" width="200" height="200" style="object-fit: cover">
               </div>
-              <div class="col mb-2">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                  alt="image 1" class="w-100 rounded-3">
-                  <p>Posted a blog...</p>
-              </div>
+              {% endfor %}
             </div>
-            <div class="row g-2">
-              <div class="col">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                  alt="image 1" class="w-100 rounded-3">
-                  <p>Posted a blog...</p>
-              </div>
-              <div class="col">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                  alt="image 1" class="w-100 rounded-3">
-                  <p>Posted a blog...</p>
-              </div>
+
             </div>
           </div>
         </div>
