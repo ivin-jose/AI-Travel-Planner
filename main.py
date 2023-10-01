@@ -4,6 +4,7 @@ from datetime import datetime
 import mysql.connector
 import os
 from os.path import realpath, dirname, join
+from flask_paginate import Pagination
 
 app = Flask(__name__)
 
@@ -256,7 +257,10 @@ def change_password2():
 ''' Blog Home Page '''
 
 @app.route('/blog_home', methods=['POST', 'GET'])
-def blog_home(): 
+def blog_home():
+    page = request.args.get('page', type=int, default=1)
+    per_page = 8  # Number of blogs per page
+
     cursor = mysql.connection.cursor()
     query = '''SELECT blog.blogid, blog.date, blog.heading, SUBSTRING_INDEX(blog.content, ' ', 50) AS truncated_content, users.profile_pic, users.username, CONCAT_WS(', ',
         CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
@@ -280,13 +284,28 @@ def blog_home():
     blog.honeymoon = 1 OR
     blog.nature = 1 OR
     blog.vacation = 1
-    ORDER BY RAND() LIMIT 10'''
+    ORDER BY RAND()
+    LIMIT %s OFFSET %s
+    '''
 
-    cursor.execute(query)
+    offset = (page - 1) * per_page
+    cursor.execute(query, (per_page, offset))
     blog_result = cursor.fetchall()
 
-    # Latest 3 Blogs
+    # Count total blogs for pagination
+    cursor.execute('''SELECT COUNT(*) FROM blog
+                      WHERE adventure = 1 OR
+                      business = 1 OR
+                      solo = 1 OR
+                      cruise = 1 OR
+                      honeymoon = 1 OR
+                      nature = 1 OR
+                      vacation = 1''')
+    total_blogs = cursor.fetchone()[0]
 
+    pagination = Pagination(page=page, total=total_blogs, per_page=per_page, css_framework='bootstrap4')
+
+    # Latest 3 Blogs
     cursor = mysql.connection.cursor()
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
@@ -295,7 +314,7 @@ def blog_home():
                LIMIT 3'''
     
     cursor.execute(query)
-    latest_blog= cursor.fetchall()
+    latest_blog = cursor.fetchall()
 
     # fetching fact
     cursor = mysql.connection.cursor()
@@ -303,7 +322,7 @@ def blog_home():
     cursor.execute(query)
     facts = cursor.fetchall()
 
-    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts)
+    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, pagination=pagination)
 
 # Blog Single Page
 
@@ -419,33 +438,41 @@ def blog_categories(categorie):
         WHERE
         {category_column} = 1
         ORDER BY RAND() LIMIT 10'''
-        
+
         cursor.execute(query)
         blog_result = cursor.fetchall()
 
         # Latest 3 Blogs
-
         cursor = mysql.connection.cursor()
-        
         query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                    FROM blog
                    JOIN blog_images ON blog.blogid = blog_images.blog_id
                    ORDER BY blog.date ASC
                    LIMIT 3'''
-        
         cursor.execute(query)
-        latest_blog= cursor.fetchall()
+        latest_blog = cursor.fetchall()
 
-        # fetching fact
+        # Fetching fact
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
         cursor.execute(query)
         facts = cursor.fetchall()
 
-        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts)
+        # Pagination for the blog results
+        page = request.args.get('page', type=int, default=1)
+        per_page = 8
+        offset = (page - 1) * per_page
+        total = len(blog_result)
+
+        blog_result = blog_result[offset:offset + per_page]
+
+        pagination = Pagination(page=page, total=total, per_page=per_page, css_framework='bootstrap4')
+
+        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, pagination=pagination)
     else:
         # Handle the case where an invalid category is provided in the URL
         return redirect('/blog_home')
+
 
 # Blog Content Uploading 
 
@@ -566,28 +593,39 @@ def blog_search():
             cursor.execute(query)
             facts2 = cursor.fetchall()
 
-        # Latest 3 Blogs
+        # Pagination for the search results
+        page = request.args.get('page', type=int, default=1)
+        per_page = 8
+        offset = (page - 1) * per_page
+        total = len(blog_result)
 
+        blog_result = blog_result[offset:offset + per_page]
+
+        pagination = Pagination(page=page, total=total, per_page=per_page, css_framework='bootstrap4')
+
+        # Latest 3 Blogs
         cursor = mysql.connection.cursor()
-        
         query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                    FROM blog
                    JOIN blog_images ON blog.blogid = blog_images.blog_id
-                   ORDER BY blog.date DESC
+                   ORDER BY blog.date ASC
                    LIMIT 3'''
-        
         cursor.execute(query)
-        latest_blog= cursor.fetchall()
+        latest_blog = cursor.fetchall()
 
-        # fetching fact
+        # Fetching fact
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
         cursor.execute(query)
         facts = cursor.fetchall()
 
-    return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2 = facts2, search_error=search_error)
+        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2=facts2, search_error=search_error, pagination=pagination)
+
+    return render_template('blog_home.html')  # Render the template without search results for GET requests
 
 ''' Blogs on profile page '''
+from flask_paginate import Pagination
+
 @app.route('/profile_blogs', methods=['POST', 'GET'])
 def profile_blogs():
     search_error = ""
@@ -630,10 +668,18 @@ def profile_blogs():
         cursor.execute(query)
         facts2 = cursor.fetchall()
 
-    # Latest 3 Blogs
+    # Pagination for the blog results
+    page = request.args.get('page', type=int, default=1)
+    per_page = 8
+    offset = (page - 1) * per_page
+    total = len(blog_result)
 
+    blog_result = blog_result[offset:offset + per_page]
+
+    pagination = Pagination(page=page, total=total, per_page=per_page, css_framework='bootstrap4')
+
+    # Latest 3 Blogs
     cursor = mysql.connection.cursor()
-    
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
                JOIN blog_images ON blog.blogid = blog_images.blog_id
@@ -641,7 +687,7 @@ def profile_blogs():
                ORDER BY blog.date DESC
                LIMIT 3'''
     
-    cursor.execute(query,(str(session['userid']),))
+    cursor.execute(query, (str(session['userid']),))
     latest_blog= cursor.fetchall()
 
     # fetching fact
@@ -650,7 +696,7 @@ def profile_blogs():
     cursor.execute(query)
     facts = cursor.fetchall()
 
-    return render_template('blog_user_personal.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2 = facts2, search_error=search_error)
+    return render_template('blog_user_personal.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2=facts2, search_error=search_error, pagination=pagination)
 
 ''' Blogs Edit on profile page '''
 @app.route('/edit_blog/<int:blog_id>', methods=['POST', 'GET'])
