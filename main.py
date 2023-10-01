@@ -23,9 +23,11 @@ app.config['SECRET_KEY'] = "is my secret key"
 
 USER_AVATAR_UPLOAD_FOLDER = 'static/images/users/avatar'
 BLOG_IMAGES = 'static/images/blog'
+BLOG_UPLOAD_IMAGES = 'static/images/blog'
 
 app.config['USER_AVATAR_UPLOAD_FOLDER'] = USER_AVATAR_UPLOAD_FOLDER
 app.config['BLOG_IMAGES'] = BLOG_IMAGES
+app.config['BLOG_UPLOAD_IMAGES'] = BLOG_UPLOAD_IMAGES
 
 #CURRENT DATE
 
@@ -152,7 +154,7 @@ def userprofile():
                 INNER JOIN blog_images AS blog_images ON blog.blogid = blog_images.blog_id
                 WHERE blog.userid = %s LIMIT 4
             '''
-    cursor.execute(query, str(session['userid']))
+    cursor.execute(query, (str(session['userid']),))
     profile_blgos = cursor.fetchall()
 
     return render_template('userprofile.html', data = result, profile_blgos=profile_blgos)
@@ -289,7 +291,7 @@ def blog_home():
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
                JOIN blog_images ON blog.blogid = blog_images.blog_id
-               ORDER BY blog.date DESC
+               ORDER BY blog.date ASC
                LIMIT 3'''
     
     cursor.execute(query)
@@ -335,7 +337,7 @@ def blog_single(blog_id):
     query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                FROM blog
                JOIN blog_images ON blog.blogid = blog_images.blog_id
-               ORDER BY blog.date DESC
+               ORDER BY blog.date ASC
                LIMIT 3'''
     cursor.execute(query)
     latest_blog= cursor.fetchall()
@@ -428,7 +430,7 @@ def blog_categories(categorie):
         query = '''SELECT blog.blogid, blog.heading, blog.date, blog_images.image
                    FROM blog
                    JOIN blog_images ON blog.blogid = blog_images.blog_id
-                   ORDER BY blog.date DESC
+                   ORDER BY blog.date ASC
                    LIMIT 3'''
         
         cursor.execute(query)
@@ -450,6 +452,7 @@ def blog_categories(categorie):
 @app.route('/blog_upload', methods=['POST', 'GET'])
 def blog_upload():
     if request.method == 'POST':
+        var = ""
         cursor = mysql.connection.cursor()
         
         # Insert blog content
@@ -470,20 +473,22 @@ def blog_upload():
 
         # Get the generated blog_id
         blog_id = cursor.lastrowid
-        
-        # Insert images associated with the blog
-        files = request.files.getlist('images')
-        for file in files:
-            path = '../static/images/blog'
-            file_path = (path + '/' + file.filename)
-            file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['BLOG_IMAGES'], file.filename))
-            
-            insert_image_query = "INSERT INTO blog_images (blog_id, user_id, image) VALUES (%s, %s, %s)"
-            image_values = (blog_id, session['userid'], file_path)
-            cursor.execute(insert_image_query, image_values)
-            mysql.connection.commit()
-        
-        cursor.close()
+        try:
+            # Insert images associated with the blog
+            files = request.files.getlist('images')
+            for file in files:
+                path = '../static/images/blog'
+                file_path = (path + '/' + file.filename)
+                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['BLOG_UPLOAD_IMAGES'], file.filename))
+                
+                insert_image_query = "INSERT INTO blog_images (blog_id, user_id, image) VALUES (%s, %s, %s)"
+                image_values = (blog_id, session['userid'], file_path)
+                cursor.execute(insert_image_query, image_values)
+                mysql.connection.commit()
+                cursor.close()
+        except:
+            var = "nothing"
+
 
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM users WHERE user_id = %s"
@@ -491,7 +496,7 @@ def blog_upload():
     cursor.execute(query, values)
     result = cursor.fetchall()
 
-    return render_template('blog_upload.html', data=result)
+    return redirect('/profile_blogs')
 
 ''' Blog Comments Uploading '''
 
@@ -636,7 +641,7 @@ def profile_blogs():
                ORDER BY blog.date DESC
                LIMIT 3'''
     
-    cursor.execute(query, str(session['userid']))
+    cursor.execute(query,(str(session['userid']),))
     latest_blog= cursor.fetchall()
 
     # fetching fact
@@ -661,11 +666,18 @@ def edit_blog(blog_id):
     values = (blog_id,)
     cursor.execute(query, values)
     blog_result = cursor.fetchall()
-    return render_template("blog_edit.html", data=result, blog_result = blog_result)
+
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog_images WHERE blog_id = %s"
+    values = (blog_id,)
+    cursor.execute(query, values)
+    blog_image = cursor.fetchall()
+    return render_template("blog_edit.html", data=result, blog_result = blog_result, blog_image=blog_image)
 
 ''' Upload Updated Blogs '''
 @app.route('/upload_updated_blogs', methods=['POST', 'GET'])
 def upload_updated_blogs():
+    var = ''
     if request.method == 'POST':
         # Insert blog content
         heading = request.form.get('blog_heading')
@@ -688,8 +700,39 @@ def upload_updated_blogs():
         # Execute the UPDATE query
         cursor.execute(update_blog_query, update_blog_values)
         mysql.connection.commit()
+        
+        try:
+            # Insert images associated with the blog
+            files = request.files.getlist('images')
+            for file in files:
+                path = '../static/images/blog'
+                file_path = (path + '/' + file.filename)
+                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['BLOG_IMAGES'], file.filename))
+                
+                insert_image_query = "INSERT INTO blog_images (blog_id, user_id, image) VALUES (%s, %s, %s)"
+                image_values = (blog_id, session['userid'], file_path)
+                cursor.execute(insert_image_query, image_values)
+                mysql.connection.commit()
+            
+                cursor.close()
+        except:
+            var = "nothing"
 
-    return redirect('profile_blogs')
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM users WHERE user_id = %s"
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    result = cursor.fetchall()
+
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog_images WHERE blog_id = %s"
+    values = (blog_id,)
+    cursor.execute(query, values)
+    blog_image = cursor.fetchall()
+
+    return redirect('/profile_blogs')
+
+''' Delete Blogs'''
 
 @app.route('/delete_blog/<int:bid>', methods=['GET', 'POST'])
 def delete_blog(bid):
@@ -705,6 +748,16 @@ def delete_blog(bid):
     mysql.connection.commit()
     return redirect('/profile_blogs')
 
+''' Delete Blog Images '''
+
+@app.route('/delete_blog_img/<int:bid>', methods=['GET', 'POST'])
+def delete_blog_img(bid):
+    cursor = mysql.connection.cursor()
+    delete_img = "DELETE FROM blog_images WHERE blog_id = %s"
+    delete_val = (bid,)
+    cursor.execute(delete_img, delete_val)
+    mysql.connection.commit()
+    return redirect(url_for('edit_blog', blog_id=bid))
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

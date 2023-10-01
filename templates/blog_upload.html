@@ -443,6 +443,8 @@ $(document).ready(function() {
       if (userUpdatevalidate()) {
         // If the form is valid, submit it
         $("#blog-create-form").submit();
+        $("#blogSubmitButton").closest('form')[0].reset();
+
       }
     });
 })

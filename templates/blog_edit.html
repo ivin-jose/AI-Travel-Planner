@@ -188,7 +188,9 @@ form input[type="file"] {
                   </div>
                   <div class="text-center text-sm-right">
                     <span class="badge badge-secondary">User</span>
-                    <div class="text-muted"><small>Joined {{ row[4] }}</small></div>
+                    {% for row in blog_result %}
+                    <div class="text-muted"><small>Created {{ row[2] }}</small></div>
+                    {% endfor %}
                   </div>
                 </div>
                 {% endfor %}
@@ -281,6 +283,11 @@ form input[type="file"] {
                                     <input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
                                   </label>
                                 </div>
+                                {% for row in blog_image %}
+                                <div class='upload__img-box'><div style='background-image: url("{{ row[3] }}")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'>
+                                  <a href="{{ url_for('delete_blog_img', bid= row[2] ) }}"><div class='upload__img-close'></div></a>
+                                </div></div>
+                                {% endfor %}
                                 <div class="upload__img-wrap"></div>
                               </div>
                             </div>
