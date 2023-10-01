@@ -101,7 +101,7 @@
             <div class="row g-2">
               {% for row in profile_blgos %}
               <div class="col mb-2">
-                 <p>{{ row[1] }}</p>
+                 <a href="{{ url_for('blog_single', blog_id=row[0]) }}"><p>{{ row[1] }}</p></a>
                 <img src="{{ row[2] }}"
                   alt="image 1" class="w-100 rounded-3" width="200" height="200" style="object-fit: cover">
               </div>

@@ -513,8 +513,10 @@ def blog_upload():
                 cursor.execute(insert_image_query, image_values)
                 mysql.connection.commit()
                 cursor.close()
+                return redirect('/profile_blogs')
         except:
             var = "nothing"
+            return redirect('/profile_blogs')
 
 
     cursor = mysql.connection.cursor()
@@ -523,7 +525,7 @@ def blog_upload():
     cursor.execute(query, values)
     result = cursor.fetchall()
 
-    return redirect('/profile_blogs')
+    return render_template('blog_upload.html', data=result)
 
 ''' Blog Comments Uploading '''
 

@@ -172,7 +172,7 @@ form input[type="file"] {
                 <div class="col-12 col-sm-auto mb-3">
                 	{% for row in data %}
                   <div class="mx-auto" style="width: 140px;">
-                     <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="">
+                     <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="{{ url_for('blog_upload') }}">
                       <span>
                        <input type="file" name="file" autocomplete="off" required id="fileToUpload" accept="image">
                       </span>
@@ -264,47 +264,6 @@ form input[type="file"] {
                                 <label class="checkbox-label">
                                   <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="vacations">
                                   <span class="checkbox-label-text">Vacations</span>
-                                </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col mb-3">
-                            <div class="form-group">
-                              <h6>Add #HashTags</h6><br>
-                              <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="adventure">
-                                  <span class="checkbox-label-text">#Adventure</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="business-trips">
-                                  <span class="checkbox-label-text">#Business Trips</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="cruises">
-                                  <span class="checkbox-label-text">#Cruises</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="solo-trip">
-                                  <span class="checkbox-label-text">#Solo Trip</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="nature">
-                                  <span class="checkbox-label-text">#Nature</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="honeymoon">
-                                  <span class="checkbox-label-text">#Honeymoon</span>
-                                </label>
-
-                                <label class="checkbox-label">
-                                  <input type="checkbox" class="checkbox-input custom-checkbox" value="1" name="vacations">
-                                  <span class="checkbox-label-text">#Vacations</span>
                                 </label>
                             </div>
                           </div>
