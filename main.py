@@ -806,6 +806,53 @@ def delete_blog_img(bid):
     cursor.execute(delete_img, delete_val)
     mysql.connection.commit()
     return redirect(url_for('edit_blog', blog_id=bid))
+
+
+
+
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+#---------------------------------------------------------
+
+
+#Business Pro Account
+
+@app.route('/account.pro')
+def pro_account():
+    if 'prousercompany' in session:
+        return render_template('pro/home.html')
+    return render_template('pro/section.html')
+
+
+@app.route('/pro.login', methods = ['GET', 'POST'])
+def pro_login():
+    error_message = ''
+    if request.method == 'POST':
+       email_or_username = request.form.get('prologinname')
+       password = request.form.get('prologinpassword')
+
+       ''' Checking password and username or email'''
+       cursor = mysql.connection.cursor()
+       query = "SELECT pro_usersid, userid, company FROM pro_users WHERE (email = %s OR company = %s) AND password = %s"
+       values = (email_or_username, email_or_username, password)
+       cursor.execute(query, values)
+       result = cursor.fetchall()
+       
+       if len(result) > 0:
+        session['proid'] = result[0][0]
+        session['prouserid'] = result[0][1]
+        session['prousercompany'] = result[0][2]
+        return redirect('/')
+       else:
+        error_message = "Invalid username/email or password"
+
+    return render_template('pro/pro_login.html', error_message=error_message)
+
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------
@@ -976,4 +1023,6 @@ def delete_fact(fid):
     facts = cursor.fetchall()
 
     return render_template('admin/admin_facts.html', facts = facts, dlt_status_message=status_message)
+
+    
 

@@ -1,0 +1,60 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+
+<section class="space-ptb">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6">
+              <div class="section-title text-center">
+                <h2 class="title">Take Your<strong> Buisness Account</strong></h2>
+                <div class="description">
+                  <p>Let, Try to grow your business with us</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6  mb-lg-0 mb-4">
+              <div class="pricing-item active bg-primary">
+                <h5 class="pricing-title text-uppercase text-white">Premium</h5>
+                <p class="mb-0 text-white">Make a list of your achievements toward your long-term.</p>
+                <div class="pricing-price text-white"><span>$49</span>/mo</div>
+                <div class="pricing-list">
+                  <ul class="list-unstyled mb-0 text-white">
+                    <li>Marketing and Promotion <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Feedback Loop <i class="ms-auto fas fa-times text-danger"></i> </li>
+                    <li>Featured Listings <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Analytics and Reporting <i class="ms-auto fas fa-times text-danger"></i> </li>
+                    <li>Direct Payment Integration <i class="ms-auto fas fa-check"></i> </li>
+                  </ul>
+                </div>
+                <div class="d-grid">
+                  <a class="btn btn-secondary" href="{{ url_for('pro_login') }}"><span>Become our Partner</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="pricing-item">
+                <h5 class="pricing-title text-uppercase">Platinum</h5>
+                <p class="mb-0">Use a past defeat as a motivator. Remind yourself you.</p>
+                <div class="pricing-price"><span>$99</span>/mo</div>
+                <div class="pricing-list">
+                  <ul class="list-unstyled mb-0">
+                    <li>Marketing and Promotion <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Feedback Loop <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Featured Listings <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Analytics and Reporting <i class="ms-auto fas fa-check"></i> </li>
+                    <li>Direct Payment Integration <i class="ms-auto fas fa-check"></i> </li>
+                  </ul>
+                </div>
+                <div class="d-grid">
+                  <a class="btn btn-outline-primary" href="{{ url_for('pro_login') }}"><span>Become our Partner</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+    <!--=================================
+    Pricing Plan -->
+{% endblock %}
