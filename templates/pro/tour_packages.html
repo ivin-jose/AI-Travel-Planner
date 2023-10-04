@@ -1,0 +1,244 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+
+ <section class="space-ptb">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6">
+              <div class="section-title text-center">
+                <div class="sub-title justify-content-center"><img  class="img-fluid" src="images/title-icon.png" alt=""><span>{{ session['prousercompany']}}</span></div>
+                <h2 class="title">Your <strong>Tour Programmes</strong></h2>
+                <div class="description">
+                  <p>Let success motivate you. Find a picture of what epitomizes success to you and then pull it out when you are in need.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4 ">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/01.jpg" alt="#">
+                  <div class="listing-favourite">
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i> 17-4, Kaminarimon 2-chome, Taito-ku, Tokyo </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through">$899</span>$700
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/01.png" alt="">
+                    <p class="mb-0">The price is something not necessarily defined as financial.</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 ">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/02.jpg" alt="#">
+                  <div class="listing-favourite listing-like">
+                    <i class="fa-solid fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">United Kingdom</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/02.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i> 19 The Lindens,Grantham,England United Kingdom </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through"></span>$550
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/02.png" alt="">
+                    <p class="mb-0">The bottom line is that we must shed the bad and replace with good beliefs.</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 ">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/03.jpg" alt="#">
+                  <div class="listing-favourite">
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Rio</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/03.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>Rua americo Piola,13- Horto Santo Antonio,Rio de Janeiro SP Brasil  </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through">$399</span>$350
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/03.png" alt="">
+                    <p class="mb-0">The price is something not necessarily defined as financial.</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/04.jpg" alt="#">
+                  <div class="listing-favourite">
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Marsella</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/04.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i>  25 Place De L Eglise,Marseille, France </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through"></span>$970
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/03.png" alt="">
+                    <p class="mb-0">We all carry a lot of baggage, thanks to our upbringing.</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0 mb-md-0">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/05.jpg" alt="#">
+                  <div class="listing-favourite listing-like">
+                    <i class="fa-solid fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Denver</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/05.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through"></span>$700
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/01.png" alt="">
+                    <p class="mb-0">The price is something not necessarily defined as financial.</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <img class="img-fluid" src="images/listing/06.jpg" alt="#">
+                  <div class="listing-favourite">
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">India</a></h5>
+                    <div class="country-flags">
+                      <img class="img-fluid shadow-sm" src="images/country-flags/06.jpg" alt="#">
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i> Red pagoda and cherry blossoms </a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.3 / 5</span>
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through"></span>$850
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    <img class="img-fluid" src="images/listing-brand/02.png" alt="">
+                    <p class="mb-0">Quis ipsum suspendisse ultrices gravida risus com modo</p>
+                  </div>
+                  <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+ {% endblock %}

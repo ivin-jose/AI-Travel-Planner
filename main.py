@@ -58,6 +58,8 @@ def page_not_found(e):
 
 @app.route('/')
 def home():
+    if 'prousercompany' in session:
+        return render_template('pro/home.html')
     return render_template('index.html')
 
 
@@ -827,6 +829,10 @@ def pro_account():
     if 'prousercompany' in session:
         return render_template('pro/home.html')
     return render_template('pro/section.html')
+
+@app.route('/pro.tourpackages')
+def pro_tour_packages():
+    return render_template('pro/tour_packages.html')
 
 
 @app.route('/pro.login', methods = ['GET', 'POST'])
