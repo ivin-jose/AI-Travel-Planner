@@ -12,39 +12,7 @@
               <img src="{{row[5]}}"
                 alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                 style="width: 150px; z-index: 1; height: 115px !important">
-                <div class="add-listing nav-link">
-                  <div class="woo-action">
-                    <ul class="list-unstyled">
-                      <li class="cart dropdown">
-                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <span class="cart-icon" style="color: #3dd1d5; border: 1px solid; padding: 8px; width: 200px; border-radius: 50px;"><i class="fa-solid fa-ellipsis"></i>Settings</object></span>
-                          <div class="dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="width: 200px;">
-                            <!-- list -->
-                            <ul class="cart-list ps-0">
-                            </ul>
-                            <!--end  list  -->
-                            <div class="cart-footer">
-                              <div class="d-inline-block d-sm-flex">
-                                <a class="col btn btn-secondary btn-sm me-2 px-4" href="{{ url_for('user_edit_profile') }}">Edit Profile</a>
-                              </div><br>
-                               <div class="d-inline-block d-sm-flex">
-                                <a class="col btn btn-secondary btn-sm me-2 px-4" href="{{ url_for('change_password') }}">Change Password</a>
-                              </div><br>
-                               <div class="d-inline-block d-sm-flex">
-                                <a class="col btn btn-secondary btn-sm me-2 px-4" href="{{ url_for('logout') }}" style="color: red; background-color: white; border: 2px solid black;">LOGOUT</a>
-                              </div><br>
-                                  <div class="d-inline-block d-sm-flex">
-                                <a class="col btn btn-secondary btn-sm me-2 px-4" href="{{ url_for('pro_account') }}">Business account</a>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div> 
-
             </div>
-            
             <div class="ms-3" style="margin-top: 130px;">
               <h5 style="color: white; text-transform: capitalize;">{{ row[1] }}</h5>
               <p style=" text-transform: capitalize;">{{ row[6] }}</p>
@@ -53,8 +21,8 @@
           <div class="p-4 text-black" style="background-color: #f8f9fa;">
             <div class="d-flex justify-content-end text-center py-1">
               <div>
-                <!-- <p class="mb-1 h5">253</p>
-                <p class="small text-muted mb-0">Photos</p> -->
+               <a href="{{ url_for('user_settings') }}" class="btn btn-primary" style="padding: 7px;
+    font-size: 15px;"><i class="fa-solid fa-gear" style="color: #ffffff;"></i> Settings</a>
               </div>
               <div class="px-3">
               <!--   <p class="mb-1 h5">1026</p>

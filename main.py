@@ -62,6 +62,14 @@ def home():
         return render_template('pro/home.html')
     return render_template('index.html')
 
+@app.route('/user.settings')
+def user_settings():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM users WHERE user_id = %s"
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    result = cursor.fetchall()
+    return render_template('user_settings.html', data = result)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -140,6 +148,7 @@ def logout():
     session.pop('userid', None)  # Remove the user_id from the session
     session.pop('username', None)
     return redirect('/')
+
 
 
 ''' User Profile '''
@@ -556,6 +565,7 @@ def blog_upload_comment():
 @app.route('/blog_search', methods=['POST', 'GET'])
 def blog_search():
     search_error = ""
+    pagination = ""
     if request.method == 'POST':
         search = request.form.get("blog_search_content")
         cursor = mysql.connection.cursor()
@@ -625,7 +635,7 @@ def blog_search():
 
         return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2=facts2, search_error=search_error, pagination=pagination)
 
-    return render_template('blog_home.html')  # Render the template without search results for GET requests
+    return render_template('blog_home.html', pagination=pagination)  # Render the template without search results for GET requests
 
 ''' Blogs on profile page '''
 from flask_paginate import Pagination
@@ -832,7 +842,10 @@ def pro_account():
 
 @app.route('/pro.tourpackages')
 def pro_tour_packages():
-    return render_template('pro/tour_packages.html')
+    if 'prousercompany' in session:
+        return render_template('pro/tour_packages.html')
+    else:
+        return redirect('pro.login')
 
 
 @app.route('/pro.login', methods = ['GET', 'POST'])
