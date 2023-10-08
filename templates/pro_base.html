@@ -131,14 +131,10 @@
               </li>
 
               <li class="nav-item dropdown ">
-                <a class="nav-link" href="{{ url_for('blog_home') }}" role="button" >Blog</i></a>
-              </li>
-
-              <li class="nav-item dropdown ">
                 <a class="nav-link" href="contact-us.html">Contact Us</i></a>
               </li>
-              <li class="nav-item dropdown ">
-                <a class="nav-link" href="about-us.html">Profile</i></a>
+              <li class="nav-item dropdown  {% if 'pro_settings' in request.url_rule.endpoint %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('pro_settings') }}">Profile</i></a>
               </li>
                <!-- <a href="sign-up.html" class="btn btn-primary menu-btn ms-4 d-none d-xl-block">Sign In</a> -->
             </div>

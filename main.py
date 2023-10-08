@@ -58,8 +58,6 @@ def page_not_found(e):
 
 @app.route('/sepwrite.com')
 def home():
-    if 'prousercompany' in session:
-        return render_template('pro/home.html')
     return render_template('index.html')
 
 @app.route('/user.settings')
@@ -875,6 +873,60 @@ def pro_login():
         error_message = "Invalid username/email or password"
 
     return render_template('pro/pro_login.html', error_message=error_message)
+
+@app.route('/account.pro/settings', methods=['GET', 'POST'])
+def pro_settings():
+    email_error = ""
+    cursor = mysql.connection.cursor()
+    
+    # Helper function to check if an email is already taken
+    def is_email_taken(email, current_user_id):
+        query = "SELECT COUNT(*) FROM pro_users WHERE email = %s AND pro_usersid != %s"
+        cursor.execute(query, (email, current_user_id))
+        count = cursor.fetchone()[0]
+        return count > 0
+
+    # Updating if form submitted
+    if request.method == 'POST':
+        # Retrieve form data
+        companyname = request.form.get("companyname")
+        phone = request.form.get("phone")
+        state = request.form.get("state")
+        territory = request.form.get("territory")
+        pin = request.form.get("pin")
+        address = request.form.get("address")
+        email = request.form.get("email")
+        about = request.form.get("bio")
+
+        # Check if the email is already taken by another user
+        if is_email_taken(email, session['proid']):
+            email_error = "Email is already taken by another user."
+            query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
+            cursor.execute(query, str(session['proid']))
+            result = cursor.fetchall()
+            return render_template('pro/pro_settings.html', data=result, email_error=email_error)
+        else:
+            # UPDATE query
+            update_query = """
+                UPDATE pro_users
+                SET company = %s, email = %s, state = %s, territory = %s, pin = %s, phone = %s, address = %s, about = %s
+                WHERE pro_usersid = %s
+            """
+            # Define the values to update
+            update_values = (companyname, email, state, territory, pin, phone, address, about, str(session['proid']))
+            # Execute the UPDATE query
+            cursor.execute(update_query, update_values)
+            mysql.connection.commit()
+
+    # Execute a SQL query to fetch data from the pro_users table
+    query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
+    cursor.execute(query, str(session['proid']))
+    # Fetch all rows of data from the result set
+    result = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('pro/pro_settings.html', data=result, email_error=email_error)
 
 #---------------------------------------------------------
 #---------------------------------------------------------
