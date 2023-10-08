@@ -56,7 +56,7 @@ def page_not_found(e):
 
 
 
-@app.route('/')
+@app.route('/sepwrite.com')
 def home():
     if 'prousercompany' in session:
         return render_template('pro/home.html')
@@ -142,6 +142,10 @@ def signup():
                          password = password)
 
 ''' User Session logout '''
+
+@app.route('/user-logout')
+def user_logout():
+    return render_template('user_delete.html')
 
 @app.route('/logout')
 def logout():
