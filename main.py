@@ -1076,15 +1076,11 @@ def adding_tourpackages():
 
             mysql.connection.commit()
             cursor.close()
-            imagess = files
-            return render_template('pro/tour-packages-adding-form.html')
+            flash = "New Package Added"
+            return redirect('/sepwrite.com/account.pro/tour-packages', flash=flash)
         except:
             var = "nothing"
             return render_template('pro/tour-packages-adding-form.html')
-
-
-
-
     return render_template('pro/tour-packages-adding-form.html')
 
 
