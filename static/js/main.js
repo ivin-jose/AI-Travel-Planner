@@ -18,4 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+function closeAlert() {
+    // Find the alert box element by its ID
+    var alertBox = document.getElementById('msg-alert-box');
+
+    // Check if the alert box element exists
+    if (alertBox) {
+        // Hide the alert box by adding the "d-none" class
+        alertBox.classList.add('d-none');
+    }
+}
+
+
+
 

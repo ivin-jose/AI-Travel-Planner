@@ -7158,3 +7158,13 @@ blockquote {
     margin: 0px 7px; } }
 
 /*# sourceMappingURL=../css/style.css.map */
+
+#msg-alert-box {
+  background: #3dd1d5;
+  color: white;
+  position: fixed; bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 40%;
+}

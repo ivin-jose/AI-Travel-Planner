@@ -25,10 +25,12 @@ app.config['SECRET_KEY'] = "is my secret key"
 USER_AVATAR_UPLOAD_FOLDER = 'static/images/users/avatar'
 BLOG_IMAGES = 'static/images/blog'
 BLOG_UPLOAD_IMAGES = 'static/images/blog'
+TOUR_PACKAGE_IMAGES = 'static/images/tour_packages'
 
 app.config['USER_AVATAR_UPLOAD_FOLDER'] = USER_AVATAR_UPLOAD_FOLDER
 app.config['BLOG_IMAGES'] = BLOG_IMAGES
 app.config['BLOG_UPLOAD_IMAGES'] = BLOG_UPLOAD_IMAGES
+app.config['TOUR_PACKAGE_IMAGES'] = TOUR_PACKAGE_IMAGES
 
 #CURRENT DATE
 
@@ -55,11 +57,12 @@ def page_not_found(e):
     return render_template('errors/505.html')
 
 
-
+# Direct to home page
 @app.route('/sepwrite.com')
 def home():
     return render_template('index.html')
 
+# if home 
 @app.route('/user.settings')
 def user_settings():
     cursor = mysql.connection.cursor()
@@ -516,20 +519,29 @@ def blog_upload():
         try:
             # Insert images associated with the blog
             files = request.files.getlist('images')
+            inserted_image_paths = []  # Store the paths of all inserted images
+
+            cursor = mysql.connection.cursor()
+
             for file in files:
                 path = '../static/images/blog'
                 file_path = (path + '/' + file.filename)
-                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['BLOG_UPLOAD_IMAGES'], file.filename))
-                
+                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__)), app.config['BLOG_UPLOAD_IMAGES'], file.filename)))
+
                 insert_image_query = "INSERT INTO blog_images (blog_id, user_id, image) VALUES (%s, %s, %s)"
                 image_values = (blog_id, session['userid'], file_path)
                 cursor.execute(insert_image_query, image_values)
-                mysql.connection.commit()
-                cursor.close()
-                return redirect('/profile_blogs')
-        except:
-            var = "nothing"
+                inserted_image_paths.append(file_path)  # Store the path in the list
+
+            mysql.connection.commit()
+            cursor.close()
+
             return redirect('/profile_blogs')
+        except Exception as e:
+            # Handle the exception (e.g., log or return an error message)
+            return "Error: " + str(e)
+
+
 
 
     cursor = mysql.connection.cursor()
@@ -834,23 +846,82 @@ def delete_blog_img(bid):
 #---------------------------------------------------------
 
 
-#Business Pro Account
+# Business Pro Account home page
 
-@app.route('/account.pro')
+@app.route('/sepwrite.com/account.pro')
 def pro_account():
     if 'prousercompany' in session:
         return render_template('pro/home.html')
     return render_template('pro/section.html')
 
-@app.route('/pro.tourpackages')
+# Company Logout Page
+@app.route('/sepwrite.com/account.pro/logout-section')
+def pro_logout_section():
+    return render_template('pro/logout.html')
+    
+# Company Logout 
+@app.route('/sepwrite.com/account.pro/logout')
+def pro_logout():
+    session.pop('prousercompany', None)  # Remove the user_id from the session
+    session.pop('proid', None)
+    return redirect('/sepwrite.com/account.pro')
+# Company Tour packages
+
+@app.route('/sepwrite.com/account.pro/tour-packages')
 def pro_tour_packages():
     if 'prousercompany' in session:
         return render_template('pro/tour_packages.html')
     else:
         return redirect('pro.login')
 
+# password changing page
 
-@app.route('/pro.login', methods = ['GET', 'POST'])
+@app.route('/sepwrite.com/account.pro/password-changing', methods=['GET', 'POST'])
+def pro_password_change():
+    if 'prousercompany' in session:
+        return render_template('pro/pro_change_password.html')
+    else:
+        return redirect('pro.login')
+
+# password changing action page
+
+@app.route('/sepwrite.com/account.pro/password-changing_form', methods=['GET', 'POST'])
+def pro_password_change2():
+    if 'prousercompany' in session:
+        ans = ''
+        current_password = request.form.get('oldPassword')
+        newpassword = request.form.get('confirmPassword')
+        cursor = mysql.connection.cursor()
+        
+        checking_password = "SELECT password FROM pro_users WHERE company = %s AND pro_usersid = %s"
+        values = (session['prousercompany'], str(session['proid']))
+        cursor.execute(checking_password, values)
+        result = cursor.fetchall()
+        ans = result[0][0]
+
+        if ans != current_password:
+            password_error_msg = "Wrong Password"
+        else:
+            cursor = mysql.connection.cursor()
+            query = "UPDATE pro_users SET password = %s WHERE pro_usersid = %s"
+            values = (newpassword, str(session['proid']))
+            cursor.execute(query, values)
+            mysql.connection.commit()
+
+            cursor = mysql.connection.cursor()
+            query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
+            values = (str(session['proid']),)
+            cursor.execute(query, values)
+            result = cursor.fetchall()
+            flash = "Password Changed"
+            return render_template('pro/pro_change_password.html', flash=flash)
+        return render_template('pro/pro_change_password.html', error_message=password_error_msg)
+    else:
+        return redirect('pro.login')
+
+# company login
+
+@app.route('/sepwrite.com/account.pro/login', methods = ['GET', 'POST'])
 def pro_login():
     error_message = ''
     if request.method == 'POST':
@@ -868,65 +939,154 @@ def pro_login():
         session['proid'] = result[0][0]
         session['prouserid'] = result[0][1]
         session['prousercompany'] = result[0][2]
-        return redirect('/')
+        return redirect('/sepwrite.com/account.pro')
        else:
         error_message = "Invalid username/email or password"
 
     return render_template('pro/pro_login.html', error_message=error_message)
 
-@app.route('/account.pro/settings', methods=['GET', 'POST'])
+
+@app.route('/sepwrite.com/account.pro/company-settings', methods=['GET', 'POST'])
 def pro_settings():
-    email_error = ""
+    flash = None
+    if 'prousercompany' in session:
+        email_error = ""
+        cursor = mysql.connection.cursor()
+        
+        # Helper function to check if an email is already taken
+        def is_email_taken(email, current_user_id):
+            query = "SELECT COUNT(*) FROM pro_users WHERE email = %s AND pro_usersid != %s"
+            cursor.execute(query, (email, current_user_id))
+            count = cursor.fetchone()[0]
+            return count > 0
+
+        # Updating if form submitted
+        if request.method == 'POST':
+            # Retrieve form data
+            companyname = request.form.get("companyname")
+            phone = request.form.get("phone")
+            state = request.form.get("state")
+            territory = request.form.get("territory")
+            pin = request.form.get("pin")
+            address = request.form.get("address")
+            email = request.form.get("email")
+            about = request.form.get("bio")
+
+            # Check if the email is already taken by another user
+            if is_email_taken(email, session['proid']):
+                email_error = "Email is already taken by another user."
+                query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
+                cursor.execute(query, str(session['proid']))
+                result = cursor.fetchall()
+                return render_template('pro/pro_settings.html', data=result, email_error=email_error)
+            else:
+                # UPDATE query
+                update_query = """
+                    UPDATE pro_users
+                    SET company = %s, email = %s, state = %s, territory = %s, pin = %s, phone = %s, address = %s, about = %s
+                    WHERE pro_usersid = %s
+                """
+                # Define the values to update
+                update_values = (companyname, email, state, territory, pin, phone, address, about, str(session['proid']))
+                # Execute the UPDATE query
+                cursor.execute(update_query, update_values)
+                mysql.connection.commit()
+                flash = "Updated Succefully"
+
+        # Execute a SQL query to fetch data from the pro_users table
+        query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
+        cursor.execute(query, str(session['proid']))
+        # Fetch all rows of data from the result set
+        result = cursor.fetchall()
+
+        cursor.close()
+
+        return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash)
+    else:
+        return redirect('/sepwrite.com/account.pro/login')  # Use the redirect function here
+
+# Adding Packages images to database
+
+@app.route('/sepwrite.com/account.pro/tour-packages/add-form', methods=['POST', 'GET'])
+def adding_tourpackages():
     cursor = mysql.connection.cursor()
-    
-    # Helper function to check if an email is already taken
-    def is_email_taken(email, current_user_id):
-        query = "SELECT COUNT(*) FROM pro_users WHERE email = %s AND pro_usersid != %s"
-        cursor.execute(query, (email, current_user_id))
-        count = cursor.fetchone()[0]
-        return count > 0
+    if request.method == 'POST':      
+        tourname = request.form.get('tourname')
+        num_days = request.form.get('num_days')
+        price = request.form.get('price')
+        from_date = request.form.get('from_date')
+        to_date = request.form.get('to_date')
+        description = request.form.get('description')
 
-    # Updating if form submitted
-    if request.method == 'POST':
-        # Retrieve form data
-        companyname = request.form.get("companyname")
-        phone = request.form.get("phone")
-        state = request.form.get("state")
-        territory = request.form.get("territory")
-        pin = request.form.get("pin")
-        address = request.form.get("address")
-        email = request.form.get("email")
-        about = request.form.get("bio")
+        # here, inserting query to tourpackages table
 
-        # Check if the email is already taken by another user
-        if is_email_taken(email, session['proid']):
-            email_error = "Email is already taken by another user."
-            query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
-            cursor.execute(query, str(session['proid']))
-            result = cursor.fetchall()
-            return render_template('pro/pro_settings.html', data=result, email_error=email_error)
-        else:
-            # UPDATE query
-            update_query = """
-                UPDATE pro_users
-                SET company = %s, email = %s, state = %s, territory = %s, pin = %s, phone = %s, address = %s, about = %s
-                WHERE pro_usersid = %s
-            """
-            # Define the values to update
-            update_values = (companyname, email, state, territory, pin, phone, address, about, str(session['proid']))
-            # Execute the UPDATE query
-            cursor.execute(update_query, update_values)
+        try:
+            # Insert the data into the "tour_packages" table
+            insert_query = "INSERT INTO tour_packages (pro_id, tourname, num_days, price, from_date, to_date, description) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            values = (session['proid'], tourname, num_days, price, from_date, to_date, description)
+            cursor.execute(insert_query, values)
+
+            # Commit the changes to the database
+            mysql.connection.commit()
+        except Exception as e:
+            # Handle the exception (e.g., log or return an error message)
+            print("Error:", str(e))
+            mysql.connection.rollback()
+
+        # Get the generated Package Id
+        package_id = cursor.lastrowid
+
+        # Retrieve day program data based on the number of days
+
+        day_programs = [request.form.get(f'day_program_{i}') for i in range(1, int(num_days) + 1)]
+
+        ''' Here, Inserting code for day_programes to db'''
+
+        try:
+            # Iterate through day programs and insert them into the "day_pro" table
+            for day, program_text in enumerate(day_programs, start=1):
+                insert_query = "INSERT INTO package_day_programme (pro_id, package_id, day, programme) VALUES (%s, %s, %s, %s)"
+                cursor.execute(insert_query, (session['proid'], package_id, f"day {day}", program_text))
+
+            # Commit the changes to the database
             mysql.connection.commit()
 
-    # Execute a SQL query to fetch data from the pro_users table
-    query = "SELECT * FROM pro_users WHERE pro_usersid = %s"
-    cursor.execute(query, str(session['proid']))
-    # Fetch all rows of data from the result set
-    result = cursor.fetchall()
 
-    cursor.close()
+        except Exception as e:
+            mysql.connection.rollback()
+            return f"Error: {str(e)}"
 
-    return render_template('pro/pro_settings.html', data=result, email_error=email_error)
+        '''Here Inserting images to db'''
+
+        try:
+            # Insert images associated with the blog
+            files = request.files.getlist('images')
+            inserted_image_paths = []  # Store the paths of all inserted images
+            for file in files:
+                path = '../static/images/tour_packages'
+                file_path = (path + '/' + file.filename)
+                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['TOUR_PACKAGE_IMAGES'], file.filename))
+                inserted_image_paths.append(file_path) # Store the path in the list
+
+            cursor = mysql.connection.cursor()
+            for image_path in inserted_image_paths:
+                insert_image_query = "INSERT INTO package_images (pro_id, package_id, image_path) VALUES (%s, %s, %s)"
+                image_values = (session['proid'], package_id, image_path)
+                cursor.execute(insert_image_query, image_values)
+
+            mysql.connection.commit()
+            cursor.close()
+            imagess = files
+            return render_template('pro/tour-packages-adding-form.html')
+        except:
+            var = "nothing"
+            return render_template('pro/tour-packages-adding-form.html')
+
+
+
+
+    return render_template('pro/tour-packages-adding-form.html')
+
 
 #---------------------------------------------------------
 #---------------------------------------------------------

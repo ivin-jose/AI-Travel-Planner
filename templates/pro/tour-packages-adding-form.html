@@ -1,0 +1,381 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+<style type="text/css">
+	/*  Multiple Image Uploading */
+.upload__box {
+  padding: 40px;
+}
+
+.upload__inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.upload__btn {
+  display: inline-block;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  min-width: 116px;
+  padding: 5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid;
+  background-color: #4045ba;
+  border-color: #4045ba;
+  border-radius: 10px;
+  line-height: 26px;
+  font-size: 14px;
+}
+
+.upload__btn:hover {
+  background-color: unset;
+  color: #4045ba;
+  transition: all 0.3s ease;
+}
+
+.upload__btn-box {
+  margin-bottom: 10px;
+}
+
+.upload__img-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.upload__img-box {
+  width: 200px;
+  padding: 0 10px;
+  margin-bottom: 12px;
+}
+
+.upload__img-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  text-align: center;
+  line-height: 24px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.upload__img-close:after {
+  content: '\2716';
+  font-size: 14px;
+  color: white;
+}
+
+.img-bg {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  padding-bottom: 100%;
+}
+
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="row flex-lg-nowrap">
+  <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
+    <div class="card p-3" style="margin-top: 20px;">
+      <div class="e-navlist e-navlist--active-bg">
+        <ul class="nav">
+          <p>TOUR PACKAGES</p>{{images}}
+        </ul>
+      </div>
+    </div>
+  </div>
+<div class="mx-auto">
+  <div class="col">
+    <div class="row">
+      <div class="col mb-3">
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-body">
+            <div class="e-profile">
+              <div class="row">
+                <div class="col-12 col-sm-auto mb-3" style="width: 50%;">
+					<form class="form" name="tourpackage-add-form" method="POST" enctype="multipart/form-data" action="{{ url_for('adding_tourpackages') }}" id="tourpackage-add-form">
+					  <div class="row">
+					    <div class="col">
+
+					      <div class="row">
+					        <div class="col">
+					          <div class="form-group">
+					            <label>Tour Name: <span class="tourname-label" style="color: red;"></span></label>
+					            <input class="form-control" type="text" name="tourname" id="tourname">
+					          </div>
+					          <div class="form-group">
+					            <label>Number of Days: <span class="days-label" style="color: red;"></span></label>
+					            <input class="form-control" type="text" name="days" id="days">
+					          </div>
+					          <div class="form-group">
+					            <label>Price of Package: <span class="price-label" style="color: red;"></span></label>
+					            <input class="form-control" type="text" name="price" id="price">
+					          </div>
+					          <div class="form-group">
+					            <label>From Date: <span class="from-date-label" style="color: red;"></span></label>
+					            <input class="form-control" type="date" name="from_date" id="from_date">
+					          </div>
+					          <div class="form-group">
+					            <label>To Date: <span class="to-date-label" style="color: red;"></span></label>
+					            <input class="form-control" type="date" name="to_date" id="to_date">
+					          </div>
+					          <div class="form-group">
+					            <label>Description: <span class="description-label" style="color: red;"></span></label>
+					            <textarea class="form-control" rows="5" name="description" id="description"></textarea>
+					          </div>
+					        </div>
+					      </div>
+					      <div class="row">
+					        <div class="col">
+					        	<!-- multiple images -->
+					        	<div class="form-group">
+					        		<div class="upload__box">
+					        			<div class="upload__btn-box">
+					        				<label class="upload__btn">
+					        					<p>Image +</p>
+					        					<input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
+					        				</label>
+					        			</div>
+					        			<div class="upload__img-wrap"></div>
+					        		</div>
+					        	</div>
+
+					        </div>
+					      </div>
+					      <div class="row">
+					        <div class="col mb-3">
+					          <div class="form-group">
+					            <!-- Hidden input field to store the number of days -->
+					            <input type="hidden" name="num_days" id="num_days" value="0">
+					            <div class="form-group" id="day-program-container"></div>
+					          </div>
+					        </div>
+					      </div>
+
+					    </div>
+					  </div>
+					  <div class="row">
+					    <div class="col d-flex justify-content-end">
+					      <input class="btn btn-primary" type="submit" value="Save" name="companyUpdateButton" id="companyUpdateButton">
+					    </div>
+					  </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+
+<!-- Form validation  -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('#tourpackage-add-form').submit(function(event) {
+    var isValid = true;
+
+    // Reset error messages
+    $('.error-label').text('');
+
+    // Validate Tour Name
+    var tourname = $('#tourname').val();
+    var days = $('#days').val();
+    var price = $('#price').val();
+    var from_date = $('#from_date').val();
+    var to_date = $('#to_date').val();
+    var description = $('#description').val();
+    var bio = $('#bio').val();
+
+    if (tourname === '') {
+      $('.tourname-label').text('Tour Name is required');
+      $('.tourname').focus();
+      isValid = false;
+    }
+    
+    else if (days === ''){
+      $('.days-label').text('Number of Days is required');
+      $('.days').focus();
+      isValid = false;
+    }
+
+    else if (price === ''){
+      $('.price-label').text('Price is required');
+      $('.price').focus();
+      isValid = false;
+    }
+
+    else if (from_date === '') {
+      $('.from-date-label').text('From Date is required');
+      $('.from_date').focus();
+      isValid = false;
+    }
+
+    else if (to_date === '') {
+      $('.to-date-label').text('To Date is required');
+      $('.to_date').focus();
+      isValid = false;
+    }
+
+    else if (description === '') {
+      $('.description-label').text('Description is required');
+      $('.description').focus();
+      isValid = false;
+    }
+
+    // Checking if days is numeric
+    if (!isNaN(days)) {
+      $('.days-label').text('');
+    } else {
+      $('.days-label').text('Number of Days must be a valid number');
+      $('.days').focus();
+      isValid = false;
+    }
+
+    // Add more validations for other fields here...
+
+    if (!isValid) {
+      event.preventDefault(); // Prevent form submission
+    } else {
+      // Disable the form submission button to prevent resubmission
+      $('#companyUpdateButton').prop('disabled', true);
+    }
+  });
+
+  // Hide error labels when input fields are focused
+  $('input, textarea').focus(function() {
+    var label = $(this).prev().find('span.error-label');
+    label.text(''); // Clear the error message
+  });
+
+  // Hide error labels when the user clicks on the corresponding input
+  $('input, textarea').click(function() {
+    var label = $(this).prev().find('span.error-label');
+    label.text(''); // Clear the error message
+  });
+});
+
+// Function to calculate the "to_date" based on "from_date" and "num_days"
+function calculateToDate() {
+  var from_date = $('#from_date').val();
+  var num_days = parseInt($('#num_days').val());
+
+  if (from_date && !isNaN(num_days)) {
+    var fromDateObj = new Date(from_date);
+    if (!isNaN(fromDateObj)) {
+      fromDateObj.setDate(fromDateObj.getDate() + num_days);
+      var to_date = fromDateObj.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
+      $('#to_date').val(to_date);
+    }
+  }
+}
+
+// Bind the function to the change event of "from_date" and "num_days"
+$('#from_date, #num_days').on('change', calculateToDate);
+
+</script>
+
+
+
+<script>
+	  // JavaScript to add input fields based on the number of days
+	  document.getElementById('days').addEventListener('input', function () {
+	    const days = parseInt(this.value);
+	    const dayProgramContainer = document.getElementById('day-program-container');
+
+	    // Clear any existing day program input fields
+	    dayProgramContainer.innerHTML = '';
+
+	    // Create input fields for day programs and update the hidden field
+	    for (let i = 1; i <= days; i++) {
+	      const input = document.createElement('input');
+	      input.className = 'form-control';
+	      input.type = 'text';
+	      input.name = `day_program_${i}`;
+	      input.placeholder = `Day ${i} Program`;
+	      dayProgramContainer.appendChild(input);
+	    }
+
+	    // Update the hidden field with the number of days
+	    document.getElementById('num_days').value = days;
+	  });
+</script>
+
+<script type="text/javascript">
+	// Multiple  Image uploading
+jQuery(document).ready(function () {
+  ImgUpload();
+});
+
+function ImgUpload() {
+  var imgWrap = "";
+  var imgArray = [];
+
+  $('.upload__inputfile').each(function () {
+    $(this).on('change', function (e) {
+      imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
+      var maxLength = $(this).attr('data-max_length');
+
+      var files = e.target.files;
+      var filesArr = Array.prototype.slice.call(files);
+      var iterator = 0;
+      filesArr.forEach(function (f, index) {
+
+        if (!f.type.match('image.*')) {
+          return;
+        }
+
+        if (imgArray.length > maxLength) {
+          return false
+        } else {
+          var len = 0;
+          for (var i = 0; i < imgArray.length; i++) {
+            if (imgArray[i] !== undefined) {
+              len++;
+            }
+          }
+          if (len > maxLength) {
+            return false;
+          } else {
+            imgArray.push(f);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+              imgWrap.append(html);
+              iterator++;
+            }
+            reader.readAsDataURL(f);
+          }
+        }
+      });
+    });
+  });
+
+  $('body').on('click', ".upload__img-close", function (e) {
+    var file = $(this).parent().data("file");
+    for (var i = 0; i < imgArray.length; i++) {
+      if (imgArray[i].name === file) {
+        imgArray.splice(i, 1);
+        break;
+      }
+    }
+    $(this).parent().parent().remove();
+  });
+}
+</script>
+
+{% endblock %}

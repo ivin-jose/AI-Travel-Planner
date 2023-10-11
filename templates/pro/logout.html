@@ -1,0 +1,155 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+<style type="text/css">
+
+    #sidebar-list .active {
+        background-color: black !important;
+    }
+
+    .list-group-item-action:hover {
+        background-color: #d1f7f8 !important;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 15px 1px rgba(52,40,104,.08);
+    }
+    .card {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #e5e9f2;
+        border-radius: .2rem;
+    }
+    .card-header:first-child {
+        border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
+    }
+    .card-header {
+        border-bottom-width: 1px;
+    }
+    .card-header {
+        padding: .75rem 1.25rem;
+        margin-bottom: 0;
+        color: inherit;
+        background-color: #fff;
+        border-bottom: 1px solid #e5e9f2;
+    }
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<div class="container p-0">
+    <h1 class="h3 mb-3">Settings</h1>
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Profile Settings</h5>
+                </div>
+                <div class="list-group list-group-flush" role="tablist" id="sidebar-list">
+                   <a class="list-group-item list-group-item-action {% if 'pro_settings' in request.url_rule.endpoint %}active{% endif %}" data-section="account" href="{{ url_for('pro_settings')}}" role="tab">Account</a>
+
+                    <a class="list-group-item list-group-item-action {% if 'pro_password_change' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_password_change')}}" role="tab" >Password</a>
+
+                    <a class="list-group-item list-group-item-action " data-section="password" href="{{ url_for('home')}}" role="tab">Common Account</a>
+                    <a class="list-group-item list-group-item-action" data-section="password" href="{{ url_for('change_password')}}" role="tab">Notifications</a>
+
+                    <a class="list-group-item list-group-item-action {% if 'pro_logout_section' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_logout_section')}}" role="tab" style="color: red">Logout</a>
+                    <!-- Add data-section attributes to other sidebar links as needed -->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-xl-8">
+          <div class="tab-pane" id="password" role="tabpfanel">
+             <div class="card">
+                 <div class="card-body">
+                     <div class="col">
+                        <div class="row">
+                          <div class="col mb-3">
+                              <div class="tab-content pt-3">
+                                <div class="tab-pane active">
+                                    <div class="row">
+                                      <div class="col d-flex justify-content-end">
+                                        <a class="btn btn-primary" type="submit" id="deleteuserbtn" style="background-color: red;" href="{{ url_for('pro_logout') }}">Logout</a>
+                                      </div>
+                                      <div class="col d-flex justify-content-end">
+                                        <a class="btn btn-primary" type="submit" id="deleteuserbtn" style="background-color: white;"><i class="fa-solid fa-trash" style="color: #ff0000;"></i></a>
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    function validatePassword() {
+      var oldPassword = $("#oldPassword").val();
+      var newPassword = $("#newPassword").val();
+      var confirm_password = $("#confirmPassword").val();
+      //password validation
+      if (oldPassword == '') {
+        $(".oldPassword-label").text("Enter password");
+        $("#oldPassword").focus();
+        return false;
+      } 
+      else {
+        $(".oldPassword-label").text("");
+        if (newPassword.length < 6) {
+          $(".newPassword-label").text("Min 6 characters needed");
+          $("#newPassword").focus();
+          return false;
+        } 
+        else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(newPassword)) {
+          $(".newPassword-label").text("Password must include uppercase and lowercase characters");
+          $("#newPassword").focus();
+          return false;
+        } else {
+          $(".newPassword-label").text("");
+        }
+      }
+
+      if (newPassword != confirm_password) {
+        $(".confirmPassword-label").text("Password not matching");
+        $("#confirmPassword").focus();
+        return false;
+      } else {
+        $(".confirmpassword-label").text("");
+      }
+
+      // Password is valid
+      return true;
+    }
+
+    $("#passwordconfirmbtn").click(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+
+      // Validate the form
+      if (validatePassword()) {
+        // If the form is valid, submit it
+        $("#password-change-form").submit();
+      }
+    });
+    })
+
+      // hiding error msg of duplicate email
+
+    $("#oldPassword").focus(function() {
+      $(".error-message").hide()
+    })
+</script>
+{% endblock %}

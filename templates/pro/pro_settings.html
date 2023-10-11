@@ -89,12 +89,12 @@
                 <div class="list-group list-group-flush" role="tablist" id="sidebar-list">
                     <a class="list-group-item list-group-item-action {% if 'pro_settings' in request.url_rule.endpoint %}active{% endif %}" data-section="account" href="{{ url_for('pro_settings')}}" role="tab">Account</a>
 
-                    <a class="list-group-item list-group-item-action {% if 'change_password' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('change_password')}}" role="tab" >Password</a>
+                    <a class="list-group-item list-group-item-action {% if 'pro_password_change' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_password_change')}}" role="tab" >Password</a>
 
                     <a class="list-group-item list-group-item-action " data-section="password" href="{{ url_for('home')}}" role="tab">Common Account</a>
                     <a class="list-group-item list-group-item-action" data-section="password" href="{{ url_for('change_password')}}" role="tab">Notifications</a>
 
-                    <a class="list-group-item list-group-item-action {% if 'user_logout' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('user_logout')}}" role="tab" style="color: red">Logout</a>
+                    <a class="list-group-item list-group-item-action {% if 'pro_logout_section' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_logout_section')}}" role="tab" style="color: red">Logout</a>
                     <!-- Add data-section attributes to other sidebar links as needed -->
                 </div>
             </div>
@@ -129,7 +129,7 @@
                             </div>
                             <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                               <div class="text-center text-sm-left mb-2 mb-sm-0">
-                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap" style="text-transform: capitalize;">{{ row[1] }}</h4>
+                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap" style="text-transform: capitalize;">{{ row[2] }}</h4>
                                 <p class="mb-0"></p>
                                 <div class="text-muted"><small>{{ row[6] }}</small></div>
                                 <div class="mt-2">
@@ -138,7 +138,7 @@
                                  </form><!-- End avatar form -->
                               </div>
                               <div class="text-center text-sm-right">
-                                <span class="badge badge-secondary">User</span>
+                                <span class="badge badge-secondary">{{ session['prousercompany']}}</span>
                                 <div class="text-muted"><small>Joined {{ row[11] }}</small></div>
                               </div>
                             </div>
@@ -225,6 +225,15 @@
         </div>
     </div>
 </div>
+
+{% if flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
 
 <script type="text/javascript">
   $(document).ready(function() {
