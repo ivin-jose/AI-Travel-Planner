@@ -1,4 +1,4 @@
-{% extends 'pro_base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
  <section class="space-ptb">
@@ -6,7 +6,6 @@
           <div class="row justify-content-center">
             <div class="col-lg-6">
               <div class="section-title text-center">
-                <div class="sub-title justify-content-center"><img  class="img-fluid" src="images/title-icon.png" alt=""><span>{{ session['prousercompany']}}</span></div>
                 <h2 class="title">Your <strong>Tour Programmes</strong></h2>
                 <div class="description">
                   <p>Let success motivate you. Find a picture of what epitomizes success to you and then pull it out when you are in need.</p>
@@ -19,7 +18,7 @@
             <div class="col-lg-4 col-md-6 mb-4 ">
               <div class="listing-item">
                 <div class="listing-image bg-overlay-half-bottom">
-                  <img class="img-fluid" src="{{row[8]}}" alt="{{row[8]}}">
+                  <img class="img-fluid" src="{{url_for('static', filename=row[10])}}" alt="{{row[10]}}" style="width: 100%;">
                   <div class="listing-favourite">
                     <i class="fa-regular fa-heart"></i>
                   </div>

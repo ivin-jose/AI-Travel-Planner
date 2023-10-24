@@ -834,6 +834,63 @@ def delete_blog_img(bid):
     return redirect(url_for('edit_blog', blog_id=bid))
 
 
+# Company Tour packages
+
+@app.route('/sepwrite.com/tour-packages')
+def tour_packages():
+    if 'username' in session:
+
+        # SQL query to select Tour Packages
+        query = """ SELECT tp.*, pi.image_path
+                    FROM tour_packages tp
+                    LEFT JOIN (
+                        SELECT package_id, MIN(image_path) AS image_path
+                        FROM package_images
+                        GROUP BY package_id
+                    ) pi ON tp.package_id = pi.package_id;
+                """
+
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query)
+        tour_packages_data = cursor.fetchall()
+
+        # Close the cursor and database connection if necessary
+        cursor.close()
+
+        return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
+    else:
+        return redirect('/login')
+
+# Tour Package Details
+@app.route('/sepwrite.com/tour-packages-details/<package_id>', methods=['POST', 'GET'])
+def tour_package_details(package_id):
+    if 'username' in session:
+        # SELECTING TOUR PACKAGE
+        query1 = "SELECT * FROM tour_packages WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query1, (package_id,))
+        tour_packages_data = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query2, (package_id,))
+        tour_packages_day = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query3 = "SELECT * FROM package_images WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query3, (package_id,))
+        tour_packages_image = cursor.fetchall()
+
+        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
+    else:
+        return redirect('/login')
 
 
 #---------------------------------------------------------
@@ -865,12 +922,32 @@ def pro_logout():
     session.pop('prousercompany', None)  # Remove the user_id from the session
     session.pop('proid', None)
     return redirect('/sepwrite.com/account.pro')
+
 # Company Tour packages
 
 @app.route('/sepwrite.com/account.pro/tour-packages')
 def pro_tour_packages():
     if 'prousercompany' in session:
-        return render_template('pro/tour_packages.html')
+
+        # SQL query to select Tour Packages
+        query = """ SELECT tp.*, pi.image_path
+                    FROM tour_packages tp
+                    LEFT JOIN (
+                        SELECT package_id, MIN(image_path) AS image_path
+                        FROM package_images
+                        GROUP BY package_id
+                    ) pi ON tp.package_id = pi.package_id;
+                """
+
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query)
+        tour_packages_data = cursor.fetchall()
+
+        # Close the cursor and database connection if necessary
+        cursor.close()
+
+        return render_template('pro/tour_packages.html', tour_packages_data=tour_packages_data)
     else:
         return redirect('pro.login')
 
@@ -1063,7 +1140,7 @@ def adding_tourpackages():
             files = request.files.getlist('images')
             inserted_image_paths = []  # Store the paths of all inserted images
             for file in files:
-                path = '../static/images/tour_packages'
+                path = 'images/tour_packages'
                 file_path = (path + '/' + file.filename)
                 file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['TOUR_PACKAGE_IMAGES'], file.filename))
                 inserted_image_paths.append(file_path) # Store the path in the list
@@ -1082,6 +1159,37 @@ def adding_tourpackages():
             var = "nothing"
             return render_template('pro/tour-packages-adding-form.html')
     return render_template('pro/tour-packages-adding-form.html')
+
+
+# Tour Package Details
+@app.route('/sepwrite.com/account.pro/tour-packages-details/<package_id>', methods=['POST', 'GET'])
+def pro_tour_package_details(package_id):
+    if 'prousercompany' in session:
+        # SELECTING TOUR PACKAGE
+        query1 = "SELECT * FROM tour_packages WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query1, package_id)
+        tour_packages_data = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query2, package_id)
+        tour_packages_day = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query3 = "SELECT * FROM package_images WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query3, package_id)
+        tour_packages_image = cursor.fetchall()
+
+        return render_template('pro/tour_package_details.html', tour_packages_data=tour_packages_data,
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
+    else:
+        return render_template('pro/login')
 
 
 #---------------------------------------------------------

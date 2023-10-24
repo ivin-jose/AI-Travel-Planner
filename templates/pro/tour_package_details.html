@@ -1,0 +1,557 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+
+{% for row in tour_packages_data %}
+
+{% endfor %}
+{% for row in tour_packages_image %}
+
+{% endfor %}
+{% for row in tour_packages_day %}
+
+{% endfor %}
+  <!--=================================
+  Tour Grid -->
+  <section class="space-ptb">
+    <div class="container">
+      <div class="row">
+        {% for row in tour_packages_data %}
+        <div class="col-md-12">
+          <div class="listing-item listing-item-details">
+            <div class="listing-details">
+              <div class="listing-title d-flex justify-content-between mb-4">
+                <h4 class="mb-0"><a href="#" class="title mb-0">{{ row[2] }}</a></h4>
+                <div class="country-flags">
+                  <img class="img-fluid shadow-sm" src="images/country-flags/02.jpg" alt="#">
+                </div>
+              </div>
+              <div class="listing-rating row d-flex justify-content-between align-items-center">
+                <div class="col-lg-7">
+                  <div class="d-sm-flex align-items-center">
+                    <div class="date me-3 mb-3 mb-sm-0">
+                      <i class="fa-regular fa-calendar-days me-2"></i><span> {{ row[4] }}  </span>
+                    </div>
+                    <div class="rating mb-3 mb-sm-0">
+                      <i class="fa-solid fa-star me-1 text-yellow"></i><span>Days {{ row[3] }}</span>
+                    </div>
+                    <a href="#" class="listing-loaction ms-sm-4"><i class="fa fa-location-dot"></i>{{row[8]}}, {{row[9]}}</a>
+                  </div>
+                </div>
+                <div class="col-lg-5">
+                  <div class="d-sm-flex align-items-center ms-auto justify-content-lg-end">
+                    <div class="price me-sm-4 mb-3 mb-sm-0">
+                      <span class="text-decoration-line-through">{{ row[6]|int - 200 }}</span>{{ row[6] }}
+                    </div>
+                    <a href="#" class="btn btn-primary"><i class="fa-solid fa-circle-check fa-xl me-2"></i> Verified Tour</a>
+                  </div>
+                </div>
+              </div>
+              <div class="listing-favourite mt-4">
+                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2"></i>Save</a>
+                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-bookmark me-2"></i>Bookmark</a>
+                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Write a review</a>
+                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-share-nodes me-2"></i>Share</a>
+                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-receipt me-2"></i></i>Report</a>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="listing-detail-page">
+                  <div class="listing-detail-box">
+                    <div class="listing-image bg-overlay-half-bottom">
+                      <img class="img-fluid" src="images/listing/02.jpg" alt="#">
+                    </div>
+                    <div class="mt-4">
+                      <div class="detail-title">
+                        <h5 class="fw-600">Listing Description</h5>
+                      </div>
+                      <p>{{ row[7] }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+<!--                   <div class="listing-detail-box">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Listing Average Reviews</h5>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="bg-secondary px-4 py-3 border-radius d-flex align-items-center">
+                          <h6 class="rating text-white mb-0"><span class="bg-success text-white me-2">5.4</span> 12 Rating</h6>
+                          <ul class="ms-auto list-unstyled d-flex mb-0">
+                            <li><i class="fas fa-star text-yellow ms-1"></i></li>
+                            <li><i class="fas fa-star text-yellow ms-1"></i></li>
+                            <li><i class="fas fa-star text-yellow ms-1"></i></li>
+                            <li><i class="fas fa-star text-yellow ms-1"></i></li>
+                            <li><i class="fas fa-star text-yellow ms-1"></i></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Quality</strong>
+                            <span class="ms-auto">4.8</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:98%" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Location</strong>
+                            <span class="ms-auto">4</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Space</strong>
+                            <span class="ms-auto">3%</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Service</strong>
+                            <span class="ms-auto">1.5%</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Price</strong>
+                            <span class="ms-auto">2%</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-4">
+                          <div class="d-flex mb-2">
+                            <strong class="text-dark">Cleanliness </strong>
+                            <span class="ms-auto">2.5%</span>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width:25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="listing-detail-box">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Booking</h5>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="accordion" id="accordionExample">
+                          <!--  -->
+                          {% for row in tour_packages_day %}
+                          <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            {{ row[3] }} - {{ row[4] }}
+                            </button>
+                            </h2>
+       <!--                   <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                              <div class="accordion-body">
+                                <div class="row">
+                                  <div class="col-sm-3">
+                                    <img class="img-fluid border-radius" src="images/listing/14.jpg" alt="">
+                                  </div>
+                                  <div class="col-sm-9">
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                            </div> -->
+                          </div>
+                          {% endfor %}
+                          <!--  -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="listing-detail-box popup-gallery">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Form Our Gallery</h5>
+                    </div>
+                    <div class="row g-2">
+                      <!--  -->
+                    {% for row in tour_packages_image %}
+                      <div class="col-md-6">
+                        <div class="portfolio portfolio-style-03 mb-0 rounded">
+                          <div class="portfolio-images">
+                            <img class="img-fluid rounded " src="{{ row[3] }}" alt="">
+                            <div class="portfolio-info-02">
+                              {{ row[3] }}
+                              <a class="portfolio-img popup-icon" href="{{ row[3] }}"> <i class="fas fa-plus"></i> </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      <!--  -->
+                      <div class="col-md-6">
+                        <div class="row mb-2 g-2">
+                          <div class="col-sm-6 mb-sm-0">
+                            <div class="portfolio portfolio-style-03 mb-0 rounded">
+                              <div class="portfolio-images">
+                                <img class="img-fluid rounded " src="images/listing/10.jpg" alt="">
+                                <div class="portfolio-info-02">
+                                  <a class="portfolio-img popup-icon" href="images/listing/10.jpg"> <i class="fas fa-plus"></i> </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="portfolio portfolio-style-03 mb-0 rounded">
+                              <div class="portfolio-images">
+                                <img class="img-fluid rounded " src="images/listing/11.jpg" alt="">
+                                <div class="portfolio-info-02">
+                                  <a class="portfolio-img popup-icon" href="images/listing/11.jpg"> <i class="fas fa-plus"></i> </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row g-2">
+                          <div class="col-sm-6 mb-sm-0">
+                            <div class="portfolio portfolio-style-03 mb-0 rounded">
+                              <div class="portfolio-images">
+                                <img class="img-fluid rounded " src="images/listing/12.jpg" alt="">
+                                <div class="portfolio-info-02">
+                                  <a class="portfolio-img popup-icon" href="images/listing/12.jpg"> <i class="fas fa-plus"></i> </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="portfolio portfolio-style-03 mb-0 rounded">
+                              <div class="portfolio-images">
+                                <img class="img-fluid rounded " src="images/listing/13.jpg" alt="">
+                                <div class="portfolio-info-02">
+                                  <a class="portfolio-img popup-icon" href="images/listing/13.jpg"> <i class="fas fa-plus"></i> </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="listing-detail-box">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Listing Location </h5>
+                    </div>
+                    <iframe style="width: 100%; height: 300px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531590414!3d-37.817323442021134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sin!4v1559822357848!5m2!1sen!2sin"></iframe>
+                  </div>
+                  <div class="listing-detail-box reviews-box">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Listing 5 Reviews For Honey Restaurant</h5>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="d-block d-md-flex mb-4">
+                          <div class="avatar mb-3">
+                            <img src="images/avatar/01.jpg" class="rounded-circle img-fluid" alt="...">
+                          </div>
+                          <div class="p-4 border border-radius-sm ms-0 ms-md-3">
+                            <div class="d-flex align-items-center">
+                              <h6 class="mt-0">Alice Williams</h6>
+                              <div class="d-flex ms-auto mb-3">
+                                <span class="px-2 border text-success border-radius-sm d-inline-block me-2">4.0</span>
+                                <ul class="list-unstyled d-flex mb-0">
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="far fa-star text-light"></i></li>
+                                </ul>
+                              </div>
+                            </div>
+                            <p>Then work backwards to develop the plan. What steps are required to get you to the goals? Make the plan as detailed as possible. Try to visualize and then plan.</p>
+                            <div class=" d-flex flex-wrap">
+                              <a class="bg-light text-dark border-radius-sm px-2 py-1 font-sm mb-2 mb-sm-0" href="#"> <i class="fas fa-reply pe-1"></i> Reply Review </a>
+                              <a class="bg-success-soft text-success border-radius-sm px-2 py-1 ms-3 font-sm mb-2 mb-sm-0" href="#"> <i class="far fa-thumbs-up pe-1"></i> 56 Votes</a>
+                              <a class="bg-danger-soft text-danger border-radius-sm px-2 py-1 ms-3 mb-2 mb-sm-0 font-sm" href="#"> <i class="far fa-thumbs-down pe-1"></i> 06</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-block d-md-flex mb-4">
+                          <div class="avatar mb-3">
+                            <img src="images/avatar/02.jpg" class="rounded-circle img-fluid" alt="...">
+                          </div>
+                          <div class="p-4 border border-radius-sm ms-0 ms-md-3">
+                            <div class="d-flex align-items-center">
+                              <h6 class="mt-0">Ora Bryan</h6>
+                              <div class="d-flex ms-auto mb-3">
+                                <span class="px-2 border text-success border-radius-sm d-inline-block me-2">4.0</span>
+                                <ul class="list-unstyled d-flex mb-0">
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="far fa-star text-light"></i></li>
+                                </ul>
+                              </div>
+                            </div>
+                            <p>Along with your plans, you should consider developing an action orientation that will keep you motivated to move forward at all times This requires a little.</p>
+                            <div class="row mb-3">
+                              <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <img class="img-fluid border-radius" src="images/listing/01.jpg" alt="">
+                              </div>
+                              <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <img class="img-fluid border-radius" src="images/listing/03.jpg" alt="">
+                              </div>
+                              <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <img class="img-fluid border-radius" src="images/listing/04.jpg" alt="">
+                              </div>
+                            </div>
+                            <div class=" d-flex flex-wrap">
+                              <a class="bg-light text-dark border-radius-sm px-2 py-1 font-sm mb-2 mb-sm-0" href="#"> <i class="fas fa-reply pe-1"></i> Reply Review </a>
+                              <a class="bg-success-soft text-success border-radius-sm px-2 py-1 ms-3 font-sm mb-2 mb-sm-0" href="#"> <i class="far fa-thumbs-up pe-1"></i> 56 Votes</a>
+                              <a class="bg-danger-soft text-danger border-radius-sm px-2 py-1 ms-3 mb-2 mb-sm-0 font-sm" href="#"> <i class="far fa-thumbs-down pe-1"></i> 06</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-block d-md-flex">
+                          <div class="avatar mb-3">
+                            <img src="images/avatar/03.jpg" class="rounded-circle img-fluid" alt="...">
+                          </div>
+                          <div class="p-4 border border-radius-sm ms-0 ms-md-3">
+                            <div class="d-flex align-items-center">
+                              <h6 class="mt-0">Maria Fields</h6>
+                              <div class="d-flex ms-auto mb-3">
+                                <span class="px-2 border text-success border-radius-sm d-inline-block me-2">4.0</span>
+                                <ul class="list-unstyled d-flex mb-0">
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="fas fa-star text-warning"></i></li>
+                                  <li><i class="far fa-star text-light"></i></li>
+                                </ul>
+                              </div>
+                            </div>
+                            <p>I coach my clients to practice the 3 D’s – Defer, Delegate or Delete. Can the particular activity be done later? Defer it! Can it be done by someone else? Delegate</p>
+                            <div class=" d-flex flex-wrap">
+                              <a class="bg-light text-dark border-radius-sm px-2 py-1 font-sm mb-2 mb-sm-0" href="#"> <i class="fas fa-reply pe-1"></i> Reply Review </a>
+                              <a class="bg-success-soft text-success border-radius-sm px-2 py-1 ms-3 font-sm mb-2 mb-sm-0" href="#"> <i class="far fa-thumbs-up pe-1"></i> 56 Votes</a>
+                              <a class="bg-danger-soft text-danger border-radius-sm px-2 py-1 ms-3 font-sm mb-2 mb-sm-0" href="#"> <i class="far fa-thumbs-down pe-1"></i> 06</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="listing-detail-box mb-lg-0">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Add a Review</h5>
+                    </div>
+                    <form>
+                      <div class="row">
+                        <div class="mb-3 col-md-12">
+                          <div class="ratings">
+                            <input type="radio" id="star5" name="ratings" value="5" /><label class = "full form-label" for="star5" title="Awesome - 5 stars"></label>
+                            <input type="radio" id="star4half" name="ratings" value="4 and a half" /><label class="half form-label" for="star4half" title="Pretty good - 4.5 stars"></label>
+                            <input type="radio" id="star4" name="ratings" value="4" /><label class = "full form-label" for="star4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="star3half" name="ratings" value="3 and a half" /><label class="half form-label" for="star3half" title="Meh - 3.5 stars"></label>
+                            <input type="radio" id="star3" name="ratings" value="3" /><label class = "full form-label" for="star3" title="Meh - 3 stars"></label>
+                            <input type="radio" id="star2half" name="ratings" value="2 and a half" /><label class="half form-label text-yellow" for="star2half" title="Kinda bad - 2.5 stars"></label>
+                            <input type="radio" id="star2" name="ratings" value="2" /><label class = "full form-label text-yellow" for="star2" title="Kinda bad - 2 stars"></label>
+                            <input type="radio" id="star1half" name="ratings" value="1 and a half" /><label class="half form-label text-yellow" for="star1half" title="Meh - 1.5 stars"></label>
+                            <input type="radio" id="star1" name="ratings" value="1" /><label class = "full form-label text-yellow" for="star1" title="Sucks big time - 1 star"></label>
+                            <input type="radio" id="starhalf" name="ratings" value="half" /><label class="half form-label text-yellow" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+                          </div>
+                        </div>
+                        <div class="mb-3 col-md-4">
+                          <label class="form-label">Your name</label>
+                          <input type="text" class="form-control" placeholder="Your name">
+                        </div>
+                        <div class="mb-3 col-md-4">
+                          <label class="form-label">Your email</label>
+                          <input type="email" class="form-control" placeholder="Your email">
+                        </div>
+                        <div class="mb-3 col-md-4">
+                          <label class="form-label">Subject</label>
+                          <input type="text" class="form-control" id="phone" placeholder="Subject">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                          <label class="form-label">Your message</label>
+                          <textarea class="form-control" rows="4" placeholder="Your message"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                          <a class="btn btn-primary" href="#">Submit Review</a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="sidebar mb-0">
+                  <div class="widget">
+                    <div class="widget-title">
+                      <a class="collapse-title" data-bs-toggle="collapse" href="#filters">
+                        Booking<i class="fas fa-minus-circle"></i>
+                      </a>
+                    </div>
+                    <div class="widget-content">
+                      <div class="pb-3">
+                        <div class="collapse show" id="filters">
+                          <div class="mb-3 datetimepickers">
+                            <div class="input-group date" id="datetimepicker-01" data-target-input="nearest">
+                              <input type="text" class="form-control datetimepicker-input" placeholder="Date" data-target="#datetimepicker-01">
+                              <div class="input-group-append" data-target="#datetimepicker-01" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3 datetimepickers time">
+                            <div class="input-group date" id="datetimepicker-03" data-target-input="nearest">
+                              <input type="text" class="form-control datetimepicker-input" placeholder="Time" data-target="#datetimepicker-03"/>
+                              <div class="input-group-append" data-target="#datetimepicker-03" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3 select-border">
+                            <select class="form-control basic-select">
+                              <option>Adults </option>
+                              <option>01 </option>
+                              <option>02 </option>
+                              <option>03</option>
+                            </select>
+                          </div>
+                          <div class="mb-3 select-border">
+                            <select class="form-control basic-select">
+                              <option>Childrens </option>
+                              <option>01 </option>
+                              <option>02 </option>
+                              <option>03</option>
+                            </select>
+                          </div>
+                          <div class="pt-0">
+                            <div class="mb-0 d-grid">
+                              <a class="btn btn-primary d-grid" href="#">Request Booking</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="widget">
+                    <div class="widget-title">
+                      <a class="collapse-title" data-bs-toggle="collapse" href="#price">
+                        Price  <i class="fas fa-minus-circle"></i>
+                      </a>
+                    </div>
+                    <div class="widget-content">
+                      <div class="pb-3">
+                        <div class="collapse show" id="price">
+                          <div class="mb-4 property-price-slider ">
+                            <label class="form-label">Select Price Range</label>
+                            <input type="text" id="property-price-slider" name="example_name" value="" />
+                          </div>
+                          <div class="mb-0 d-grid">
+                            <a class="btn btn-primary" href="#">Search</a>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="widget">
+                    <div class="widget-title">
+                      <h5 class="mb-0 fw-600"> Location </h5>
+                    </div>
+                    <div class="widget-content">
+                      <iframe style="height: 200px; width: 100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531590414!3d-37.817323442021134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sin!4v1559822357848!5m2!1sen!2sin"></iframe>
+                      <ul class="list-unstyled mb-3 mt-4 d-block">
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Address:</strong>214 West Arnold St. New York</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Website:</strong>potenzaglobalsolutions.com</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Phone:</strong>(123) 345-6789</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Office Number:</strong>(456) 478-2589</li>
+                      </ul>
+                      <ul class="list-unstyled mb-0 d-flex mt-3">
+                        <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-behance"></i></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="widget">
+                    <div class="widget-title">
+                      <h5 class="mb-0 fw-600"> Sidebar from </h5>
+                    </div>
+                    <div class="widget-content">
+                      <form>
+                        <div class="row">
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label">Your name</label>
+                            <input type="text" class="form-control" placeholder="">
+                          </div>
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label">Your email</label>
+                            <input type="email" class="form-control" placeholder="">
+                          </div>
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label">Your message</label>
+                            <textarea class="form-control" rows="4" placeholder=""></textarea>
+                          </div>
+                          <div class="col-md-12">
+                            <a class="btn btn-primary" href="#">Contact Agent</a>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="widget mb-0">
+                    <div class="widget-title">
+                      <h5 class="mb-0 fw-600"> Tags </h5>
+                    </div>
+                    <div class="widget-content">
+                      <div class="popular-tag">
+                        <ul class="list-unstyled mb-0">
+                          <li><a href="#"> Blog</a></li>
+                          <li><a href="#"> Adventure</a></li>
+                          <li><a href="#"> WordPress</a></li>
+                          <li><a href="#"> Blogger</a></li>
+                          <li><a href="#"> Food</a></li>
+                          <li><a href="#"> Tourism</a></li>
+                          <li><a href="#"> Fashion</a></li>
+                          <li><a href="#"> Travel</a></li>
+                          <li><a href="#"> Magazine</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+   {% endblock %}
+    <!--=================================
+    Tour Grid -->
