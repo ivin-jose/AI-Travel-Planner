@@ -38,9 +38,14 @@
                 </div>
               </div>
               <div class="listing-favourite mt-4">
-                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2"></i>Save</a>
-                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-bookmark me-2"></i>Bookmark</a>
-                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Write a review</a>
+                
+                {% if delt_flash %}
+                    <a href="{{ url_for('tour_package_saving', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2" id="save-btn"></i>Save</a>
+                {% else %}
+                    <a href="{{ url_for('tour_package_saved_dlt', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3" style="background-color: red";><i class="fa-solid fa-download me-2" id="save-btn"></i>UnSave</a>
+                {% endif %}
+                <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-bookmark me-2"></i>Bookmark</a> -->
+                <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Write a review</a> -->
                 <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-share-nodes me-2"></i>Share</a>
                 <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-receipt me-2"></i></i>Report</a>
               </div>
@@ -51,7 +56,7 @@
                 <div class="listing-detail-page">
                   <div class="listing-detail-box">
                     <div class="listing-image bg-overlay-half-bottom">
-                      <img class="img-fluid" src="images/listing/02.jpg" alt="#">
+                      <img class="img-fluid" src="{{url_for('static', filename=row[10])}}" alt="{{row[10]}}">
                     </div>
                     <div class="mt-4">
                       <div class="detail-title">
@@ -60,6 +65,7 @@
                       <p>{{ row[7] }}</p>
                     </div>
                   </div>
+
                   {% endfor %}
 <!--                   <div class="listing-detail-box">
                     <div class="detail-title">
@@ -190,10 +196,9 @@
                       <div class="col-md-6">
                         <div class="portfolio portfolio-style-03 mb-0 rounded">
                           <div class="portfolio-images">
-                            <img class="img-fluid rounded " src="{{ row[3] }}" alt="">
+                            <img class="img-fluid rounded " src="{{url_for('static', filename=row[3])}}" alt="kl">
                             <div class="portfolio-info-02">
-                              {{ row[3] }}
-                              <a class="portfolio-img popup-icon" href="{{ row[3] }}"> <i class="fas fa-plus"></i> </a>
+                              <a class="portfolio-img popup-icon" href="{{url_for('static', filename=row[3])}}"> <i class="fas fa-plus"></i> </a>
                             </div>
                           </div>
                         </div>
@@ -459,15 +464,17 @@
                   </div>
                   <div class="widget">
                     <div class="widget-title">
-                      <h5 class="mb-0 fw-600"> Location </h5>
+                      <h5 class="mb-0 fw-600"> OPARATOR DETAILS </h5>
                     </div>
                     <div class="widget-content">
-                      <iframe style="height: 200px; width: 100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531590414!3d-37.817323442021134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sin!4v1559822357848!5m2!1sen!2sin"></iframe>
+                      {% for row in pro_user_details %}
+                      <!-- <iframe style="height: 200px; width: 100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531590414!3d-37.817323442021134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sin!4v1559822357848!5m2!1sen!2sin"></iframe> -->
                       <ul class="list-unstyled mb-3 mt-4 d-block">
-                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Address:</strong>214 West Arnold St. New York</li>
-                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Website:</strong>potenzaglobalsolutions.com</li>
-                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Phone:</strong>(123) 345-6789</li>
-                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Office Number:</strong>(456) 478-2589</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Name :</strong>{{ row[2] }}</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Address:</strong>{{row[10]}}, {{row[5]}}, {{row[4]}}</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">E-mail:</strong>{{row[3]}}</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2">Phone:</strong>{{row[8]}}</li>
+                        <li class="mb-2"><strong class="text-dark d-inline-block me-2"></li>
                       </ul>
                       <ul class="list-unstyled mb-0 d-flex mt-3">
                         <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-facebook-f"></i></a></li>
@@ -475,54 +482,10 @@
                         <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-linkedin-in"></i></a></li>
                         <li><a class="px-3 py-2 d-block bg-light border-radius me-2" href="#"><i class="fab fa-behance"></i></a></li>
                       </ul>
+                      {% endfor %}
                     </div>
                   </div>
-                  <div class="widget">
-                    <div class="widget-title">
-                      <h5 class="mb-0 fw-600"> Sidebar from </h5>
-                    </div>
-                    <div class="widget-content">
-                      <form>
-                        <div class="row">
-                          <div class="mb-3 col-md-12">
-                            <label class="form-label">Your name</label>
-                            <input type="text" class="form-control" placeholder="">
-                          </div>
-                          <div class="mb-3 col-md-12">
-                            <label class="form-label">Your email</label>
-                            <input type="email" class="form-control" placeholder="">
-                          </div>
-                          <div class="mb-3 col-md-12">
-                            <label class="form-label">Your message</label>
-                            <textarea class="form-control" rows="4" placeholder=""></textarea>
-                          </div>
-                          <div class="col-md-12">
-                            <a class="btn btn-primary" href="#">Contact Agent</a>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="widget mb-0">
-                    <div class="widget-title">
-                      <h5 class="mb-0 fw-600"> Tags </h5>
-                    </div>
-                    <div class="widget-content">
-                      <div class="popular-tag">
-                        <ul class="list-unstyled mb-0">
-                          <li><a href="#"> Blog</a></li>
-                          <li><a href="#"> Adventure</a></li>
-                          <li><a href="#"> WordPress</a></li>
-                          <li><a href="#"> Blogger</a></li>
-                          <li><a href="#"> Food</a></li>
-                          <li><a href="#"> Tourism</a></li>
-                          <li><a href="#"> Fashion</a></li>
-                          <li><a href="#"> Travel</a></li>
-                          <li><a href="#"> Magazine</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -531,6 +494,34 @@
       </div>
     </div>
   </section>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% if flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+{% if delt_flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ delt_flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+
+
+  <!-- //to change the background color and text value when the save button is clicked.  -->
+<script>
+  $(document).ready(function() {
+    $('#save-button').click(function() {
+      $(this).css('background-color', 'grey'); // Change the background color to grey
+      $('#save-btn').text('Saved'); // Change the text value to 'Saved'
+    });
+  });
+</script>
 
   <!-- // JavaScript to add input fields based on the number of days -->
 

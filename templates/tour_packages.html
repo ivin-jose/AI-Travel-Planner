@@ -25,7 +25,7 @@
                 </div>
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">
-                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">{{ row[2] }}</a></h5>
+                    <h5 class="mb-0"><a href="{{ url_for('tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
                     <div class="country-flags">
                       <!-- <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#"> -->
                     </div>
@@ -57,13 +57,6 @@
         </div>
     </section>
 
-{% if flash %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
-    <strong></strong> {{ flash }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-{% endif %}
+
 
  {% endblock %}
