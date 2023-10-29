@@ -1,6 +1,10 @@
 {% extends 'pro_base.html' %}
 {% block content %}
 <style type="text/css">
+  #notifcation-box {
+    background-color: #3dd1d5 !important;
+    color: black !important;
+  }
     #sidebar-list .active {
         background-color: black !important;
         color: #3dd1d5;
@@ -92,7 +96,7 @@
                     <a class="list-group-item list-group-item-action {% if 'pro_password_change' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_password_change')}}" role="tab" >Password</a>
 
                     <a class="list-group-item list-group-item-action " data-section="password" href="{{ url_for('home')}}" role="tab">Common Account</a>
-                    <a class="list-group-item list-group-item-action  {% if 'pro_notifications' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_notifications')}}" role="tab">Notifications <b>({{ noti_count[0] }})</b></a>
+                    <a class="list-group-item list-group-item-action  {% if 'pro_notifications' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_notifications')}}" role="tab">Notifications</a>
 
                     <a class="list-group-item list-group-item-action {% if 'pro_logout_section' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_logout_section')}}" role="tab" style="color: red">Logout</a>
                     <!-- Add data-section attributes to other sidebar links as needed -->
@@ -112,108 +116,37 @@
                         <div class="e-profile">
                           <div class="row">
                             <div class="col-12 col-sm-auto mb-3">
-                              {% for row in data %}
-                              <div class="mx-auto" style="width: 140px;">
-                                 <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="">
-                                  <span>
-                                    <label for="fileToUpload">
-                                      <div class="profile-pic" id="profilePic" style="background-image: url('{{ row[5] }}'); background-size: cover; background-repeat: no-repeat;">
-                                        <span class="glyphicon glyphicon-camera"></span>
-                                        <span><i class="fa fa-fw fa-camera"></i></span>
-                                      </div>
-                                    </label>
-                                   <input type="file" name="file" autocomplete="off" required id="fileToUpload" accept="image">
-                                  </span>
-                                <!-- </form> -->
-                              </div>
-                            </div>
-                            <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
-                              <div class="text-center text-sm-left mb-2 mb-sm-0">
-                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap" style="text-transform: capitalize;">{{ row[2] }}</h4>
-                                <p class="mb-0"></p>
-                                <div class="text-muted"><small>{{ row[6] }}</small></div>
-                                <div class="mt-2">
-                                  <input class="btn btn-primary" type="submit" value="Change" id="Useravatarbtn" style="display: none">
-                                </div>
-                                 </form><!-- End avatar form -->
-                              </div>
-                              <div class="text-center text-sm-right">
-                                <span class="badge badge-secondary">{{ session['prousercompany']}}</span>
-                                <div class="text-muted"><small>Joined {{ row[11] }}</small></div>
-                              </div>
-                            </div>
-                            {% endfor %}
+                              
+                              
                           </div>
                           <ul class="nav nav-tabs">
-                            <li class="nav-item"><a href="" class="active nav-link">Edit Profile</a></li>
+                            <li class="nav-item"><a href="" class="active nav-link">Notifcations</a></li>
                           </ul>
                           <div class="tab-content pt-3">
+
+                            <!-- Notification box -->
+                            {% for row in unwatched %}
                             <div class="tab-pane active">
-                              <!-- form for updating company details -->
-                              <form class="form" name="company-update-form" method="POST" enctype="multipart/form-data" action="{{ url_for('pro_settings') }}" id="company-update-form">
-                                <div class="row">
-                                  <div class="col">
-                                    {% for row in data %}
-                                    <div class="row">
-                                      <div class="col">
-                                         <div class="form-group">
-                                          <label>Company: <span class="companyname-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="companyname" value="{{ row[2] }}" id="companyname">
-                                        </div>
-
-                                        <div class="form-group">
-                                          <label>Phone: <span class="phone-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="phone" value="{{ row[8] }}" id="phone">
-                                        </div>
-
-                                        <div class="form-group">
-                                          <label>State: <span class="state-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="state" value="{{ row[5] }}" id="state">
-                                        </div>
-
-                                        <div class="form-group">
-                                          <label>Territory: <span class="territory-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="territory" value="{{ row[6] }}" id="territory">
-                                        </div>
-
-                                        <div class="form-group">
-                                          <label>Pin: <span class="pin-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="pin" value="{{ row[7] }}" id="pin">
-                                        </div>
-
-                                        <div class="form-group">
-                                          <label>Address: <span class="address-label" style="color: red;"></span></label>
-                                          <input class="form-control" type="text" name="address" value="{{ row[10] }}" id="address">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">
-                                        <div class="form-group">
-                                          <label>Email :<span class="email-label" style="color: red;">{{email_error}}</span></label>
-                                          <input class="form-control" type="text" placeholder="company@example.com" value="{{ row[3] }}" name="email" id="email">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col mb-3">
-                                        <div class="form-group">
-                                          <label>About: <span class="bio-label" style="color: red;"></span></label>
-                                          <textarea class="form-control" rows="5" placeholder="My Bio" name="bio" id="bio">{{ row[12] }}</textarea><br><br>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                              unwatched Booking id = {{row[1]}} 
+                              <a href="#">Click to see details</a>
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box">
+                                  <strong>Booking request:</strong> You have new booking for <b>{{ row[0] }}</b> Package
                                 </div>
-                                {% endfor %}
-                                <div class="row">
-                                  <div class="col d-flex justify-content-end">
-                                    <input class="btn btn-primary" type="submit" value="Save Changes" name="companyUpdateButton" id="companyUpdateButton">
-                                  </div>
-                                </div>
-                              </form><!-- End data form -->
-
                             </div>
+                            {% endfor %}
+
+                            {% for row in watched %}
+                            <div class="tab-pane active">
+                              watched Booking id = {{ row[1] }}
+                              <a href="#">Click to see details</a>
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box" style="background-color: lightgrey !important";>
+                                  <strong>Booking request:</strong> You have new booking for <b>{{ row[0] }}</b> Package
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <!-- end -->
+
                           </div>
                         </div>
                       </div>

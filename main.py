@@ -838,8 +838,8 @@ def delete_blog_img(bid):
 
 @app.route('/sepwrite.com/tour-packages')
 def tour_packages():
+    flash = None
     if 'username' in session:
-
         # SQL query to select Tour Packages
         query = """ SELECT tp.*, pi.image_path
                     FROM tour_packages tp
@@ -849,15 +849,12 @@ def tour_packages():
                         GROUP BY package_id
                     ) pi ON tp.package_id = pi.package_id;
                 """
-
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
         cursor.execute(query)
         tour_packages_data = cursor.fetchall()
-
         # Close the cursor and database connection if necessary
         cursor.close()
-
         return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
     else:
         return redirect('/login')
@@ -1023,6 +1020,61 @@ def tour_package_saved_dlt(package_id):
         delt_flash = "Something Wrong.."
         return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, delt_flash=delt_flash)
+
+# user_tour_package_booking
+@app.route('/sepwrite.com/tour-packages-booking', methods=['POST', 'GET'])
+def user_tour_package_booking():
+    if request.method == 'POST':
+        view = 0
+        num_people = request.form.get('days')
+        package_id = request.form.get('package_id')
+        name = request.form.get('username')
+        user_identity_document = request.form.get('user_identity_document')
+
+        cursor = mysql.connection.cursor()
+        query = "INSERT INTO package_bookings (user_id, package_id, viewed) VALUES (%s, %s, %s)"
+        cursor.execute(query, (session['userid'], package_id, view))
+        mysql.connection.commit()
+
+        # Get the generated Package Id
+        booking_id = cursor.lastrowid
+
+        # Adding travel lead
+        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
+        cursor.execute(insert_query, (booking_id, name, user_identity_document))
+        mysql.connection.commit()
+
+        travalers = []
+
+        for i in range(1, int(num_people) + 1):
+            person_name = request.form.get(f'personname{i}')
+            person_id_document = request.form.get(f'person_id_{i}')
+            travalers.append((person_name, person_id_document))
+        try:
+            # Assuming you have established a database connection and obtained a cursor object
+            insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
+            
+            for person_name, person_id_document in travalers:
+                cursor.execute(insert_query, (booking_id, person_name, person_id_document))
+
+            # Commit the changes to the database
+            mysql.connection.commit()
+
+        except Exception as e:
+            # Handle any exceptions that may occur during the database operations
+            # You should add appropriate error handling and logging here
+            print("An error occurred:", e)
+
+
+        except Exception as e:
+            mysql.connection.rollback()
+            return f"Error: {str(e)}"
+
+    return render_template('index.html')
+
+
+
+
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------
@@ -1044,21 +1096,30 @@ def pro_account():
 # Company Logout Page
 @app.route('/sepwrite.com/account.pro/logout-section')
 def pro_logout_section():
-    return render_template('pro/logout.html')
+    if 'prousercompany' in session:
+        cursor = mysql.connection.cursor()
+        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        return render_template('pro/logout.html', noti_count=result)
+    else:
+        return redirect('pro.login')
     
 # Company Logout 
 @app.route('/sepwrite.com/account.pro/logout')
 def pro_logout():
-    session.pop('prousercompany', None)  # Remove the user_id from the session
-    session.pop('proid', None)
-    return redirect('/sepwrite.com/account.pro')
+    if 'prousercompany' in session:
+        session.pop('prousercompany', None)  # Remove the user_id from the session
+        session.pop('proid', None)
+        return redirect('/sepwrite.com/account.pro')
+    else:
+        return redirect('pro.login')
 
 # Company Tour packages
 
 @app.route('/sepwrite.com/account.pro/tour-packages')
 def pro_tour_packages():
     if 'prousercompany' in session:
-
         # SQL query to select Tour Packages
         query = """ SELECT tp.*, pi.image_path
                     FROM tour_packages tp
@@ -1073,7 +1134,6 @@ def pro_tour_packages():
         cursor = mysql.connection.cursor()
         cursor.execute(query)
         tour_packages_data = cursor.fetchall()
-
         # Close the cursor and database connection if necessary
         cursor.close()
 
@@ -1086,7 +1146,11 @@ def pro_tour_packages():
 @app.route('/sepwrite.com/account.pro/password-changing', methods=['GET', 'POST'])
 def pro_password_change():
     if 'prousercompany' in session:
-        return render_template('pro/pro_change_password.html')
+       cursor = mysql.connection.cursor()
+       query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
+       cursor.execute(query)
+       result = cursor.fetchone()
+       return render_template('pro/pro_change_password.html', noti_count=result)
     else:
         return redirect('pro.login')
 
@@ -1152,11 +1216,67 @@ def pro_login():
 
     return render_template('pro/pro_login.html', error_message=error_message)
 
+# Notifications 
+
+@app.route('/sepwrite.com/account.pro/notifcations')
+def pro_notifications():
+    if 'prousercompany' in session:
+        cursor = mysql.connection.cursor()
+
+        # Unwatched Notofications
+        query = """
+            SELECT
+                tour_packages.tourname,
+                package_bookings.booked_id
+            FROM
+                tour_packages
+            JOIN
+                package_bookings
+            ON
+                tour_packages.package_id = package_bookings.package_id
+            WHERE
+                package_bookings.viewed = 0;
+        """
+        cursor.execute(query)
+        unwatched = cursor.fetchall()
+
+        # watched Notofications
+        cursor = mysql.connection.cursor()
+        query1 = """
+            SELECT
+                tour_packages.tourname,
+                package_bookings.booked_id
+            FROM
+                tour_packages
+            JOIN
+                package_bookings
+            ON
+                tour_packages.package_id = package_bookings.package_id
+            WHERE
+                package_bookings.viewed = 1;
+        """
+        cursor.execute(query1)
+        watched = cursor.fetchall()
+
+        query = "UPDATE package_bookings SET viewed = 1"
+        cursor.execute(query)
+        mysql.connection.commit()
+
+        return render_template('pro/pro_notifications.html', unwatched=unwatched, watched=watched)
+    else:
+        return redirect('pro.login')
+
+# Pro Settings
 
 @app.route('/sepwrite.com/account.pro/company-settings', methods=['GET', 'POST'])
 def pro_settings():
     flash = None
     if 'prousercompany' in session:
+        cursor = mysql.connection.cursor()
+        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
+        cursor.execute(query)
+        noti_result = cursor.fetchone()
+
         email_error = ""
         cursor = mysql.connection.cursor()
         
@@ -1208,7 +1328,7 @@ def pro_settings():
 
         cursor.close()
 
-        return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash)
+        return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash, noti_count=noti_result)
     else:
         return redirect('/sepwrite.com/account.pro/login')  # Use the redirect function here
 
