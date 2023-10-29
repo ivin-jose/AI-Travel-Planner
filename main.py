@@ -1098,8 +1098,8 @@ def pro_account():
 def pro_logout_section():
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
-        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
-        cursor.execute(query)
+        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id=%s;"
+        cursor.execute(query, str(session['proid']))
         result = cursor.fetchone()
         return render_template('pro/logout.html', noti_count=result)
     else:
@@ -1147,8 +1147,8 @@ def pro_tour_packages():
 def pro_password_change():
     if 'prousercompany' in session:
        cursor = mysql.connection.cursor()
-       query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
-       cursor.execute(query)
+       query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
+       cursor.execute(query, str(session['proid']))
        result = cursor.fetchone()
        return render_template('pro/pro_change_password.html', noti_count=result)
     else:
@@ -1226,21 +1226,26 @@ def pro_notifications():
         # Unwatched Notofications
         query = """
             SELECT
-                tour_packages.tourname,
-                package_bookings.booked_id
-            FROM
-                tour_packages
-            JOIN
-                package_bookings
-            ON
-                tour_packages.package_id = package_bookings.package_id
-            WHERE
-                package_bookings.viewed = 0;
+    tour_packages.tourname,
+    package_bookings.booked_id
+FROM
+    tour_packages
+JOIN
+    package_bookings
+ON
+    tour_packages.package_id = package_bookings.package_id
+WHERE
+    package_bookings.viewed = 0
+    AND package_bookings.package_provider_id = %s; 
         """
-        cursor.execute(query)
+        cursor.execute(query, str(session['proid']))
         unwatched = cursor.fetchall()
 
+        # end
+
         # watched Notofications
+        cursor = mysql.connection.cursor()
+        cursor.close()
         cursor = mysql.connection.cursor()
         query1 = """
             SELECT
@@ -1253,13 +1258,14 @@ def pro_notifications():
             ON
                 tour_packages.package_id = package_bookings.package_id
             WHERE
-                package_bookings.viewed = 1;
+                package_bookings.viewed = 1
+                AND package_bookings.package_provider_id = %s; 
         """
-        cursor.execute(query1)
+        cursor.execute(query1, str(session['proid']))
         watched = cursor.fetchall()
 
-        query = "UPDATE package_bookings SET viewed = 1"
-        cursor.execute(query)
+        query = "UPDATE package_bookings SET viewed = 1 WHERE package_provider_id = %s"
+        cursor.execute(query, str(session['proid']))
         mysql.connection.commit()
 
         return render_template('pro/pro_notifications.html', unwatched=unwatched, watched=watched)
@@ -1273,8 +1279,8 @@ def pro_settings():
     flash = None
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
-        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0;"
-        cursor.execute(query)
+        query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
+        cursor.execute(query, str(session['proid']))
         noti_result = cursor.fetchone()
 
         email_error = ""
