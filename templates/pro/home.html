@@ -102,6 +102,7 @@
           </div>
         </div>
       </section>
+
       <!--=================================
       Destination Form -->
       <!--=================================
@@ -127,236 +128,44 @@
               <div class="slider">
                 <div class="owl-carousel owl-nav-bottom-center" data-nav-dots="false" data-nav-arrow="true" data-items="4" data-xl-items="4" data-lg-items="4" data-md-items="3" data-sm-items="2" data-xs-items="1"  data-space="30" data-autoheight="true">
 
-
+                  {% for row in tour_packages_data %}
                   <div class="item">
                     <div class="listing-item">
                       <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
+                        <img class="img-fluid" src="{{ url_for('static', filename=row[10]) }}" alt="#">
                         <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
                         </div>
                       </div>
                       <div class="listing-details">
                         <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
+                          <h5 class="mb-0"><a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
                           <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
+                            <img class="img-fluid shadow-sm" src="" alt="">
                           </div>
                         </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
+                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i> {{row[8]}}, {{row[9]}}</a>
                         <div class="listing-rating d-flex justify-content-between">
                           <div class="d-flex">
                             <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
+                              <i class="fa-regular fa-calendar-days me-2"></i><span>  Days {{ row[3] }}  </span>
                             </div>
                             <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
+                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>{{ row[4] }}</span>
                             </div>
                           </div>
                           <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
+                            <span class="text-decoration-line-through">{{ row[6]|int - 200 }}</span>{{ row[6] }}
                           </div>
                         </div>
                         <div class="listing-info">
                           <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
+                          <p class="mb-0"  style="text-transform: capitalize;">{{row[7]}}</p>
                         </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
+                        <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
                       </div>
                     </div>
                   </div>
-
-                  <div class="item">
-                    <div class="listing-item">
-                      <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
-                        <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
-                        </div>
-                      </div>
-                      <div class="listing-details">
-                        <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
-                          <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
-                          </div>
-                        </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
-                        <div class="listing-rating d-flex justify-content-between">
-                          <div class="d-flex">
-                            <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
-                            </div>
-                            <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
-                            </div>
-                          </div>
-                          <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
-                          </div>
-                        </div>
-                        <div class="listing-info">
-                          <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
-                        </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
-                      </div>
-                    </div>
-                  </div>
-
-                                    <div class="item">
-                    <div class="listing-item">
-                      <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
-                        <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
-                        </div>
-                      </div>
-                      <div class="listing-details">
-                        <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
-                          <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
-                          </div>
-                        </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
-                        <div class="listing-rating d-flex justify-content-between">
-                          <div class="d-flex">
-                            <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
-                            </div>
-                            <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
-                            </div>
-                          </div>
-                          <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
-                          </div>
-                        </div>
-                        <div class="listing-info">
-                          <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
-                        </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <div class="item">
-                    <div class="listing-item">
-                      <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
-                        <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
-                        </div>
-                      </div>
-                      <div class="listing-details">
-                        <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
-                          <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
-                          </div>
-                        </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
-                        <div class="listing-rating d-flex justify-content-between">
-                          <div class="d-flex">
-                            <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
-                            </div>
-                            <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
-                            </div>
-                          </div>
-                          <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
-                          </div>
-                        </div>
-                        <div class="listing-info">
-                          <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
-                        </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="item">
-                    <div class="listing-item">
-                      <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
-                        <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
-                        </div>
-                      </div>
-                      <div class="listing-details">
-                        <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
-                          <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
-                          </div>
-                        </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
-                        <div class="listing-rating d-flex justify-content-between">
-                          <div class="d-flex">
-                            <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
-                            </div>
-                            <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
-                            </div>
-                          </div>
-                          <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
-                          </div>
-                        </div>
-                        <div class="listing-info">
-                          <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
-                        </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
-                      </div>
-                    </div>
-                  </div>
-
-
-                                    <div class="item">
-                    <div class="listing-item">
-                      <div class="listing-image bg-overlay-half-bottom">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/listing/01.jpg')}}" alt="#">
-                        <div class="listing-favourite">
-                          <i class="fa-regular fa-heart"></i>
-                        </div>
-                      </div>
-                      <div class="listing-details">
-                        <div class="listing-title d-flex justify-content-between">
-                          <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">Tokyo</a></h5>
-                          <div class="country-flags">
-                            <img class="img-fluid shadow-sm" src="{{ url_for('static', filename='images/country-flags/01.jpg')}}" alt="#">
-                          </div>
-                        </div>
-                        <a href="#" class="listing-loaction"><i class="fa fa-location-dot"></i>  17-4, Kaminarimon 2-chome, Taito-ku, Tokyo  </a>
-                        <div class="listing-rating d-flex justify-content-between">
-                          <div class="d-flex">
-                            <div class="date me-3">
-                              <i class="fa-regular fa-calendar-days me-2"></i><span> Day </span>
-                            </div>
-                            <div class="rating">
-                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>4.0 / 5</span>
-                            </div>
-                          </div>
-                          <div class="price">
-                            <span class="text-decoration-line-through">$899</span>$700
-                          </div>
-                        </div>
-                        <div class="listing-info">
-                          <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0">The price is something not necessarily defined as financial.</p>
-                        </div>
-                        <a href="tour-detail.html" class="btn btn-link">See Details</a>
-                      </div>
-                    </div>
-                  </div>
+                  {% endfor %}
 
                 </div>
               </div>

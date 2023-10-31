@@ -1026,6 +1026,8 @@ def tour_package_saved_dlt(package_id):
 def user_tour_package_booking():
     if request.method == 'POST':
         view = 0
+        package_status = 2
+        package_status_view = 1
         provider = request.form.get('pro_id')
         num_people = request.form.get('days')
         package_id = request.form.get('package_id')
@@ -1034,8 +1036,8 @@ def user_tour_package_booking():
         phone = request.form.get('phone')
 
         cursor = mysql.connection.cursor()
-        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id) VALUES (%s, %s, %s, %s)"
-        cursor.execute(query, (session['userid'], package_id, view, provider))
+        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view))
         mysql.connection.commit()
 
         # Get the generated Package Id
@@ -1101,7 +1103,22 @@ def pro_account():
                 WHERE package_bookings.viewed = 0 AND package_bookings.package_provider_id = %s;   """
         cursor.execute(query, str(session['proid']))
         unwatched = cursor.fetchall()
-        return render_template('pro/home.html', unwatched=unwatched)
+
+        # SQL query to select Tour Packages
+        query = """ SELECT tp.*, pi.image_path
+                    FROM tour_packages tp
+                    LEFT JOIN (
+                        SELECT package_id, MIN(image_path) AS image_path
+                        FROM package_images
+                        GROUP BY package_id
+                    ) pi ON tp.package_id = pi.package_id;
+                """
+        # Execute the query and retrieve the data
+        cursor.execute(query)
+        tour_packages_data = cursor.fetchall()
+        # Close the cursor and database connection if necessary
+        cursor.close()
+        return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data)
     return render_template('pro/section.html')
 
 # New notification mark as read
@@ -1420,11 +1437,18 @@ def adding_tourpackages():
 
 
 # Tour Package Details
-@app.route('/sepwrite.com/account.pro/tour-packages-details/<package_id>', methods=['POST', 'GET'])
+@app.route('/sepwrite.com/account.pro/pro-tour-packages-details/<package_id>', methods=['POST', 'GET'])
 def pro_tour_package_details(package_id):
     if 'prousercompany' in session:
         # SELECTING TOUR PACKAGE
-        query1 = "SELECT * FROM tour_packages WHERE package_id = %s"
+        query1 = """SELECT tp.*, pi.image_path
+            FROM tour_packages tp
+            LEFT JOIN (
+                SELECT package_id, MIN(image_path) AS image_path
+                FROM package_images
+                GROUP BY package_id
+            ) pi ON tp.package_id = pi.package_id
+            WHERE tp.package_id = %s;"""
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
         cursor.execute(query1, package_id)
@@ -1472,7 +1496,7 @@ def pro_tour_booking_details(booking_id):
 def pro_tour_booking_accept(booking_id):
     cursor = mysql.connection.cursor()
     try:
-        query = "UPDATE package_bookings SET package_status = 1 WHERE booked_id = %s;"
+        query = "UPDATE package_bookings SET package_status = 1,  package_status_view = 0 WHERE booked_id = %s;"
         cursor.execute(query, (booking_id,))
         mysql.connection.commit()
 
@@ -1499,7 +1523,7 @@ def pro_tour_booking_accept(booking_id):
 def pro_tour_booking_reject(booking_id):
     cursor = mysql.connection.cursor()
     try:
-        query = "UPDATE package_bookings SET package_status = 0 WHERE booked_id = %s;"
+        query = "UPDATE package_bookings SET package_status = 0, package_status_view = 0 WHERE booked_id = %s;"
         cursor.execute(query, (booking_id,))
         mysql.connection.commit()
 

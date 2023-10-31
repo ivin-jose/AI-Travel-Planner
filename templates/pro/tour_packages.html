@@ -19,14 +19,14 @@
             <div class="col-lg-4 col-md-6 mb-4 ">
               <div class="listing-item">
                 <div class="listing-image bg-overlay-half-bottom">
-                  <img class="img-fluid" src="{{row[8]}}" alt="{{row[8]}}">
+                  <img class="img-fluid" src="{{ url_for('static', filename=row[10]) }}" alt="{{row[10]}}">
                   <div class="listing-favourite">
                     <i class="fa-regular fa-heart"></i>
                   </div>
                 </div>
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">
-                    <h5 class="mb-0"><a href="tour-detail.html" class="title mb-0">{{ row[2] }}</a></h5>
+                    <h5 class="mb-0"><a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
                     <div class="country-flags">
                       <!-- <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#"> -->
                     </div>
@@ -49,7 +49,7 @@
                     
                     <p class="mb-0" style="text-transform: capitalize;">{{row[7]}}</p>
                   </div>
-                  <a href="{{ url_for('tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                  <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
                 </div>
               </div>
             </div>
