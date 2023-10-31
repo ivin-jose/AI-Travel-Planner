@@ -292,10 +292,14 @@
                                 <!-- START BOOKING FORM  -->
                                 {% for row in tour_packages_data %}
                                   <input type="text" name="package_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[0] }}" hidden>
+                                  <input type="text" name="pro_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[1] }}" hidden>
                                 {% endfor %}
                                 <label id="message"></label>
                                 <div class="mb-3 select-border">
                                   <input type="text" name="username" class="form-control datetimepicker-input" placeholder="Name">
+                                </div>
+                                <div class="mb-3 select-border">
+                                  <input type="text" name="phone" class="form-control datetimepicker-input" placeholder="Phone Number" value="+91 ">
                                 </div>
                                  <div class="mb-3 select-border">
                                   <input type="text" name="user_identity_document" class="form-control datetimepicker-input" placeholder="ID/PASSPORT">
@@ -441,11 +445,12 @@
 $(document).ready(function() {
     $('form').submit(function(e) {
         var name = $('input[name="username"]').val();
+        var phone = $('input[name="phone"]').val();
         var idPassport = $('input[name="user_identity_document"]').val();
         var numPeople = $('input[name="days"]').val();
         var messageLabel = $('#message');
 
-        if (name === '' || idPassport === '' || numPeople === '') {
+        if (name === '' || idPassport === '' || numPeople === '' || phone = '') {
             e.preventDefault(); // Prevent form submission
             messageLabel.text('Please fill in all fields.').css('color', 'red');
         } else {

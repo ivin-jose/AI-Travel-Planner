@@ -127,8 +127,7 @@
                             <!-- Notification box -->
                             {% for row in unwatched %}
                             <div class="tab-pane active">
-                              unwatched Booking id = {{row[1]}} oo{{(session['proid'])}}
-                              <a href="#">Click to see details</a>
+                              <a href="{{ url_for('pro_tour_booking_details', booking_id=row[1])}}">Click to see details</a>
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box">
                                   <strong>Booking request:</strong> You have new booking for <b>{{ row[0] }}</b> Package
                                 </div>
@@ -137,8 +136,7 @@
 
                             {% for row in watched %}
                             <div class="tab-pane active">
-                              watched Booking id = {{ row[1] }}
-                              <a href="#">Click to see details</a>
+                              <a href="{{ url_for('pro_tour_booking_details', booking_id=row[1])}}">Click to see details</a>
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box" style="background-color: lightgrey !important";>
                                   <strong>Booking request:</strong> You have new booking for <b>{{ row[0] }}</b> Package
                                 </div>

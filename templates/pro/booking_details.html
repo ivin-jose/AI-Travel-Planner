@@ -1,0 +1,78 @@
+{% extends 'pro_base.html' %}
+{% block content %}
+<div class="col-md-7 col-xl-8">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="account" role="tabpanel">
+                    
+                <div class="col">
+                <div class="row">
+                  <div class="col mb-3">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="e-profile">
+                          <div class="row">
+                            <div class="col-12 col-sm-auto mb-3">
+                              
+                              
+                          </div>
+                          <ul class="nav nav-tabs">
+                            <li class="nav-item"><a href="" class="active nav-link">Booking Details</a></li>
+                          </ul>
+                          <div class="tab-content pt-3">
+
+                          	<h6>Booking id : {{ bookingid }}</h6>
+                          	<h6>Package Details : </h6>
+                          	{% for row in booking_details %}
+                          	Package Name : {{ row[2] }}<br>
+                          	No of DAYS :  {{ row[3] }}<br>
+                          	Departure Date : {{ row[4] }}<br>
+                          	Price:  Rs {{ row[6] }}<br>
+                          	{% endfor %}
+                          	<br><br>
+
+                          	<h6>Travaler Details : </h6>
+                          	<table class="table table-dark">
+							  <thead>
+							    <tr>
+							       <th>Travaler id</th>
+							      <th scope="col">Name</th>
+							      <th scope="col">Identity Document</th>
+							      <th scope="col">Phone</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	{% for row in booking_persons %}
+							    <tr>
+							      <td>{{row[0]}}</td>
+							      <td>{{row[2]}}</td>
+							      <td>{{row[3]}}</td>
+							      <td>{{row[4]}}</td>
+							    </tr>
+							    {% endfor %}
+							  </tbody>
+							</table>
+                      </div>
+                          <div>
+                            	<a href="{{ url_for('pro_tour_booking_accept', booking_id=bookingid) }}" class="btn btn-primary d-grid">Accept Booking</a>
+                              <a href="{{ url_for('pro_tour_booking_reject', booking_id=bookingid) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+{% endblock %}

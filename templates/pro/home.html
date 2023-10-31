@@ -90,15 +90,14 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-12 text-center">
-              <form class="row g-3 home-search align-items-center justify-content-center">
-
-                <div class="col-sm-6 col-lg-4 col-md-6">
-                  <input type="text" name="">
+              {% for row in unwatched %}
+                <div class="tab-pane active">
+                  <a href="{{ url_for('pro_tour_booking_details', booking_id=row[1])}}">Click to see details</a>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box" style="height: 10vh !important;">
+                      <strong>Booking request:</strong> You have new booking for <b>{{ row[0] }}</b> Package <a href="{{ url_for('booking_mark_as_read', booking_id=row[1])}}" class="">(Mark as Read)</a><br><br>
+                    </div>
                 </div>
-                <div class="col-sm-6 col-lg-2 col-md-4 d-grid">
-                  <a class="btn btn-primary" href="#"> Search </a>
-                </div>
-              </form>
+              {% endfor %}
             </div>
           </div>
         </div>

@@ -1026,22 +1026,24 @@ def tour_package_saved_dlt(package_id):
 def user_tour_package_booking():
     if request.method == 'POST':
         view = 0
+        provider = request.form.get('pro_id')
         num_people = request.form.get('days')
         package_id = request.form.get('package_id')
         name = request.form.get('username')
         user_identity_document = request.form.get('user_identity_document')
+        phone = request.form.get('phone')
 
         cursor = mysql.connection.cursor()
-        query = "INSERT INTO package_bookings (user_id, package_id, viewed) VALUES (%s, %s, %s)"
-        cursor.execute(query, (session['userid'], package_id, view))
+        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id) VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (session['userid'], package_id, view, provider))
         mysql.connection.commit()
 
         # Get the generated Package Id
         booking_id = cursor.lastrowid
 
         # Adding travel lead
-        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
-        cursor.execute(insert_query, (booking_id, name, user_identity_document))
+        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
+        cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
         mysql.connection.commit()
 
         travalers = []
@@ -1090,8 +1092,26 @@ def user_tour_package_booking():
 @app.route('/sepwrite.com/account.pro')
 def pro_account():
     if 'prousercompany' in session:
-        return render_template('pro/home.html')
+        cursor = mysql.connection.cursor()
+
+        # Unwatched Notofications
+        query = """
+            SELECT tour_packages.tourname, package_bookings.booked_id FROM tour_packages
+                JOIN package_bookings  ON tour_packages.package_id = package_bookings.package_id
+                WHERE package_bookings.viewed = 0 AND package_bookings.package_provider_id = %s;   """
+        cursor.execute(query, str(session['proid']))
+        unwatched = cursor.fetchall()
+        return render_template('pro/home.html', unwatched=unwatched)
     return render_template('pro/section.html')
+
+# New notification mark as read
+@app.route('/sepwrite.com/account.pro/mark-us-read/<booking_id>')
+def booking_mark_as_read(booking_id):
+    cursor = mysql.connection.cursor()
+    query = "UPDATE package_bookings SET viewed = 1 WHERE package_provider_id = %s AND booked_id = %s"
+    cursor.execute(query, (str(session['proid']), booking_id))
+    mysql.connection.commit()
+    return redirect(url_for('pro_account'))
 
 # Company Logout Page
 @app.route('/sepwrite.com/account.pro/logout-section')
@@ -1225,18 +1245,9 @@ def pro_notifications():
 
         # Unwatched Notofications
         query = """
-            SELECT
-    tour_packages.tourname,
-    package_bookings.booked_id
-FROM
-    tour_packages
-JOIN
-    package_bookings
-ON
-    tour_packages.package_id = package_bookings.package_id
-WHERE
-    package_bookings.viewed = 0
-    AND package_bookings.package_provider_id = %s; 
+                SELECT tour_packages.tourname, package_bookings.booked_id FROM tour_packages
+                JOIN package_bookings  ON tour_packages.package_id = package_bookings.package_id
+                WHERE package_bookings.viewed = 0 AND package_bookings.package_provider_id = %s; 
         """
         cursor.execute(query, str(session['proid']))
         unwatched = cursor.fetchall()
@@ -1248,18 +1259,9 @@ WHERE
         cursor.close()
         cursor = mysql.connection.cursor()
         query1 = """
-            SELECT
-                tour_packages.tourname,
-                package_bookings.booked_id
-            FROM
-                tour_packages
-            JOIN
-                package_bookings
-            ON
-                tour_packages.package_id = package_bookings.package_id
-            WHERE
-                package_bookings.viewed = 1
-                AND package_bookings.package_provider_id = %s; 
+                SELECT tour_packages.tourname, package_bookings.booked_id FROM tour_packages
+                JOIN package_bookings  ON tour_packages.package_id = package_bookings.package_id
+                WHERE package_bookings.viewed = 1 AND package_bookings.package_provider_id = %s;  
         """
         cursor.execute(query1, str(session['proid']))
         watched = cursor.fetchall()
@@ -1447,6 +1449,120 @@ def pro_tour_package_details(package_id):
     else:
         return render_template('pro/login')
 
+# View Package Order Details
+@app.route('/sepwrite.com/account.pro/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
+def pro_tour_booking_details(booking_id):
+    cursor = mysql.connection.cursor()
+    query = """SELECT tour_packages.*
+        FROM tour_packages
+        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+        WHERE package_bookings.booked_id = %s;
+    """
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    query1 = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query1, (booking_id,))
+    booking_persons = cursor.fetchall()
+
+    return render_template('pro/booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
+
+# Accepting Package Booking request
+@app.route('/sepwrite.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
+def pro_tour_booking_accept(booking_id):
+    status = 1 # accepted
+    status_view = 0 # not viewed
+    # fetching userid 
+    cursor = mysql.connection.cursor()
+    query = "SELECT user_id FROM package_bookings WHERE booked_id = %s" 
+    cursor.execute(query, (booking_id,))
+    result = cursor.fetchone()
+
+    if result:
+        userid = result[0]  # Extract the first (and presumably only) element from the result
+
+        # Check if the booking_id already exists in accepted_bookings
+        check_query = "SELECT booking_id FROM accepted_bookings WHERE booking_id = %s"
+        cursor.execute(check_query, (booking_id,))
+        existing_booking = cursor.fetchone()
+
+        if existing_booking:
+            flash = "Already Accepted"
+        else:
+            # If booking_id doesn't exist, insert the new record
+            query1 = "INSERT INTO accepted_bookings (booking_id, status, status_view, userid) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query1, (booking_id, status, status_view, userid))
+            mysql.connection.commit()
+            flash = "Request Accepted...!"
+
+            query = "DELETE FROM rejected_bookings WHERE booking_id = %s"
+            cursor.execute(query, (booking_id,))
+            mysql.connection.commit()
+    else:
+        flash = "Something Wrong.."
+
+    query = """SELECT tour_packages.*
+        FROM tour_packages
+        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+        WHERE package_bookings.booked_id = %s;
+    """
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    query1 = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query1, (booking_id,))
+    booking_persons = cursor.fetchall()
+
+    return render_template('pro/booking_details.html', flash=flash, booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
+
+# View Package Order Details
+@app.route('/sepwrite.com/account.pro/package-rejecting/<booking_id>', methods=['POST', 'GET'])
+def pro_tour_booking_reject(booking_id):
+    status = 0 # accepted
+    status_view = 0 # not viewed
+    # fetching userid 
+    cursor = mysql.connection.cursor()
+    query = "SELECT user_id FROM package_bookings WHERE booked_id = %s" 
+    cursor.execute(query, (booking_id,))
+    result = cursor.fetchone()
+
+    if result:
+        userid = result[0]  # Extract the first (and presumably only) element from the result
+
+        # Check if the booking_id already exists in accepted_bookings
+        check_query = "SELECT booking_id FROM rejected_bookings WHERE booking_id = %s"
+        cursor.execute(check_query, (booking_id,))
+        existing_booking = cursor.fetchone()
+
+        if existing_booking:
+            flash = "Already Rejected"
+        else:
+            # If booking_id doesn't exist, insert the new record
+            query1 = "INSERT INTO rejected_bookings (booking_id, status, status_view, userid) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query1, (booking_id, status, status_view, userid))
+            mysql.connection.commit()
+            flash = "Request Rejected...!"
+
+            query = "DELETE FROM accepted_bookings WHERE booking_id = %s"
+            cursor.execute(query, (booking_id,))
+            mysql.connection.commit()
+    else:
+        flash = "Something Wrong.."
+
+    query = """SELECT tour_packages.*
+        FROM tour_packages
+        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+        WHERE package_bookings.booked_id = %s;
+    """
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    query1 = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query1, (booking_id,))
+    booking_persons = cursor.fetchall()
+
+
+    return render_template('pro/booking_details.html', flash=flash, booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
 
 #---------------------------------------------------------
 #---------------------------------------------------------

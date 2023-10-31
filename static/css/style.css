@@ -7167,4 +7167,6 @@ blockquote {
   right: 0;
   margin: auto;
   max-width: 40%;
+  z-index: 1500 !important;
+  border: 0px;
 }
