@@ -134,8 +134,8 @@
                 <a class="nav-link" href="{{ url_for('pro_tour_packages') }}" role="button">Tour Packages</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
-                <a class="nav-link" href="contact-us.html">Contact Us</i></a>
+              <li class="nav-item dropdown {% if 'bookings' in request.url_rule.endpoint %}active{% endif %}">
+                 <a class="nav-link" href="{{ url_for('bookings') }}">Bookings</i></a>
               </li>
               <li class="nav-item dropdown  {% if 'pro_settings' or 'pro_logout' in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('pro_settings') }}">Profile</i></a>

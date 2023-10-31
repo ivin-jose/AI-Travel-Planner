@@ -27,6 +27,16 @@
                           	No of DAYS :  {{ row[3] }}<br>
                           	Departure Date : {{ row[4] }}<br>
                           	Price:  Rs {{ row[6] }}<br>
+                            {% if row[10] == 0 %}
+                              Status : Rejected
+                            {% endif %}
+                            {% if row[10] == 1 %}
+                              Status : Accepted
+                            {% endif %}
+                            {% if row[10] == 2 %}
+                              Status : Pending
+                            {% endif %}
+
                           	{% endfor %}
                           	<br><br>
 

@@ -1453,10 +1453,10 @@ def pro_tour_package_details(package_id):
 @app.route('/sepwrite.com/account.pro/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_details(booking_id):
     cursor = mysql.connection.cursor()
-    query = """SELECT tour_packages.*
-        FROM tour_packages
-        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
-        WHERE package_bookings.booked_id = %s;
+    query = """SELECT tour_packages.*, package_bookings.package_status
+            FROM tour_packages
+            JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+            WHERE package_bookings.booked_id = %s;
     """
     cursor.execute(query, (booking_id,))
     booking_details = cursor.fetchall()
@@ -1470,41 +1470,20 @@ def pro_tour_booking_details(booking_id):
 # Accepting Package Booking request
 @app.route('/sepwrite.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_accept(booking_id):
-    status = 1 # accepted
-    status_view = 0 # not viewed
-    # fetching userid 
     cursor = mysql.connection.cursor()
-    query = "SELECT user_id FROM package_bookings WHERE booked_id = %s" 
-    cursor.execute(query, (booking_id,))
-    result = cursor.fetchone()
+    try:
+        query = "UPDATE package_bookings SET package_status = 1 WHERE booked_id = %s;"
+        cursor.execute(query, (booking_id,))
+        mysql.connection.commit()
 
-    if result:
-        userid = result[0]  # Extract the first (and presumably only) element from the result
-
-        # Check if the booking_id already exists in accepted_bookings
-        check_query = "SELECT booking_id FROM accepted_bookings WHERE booking_id = %s"
-        cursor.execute(check_query, (booking_id,))
-        existing_booking = cursor.fetchone()
-
-        if existing_booking:
-            flash = "Already Accepted"
-        else:
-            # If booking_id doesn't exist, insert the new record
-            query1 = "INSERT INTO accepted_bookings (booking_id, status, status_view, userid) VALUES (%s, %s, %s, %s)"
-            cursor.execute(query1, (booking_id, status, status_view, userid))
-            mysql.connection.commit()
-            flash = "Request Accepted...!"
-
-            query = "DELETE FROM rejected_bookings WHERE booking_id = %s"
-            cursor.execute(query, (booking_id,))
-            mysql.connection.commit()
-    else:
+        flash = "Request Accepted"
+    except Exception as e:
         flash = "Something Wrong.."
 
-    query = """SELECT tour_packages.*
-        FROM tour_packages
-        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
-        WHERE package_bookings.booked_id = %s;
+    query = """SELECT tour_packages.*, package_bookings.package_status
+            FROM tour_packages
+            JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+            WHERE package_bookings.booked_id = %s;
     """
     cursor.execute(query, (booking_id,))
     booking_details = cursor.fetchall()
@@ -1515,44 +1494,23 @@ def pro_tour_booking_accept(booking_id):
 
     return render_template('pro/booking_details.html', flash=flash, booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
 
-# View Package Order Details
+# Reject Package Order Request
 @app.route('/sepwrite.com/account.pro/package-rejecting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_reject(booking_id):
-    status = 0 # accepted
-    status_view = 0 # not viewed
-    # fetching userid 
     cursor = mysql.connection.cursor()
-    query = "SELECT user_id FROM package_bookings WHERE booked_id = %s" 
-    cursor.execute(query, (booking_id,))
-    result = cursor.fetchone()
+    try:
+        query = "UPDATE package_bookings SET package_status = 0 WHERE booked_id = %s;"
+        cursor.execute(query, (booking_id,))
+        mysql.connection.commit()
 
-    if result:
-        userid = result[0]  # Extract the first (and presumably only) element from the result
-
-        # Check if the booking_id already exists in accepted_bookings
-        check_query = "SELECT booking_id FROM rejected_bookings WHERE booking_id = %s"
-        cursor.execute(check_query, (booking_id,))
-        existing_booking = cursor.fetchone()
-
-        if existing_booking:
-            flash = "Already Rejected"
-        else:
-            # If booking_id doesn't exist, insert the new record
-            query1 = "INSERT INTO rejected_bookings (booking_id, status, status_view, userid) VALUES (%s, %s, %s, %s)"
-            cursor.execute(query1, (booking_id, status, status_view, userid))
-            mysql.connection.commit()
-            flash = "Request Rejected...!"
-
-            query = "DELETE FROM accepted_bookings WHERE booking_id = %s"
-            cursor.execute(query, (booking_id,))
-            mysql.connection.commit()
-    else:
+        flash = "Request Rejected"
+    except Exception as e:
         flash = "Something Wrong.."
 
-    query = """SELECT tour_packages.*
-        FROM tour_packages
-        JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
-        WHERE package_bookings.booked_id = %s;
+    query = """SELECT tour_packages.*, package_bookings.package_status
+            FROM tour_packages
+            JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+            WHERE package_bookings.booked_id = %s;
     """
     cursor.execute(query, (booking_id,))
     booking_details = cursor.fetchall()
@@ -1564,6 +1522,35 @@ def pro_tour_booking_reject(booking_id):
 
     return render_template('pro/booking_details.html', flash=flash, booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
 
+#View all Bookings 
+
+@app.route('/sepwrite.com/account.pro/bookings')
+def bookings():
+    cursor = mysql.connection.cursor()
+    query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE pb.package_provider_id = %s AND package_status = %s;
+    """
+    cursor.execute(query, (session['proid'], 1))
+    accepted = cursor.fetchall()
+    # Rejected Details
+    query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE pb.package_provider_id = %s AND package_status = %s;
+    """
+    cursor.execute(query, (session['proid'], 0))
+    rejected = cursor.fetchall()
+    # Pending Details
+    query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE pb.package_provider_id = %s AND package_status = %s;
+    """
+    cursor.execute(query, (session['proid'], 2))
+    pending = cursor.fetchall()
+    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending)
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------
