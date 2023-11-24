@@ -83,6 +83,7 @@
 }
 
 </style>
+
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container">
 <div class="row flex-lg-nowrap">
@@ -104,73 +105,103 @@
             <div class="e-profile">
               <div class="row">
                 <div class="col-12 col-sm-auto mb-3" style="width: 50%;">
-					<form class="form" name="tourpackage-add-form" method="POST" enctype="multipart/form-data" action="{{ url_for('adding_tourpackages') }}" id="tourpackage-add-form">
-					  <div class="row">
-					    <div class="col">
+                  <h3>EDIT PACKAGE</h3>
 
-					      <div class="row">
-					        <div class="col">
-					          <div class="form-group">
-					            <label>Tour Name: <span class="tourname-label" style="color: red;"></span></label>
-					            <input class="form-control" type="text" name="tourname" id="tourname">
-					          </div>
-					          <div class="form-group">
-					            <label>Number of Days: <span class="days-label" style="color: red;"></span></label>
-					            <input class="form-control" type="text" name="days" id="days">
-					          </div>
-					          <div class="form-group">
-					            <label>Price of Package: <span class="price-label" style="color: red;"></span></label>
-					            <input class="form-control" type="text" name="price" id="price">
-					          </div>
-					          <div class="form-group">
-					            <label>From Date: <span class="from-date-label" style="color: red;"></span></label>
-					            <input class="form-control" type="date" name="from_date" id="from_date">
-					          </div>
-					          <div class="form-group">
-					            <label>To Date: <span class="to-date-label" style="color: red;"></span></label>
-					            <input class="form-control" type="date" name="to_date" id="to_date">
-					          </div>
-					          <div class="form-group">
-					            <label>Description: <span class="description-label" style="color: red;"></span></label>
-					            <textarea class="form-control" rows="5" name="description" id="description"></textarea>
-					          </div>
-					        </div>
-					      </div>
-					      <div class="row">
-					        <div class="col">
-					        	<!-- multiple images -->
-					        	<div class="form-group">
-					        		<div class="upload__box">
-					        			<div class="upload__btn-box">
-					        				<label class="upload__btn">
-					        					<p>Image +</p>
-					        					<input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
-					        				</label>
-					        			</div>
-					        			<div class="upload__img-wrap"></div>
-					        		</div>
-					        	</div>
+                  {% for row in tour_packages_data %}
+                  1--{{ row[0] }}<br>,
+                  2--{{ row[1] }}<br>,
+                  3--{{ row[2] }}<br>,
+                  4--{{ row[3] }}<br>,
+                  5--{{ row[4] }}<br>,
+                  6--{{ row[5] }}<br>,
+                  7--{{ row[6] }}<br>,
+                  8--{{ row[7] }}<br>,
+                  9--{{ row[8] }}<br>,
+                  10--{{ row[9] }}<br>,
+                  11--{{ row[10] }}<br>,
+                  12--{{ row[11] }}<br>,
+                  13--{{ row[12] }}<br>,
+        					<form class="form" name="tourpackage-add-form" method="POST" enctype="multipart/form-data" action="{{ url_for('adding_tourpackages') }}" id="tourpackage-add-form">
+        					  <div class="row">
+        					    <div class="col">
 
-					        </div>
-					      </div>
-					      <div class="row">
-					        <div class="col mb-3">
-					          <div class="form-group">
-					            <!-- Hidden input field to store the number of days -->
-					            <input type="hidden" name="num_days" id="num_days" value="0">
-					            <div class="form-group" id="day-program-container"></div>
-					          </div>
-					        </div>
-					      </div>
+        					      <div class="row">
+        					        <div class="col">
+        					          <div class="form-group">
+        					            <label>Tour Name: <span class="tourname-label" style="color: red;"></span></label>
+        					            <input class="form-control" type="text" name="tourname" id="tourname" value="{{ row[2] }}">
+        					          </div>
+        					          <div class="form-group">
+        					            <label>Number of Days: <span class="days-label" style="color: red;"></span></label>
+        					            <input class="form-control" type="text" name="days" id="days" value="{{ row[3] }}">
+        					          </div>
+        					          <div class="form-group">
+        					            <label>Price of Package: <span class="price-label" style="color: red;"></span></label>
+        					            <input class="form-control" type="text" name="price" id="price" value="{{ row[6] }}">
+        					          </div>
+        					          <div class="form-group">
+        					            <label>From Date: <span class="from-date-label" style="color: red;"></span></label>
+        					            <input class="form-control" type="date" name="from_date" id="from_date" value="{{ row[4] }}">
+        					          </div>
+        					          <div class="form-group">
+        					            <label>To Date: <span class="to-date-label" style="color: red;"></span></label>
+        					            <input class="form-control" type="date" name="to_date" id="to_date" value="{{ row[5] }}">
+        					          </div>
+        					          <div class="form-group">
+        					            <label>Description: <span class="description-label" style="color: red;"></span></label>
+        					            <textarea class="form-control" rows="5" name="description" id="description"> {{ row[7] }}</textarea>
+        					        </div>
+        					      </div>
+        					      <div class="row">
+        					        <div class="col">
+        					        	<!-- multiple images -->
+        					        	<div class="form-group">
+        					        		<div class="upload__box">
+        					        			<div class="upload__btn-box">
+        					        				<label class="upload__btn">
+        					        					<p>Image +</p>
+        					        					<input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
+        					        				</label>
+        					        			</div>
+        					        			<div class="upload__img-wrap"></div>
+        					        		</div>
+        					        	</div>
 
-					    </div>
-					  </div>
-					  <div class="row">
-					    <div class="col d-flex justify-content-end">
-					      <input class="btn btn-primary" type="submit" value="Save" name="tourPackageAddForm" id="tourPackageAddForm">
-					    </div>
-					  </div>
-					</form>
+                            {% endfor %}
+
+                            {% for row in  tour_packages_image %}
+                           <div class='upload__img-box'><div style="background-image: url('{{ url_for("static", filename=row[3]) }}')"
+ data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'>
+                                <a href="{{ url_for('delete_blog_img', bid= row[0] ) }}"><div class='upload__img-close'></div></a>
+                              </div></div>
+                              {% endfor %}
+
+        					        </div>
+        					      </div>
+
+                       <div class="row">
+                        <div class="col mb-3">
+                          <div class="form-group">
+                            <!-- Hidden input field to store the number of days -->
+                            <input type="hidden" name="num_days" id="num_days" value="">
+                            <div class="form-group" id="day-program-container"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% for row in tour_packages_day %}
+                        <!-- Iterate through your rows and set the data-value attribute for each row -->
+                        <input type="text" class="num-days-input" value="{{ row[4] }}" name="numdays+{{row[2]}}">
+                      {% endfor %}
+
+        					    </div>
+        					  </div>
+        					  <div class="row">
+        					    <div class="col d-flex justify-content-end">
+        					      <input class="btn btn-primary" type="submit" value="Save" name="companyUpdateButton" id="companyUpdateButton">
+        					    </div>
+        					  </div>
+        					</form>
 				</div>
 			</div>
 		</div>
@@ -191,15 +222,9 @@
 
 <!-- Form validation  -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-
-
 <script>
-  // Form Validation
 $(document).ready(function() {
   $('#tourpackage-add-form').submit(function(event) {
-    alert("gell")
     var isValid = true;
 
     // Reset error messages
@@ -212,9 +237,9 @@ $(document).ready(function() {
     var from_date = $('#from_date').val();
     var to_date = $('#to_date').val();
     var description = $('#description').val();
+    var bio = $('#bio').val();
 
     if (tourname === '') {
-      alert("get")
       $('.tourname-label').text('Tour Name is required');
       $('.tourname').focus();
       isValid = false;
@@ -264,7 +289,7 @@ $(document).ready(function() {
       $('#tourpackage-add-form')[0].reset(); // Reset the form to its initial state
     }
 
-    if (isValid == false) {
+    if (!isValid) {
       event.preventDefault(); // Prevent form submission
     } else {
       // Disable the form submission button to prevent resubmission
@@ -284,8 +309,6 @@ $(document).ready(function() {
     label.text(''); // Clear the error message
   });
 });
-
-// end of validation 
 
 // Function to calculate the "to_date" based on "from_date" and "num_days"
 function calculateToDate() {
@@ -311,25 +334,30 @@ $('#from_date, #num_days').on('change', calculateToDate);
 <!-- // JavaScript to add input fields based on the number of days -->
 
 <script>
-  document.getElementById('days').addEventListener('input', function () {
-    const days = parseInt(this.value);
-    const dayProgramContainer = document.getElementById('day-program-container');
+window.addEventListener('load', function () {
+    // Get all the elements with class 'num-days-input'
+    const numDaysInputs = document.querySelectorAll('.num-days-input');
 
-    // Clear any existing day program input fields
-    dayProgramContainer.innerHTML = '';
+    numDaysInputs.forEach(function (input) {
+      const rowValue = input.getAttribute('data-value');
+      document.getElementById('num_days').value = rowValue;
 
-    // Create input fields for day programs and update the hidden field
-    for (let i = 1; i <= days; i++) {
-      const input = document.createElement('input');
-      input.className = 'form-control';
-      input.type = 'text';
-      input.name = `day_program_${i}`;
-      input.placeholder = `Day ${i} Program`;
-      dayProgramContainer.appendChild(input);
-    }
+      const days = parseInt(rowValue);
+      const dayProgramContainer = document.getElementById('day-program-container');
 
-    // Update the hidden field with the number of days
-    document.getElementById('num_days').value = days;
+      // Clear any existing day program input fields
+      dayProgramContainer.innerHTML = '';
+
+      // Create input fields for day programs and update the hidden field
+      for (let i = 1; i <= days; i++) {
+        const dayInput = document.createElement('input');
+        dayInput.className = 'form-control';
+        dayInput.type = 'text';
+        dayInput.name = `day_program_${i}`;
+        dayInput.placeholder = `Day ${i} Program`;
+        dayProgramContainer.appendChild(dayInput);
+      }
+    });
   });
 </script>
 

@@ -859,6 +859,7 @@ def tour_packages():
     else:
         return redirect('/login')
 
+
 # Tour Package Details
 @app.route('/sepwrite.com/tour-packages-details/<package_id>', methods=['POST', 'GET'])
 def tour_package_details(package_id):
@@ -1435,6 +1436,45 @@ def adding_tourpackages():
             return render_template('pro/tour-packages-adding-form.html')
     return render_template('pro/tour-packages-adding-form.html')
 
+## Tour Edit Package Details
+@app.route('/sepwrite.com/account.pro/pro-tour-packages-edit/<package_id>', methods=['POST', 'GET'])
+def pro_tour_package_edit(package_id):
+    if 'prousercompany' in session:
+        # SELECTING TOUR PACKAGE
+        query1 = """
+        SELECT tp.*, pi.image_path
+            FROM tour_packages tp
+            LEFT JOIN (
+                SELECT package_id, MIN(image_path) AS image_path
+                FROM package_images
+                GROUP BY package_id
+            ) pi ON tp.package_id = pi.package_id
+            WHERE tp.package_id = %s;
+            """
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query1, package_id)
+        tour_packages_data = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query2, package_id)
+        tour_packages_day = cursor.fetchall()
+
+         # SELECTING TOUR PACKAGE
+        query3 = "SELECT * FROM package_images WHERE package_id = %s"
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query3, package_id)
+        tour_packages_image = cursor.fetchall()
+
+        return render_template('pro/tour_package_edit_form.html', tour_packages_data=tour_packages_data,
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
+    else:
+        return render_template('pro/login')
+
 
 # Tour Package Details
 @app.route('/sepwrite.com/account.pro/pro-tour-packages-details/<package_id>', methods=['POST', 'GET'])
@@ -1472,6 +1512,21 @@ def pro_tour_package_details(package_id):
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
     else:
         return render_template('pro/login')
+
+
+# Remove Tour Packages Details
+@app.route('/sepwrite.com/account.pro/remove-package/<package_id>')
+def remove_package(package_id):
+    cursor = mysql.connection.cursor()
+    query = """
+        DELETE FROM tour_packages
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+    return redirect('/sepwrite.com/account.pro/notifcations')
+
+
 
 # View Package Order Details
 @app.route('/sepwrite.com/account.pro/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
@@ -1574,7 +1629,18 @@ def bookings():
     """
     cursor.execute(query, (session['proid'], 2))
     pending = cursor.fetchall()
-    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending)
+    
+    query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE pb.package_provider_id = %s;
+    """
+    cursor.execute(query, (session['proid'],))
+    all_d = cursor.fetchall()
+
+    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d)
+
+
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

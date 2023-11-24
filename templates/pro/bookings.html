@@ -9,6 +9,7 @@
                   <div class="col mb-3">
                     <div class="card">
                       <div class="card-body">
+                      	<button id="all_bookings_btn" class="btn btn-primary">All</button>
                       	<button id="pending_bookings_btn" class="btn btn-primary">Show Pending</button>
 						<button id="accepted_bookings_btn" class="btn btn-primary">Show Accepted</button>
 						<button id="rejected_bookings_btn" class="btn btn-primary">Show Rejected</button>
@@ -26,6 +27,42 @@
 
 
                           <div class="tab-content pt-3">
+
+  	                          	<!-- All Bookings  -->
+
+  							<div id="all_bookings">
+  							    <h6>All Bookings : </h6>
+  							  	<table class="table table-dark">
+  								  <thead>
+  								    <tr>
+  								       <th>Booking Id</th>
+  								      <th scope="col">Tour Name</th>
+  								      <th scope="col">Status</th>
+  								      <th scope="col"></th>
+  								    </tr>
+  								  </thead>
+  								  <tbody>
+  								  	{% for row in all %}
+  									    <tr>
+  									      <td>{{row[0]}}</td>
+  									      <td>{{row[7]}}</td>
+  									      <td>{% if row[5] == 1 %}
+  									      	Accepted
+  									      	{% endif %}
+  									      	{% if row[5] == 0 %}
+  									      	Rejected
+  									      	{% endif %}
+  									      	{% if row[5] == 2 %}
+  									      	Pending
+  									        {% endif %}</td>
+  									      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
+  									    </td>
+  									    </tr>
+  								    {% endfor %}
+  								  </tbody>
+  								</table>
+  							</div>
+  							<!-- END -->
                           	<!-- Accepted Bookings  -->
 
 						<div id="accepted_bookings">
@@ -137,6 +174,7 @@
 <script>
 $(document).ready(function() {
   // Initially show the "Pending" div
+  $("#all_bookings").hide()
   $("#pending_bookings").show();
   $("#accepted_bookings").hide();
   $("#rejected_bookings").hide();
@@ -146,18 +184,27 @@ $(document).ready(function() {
     $("#pending_bookings").show();
     $("#accepted_bookings").hide();
     $("#rejected_bookings").hide();
+    $("#all_bookings").hide()
   });
 
   $("#accepted_bookings_btn").click(function() {
     $("#pending_bookings").hide();
     $("#accepted_bookings").show();
     $("#rejected_bookings").hide();
+    $("#all_bookings").hide()
   });
 
   $("#rejected_bookings_btn").click(function() {
     $("#pending_bookings").hide();
     $("#accepted_bookings").hide();
     $("#rejected_bookings").show();
+    $("#all_bookings").hide()
+  });
+  $("#all_bookings_btn").click(function() {
+    $("#pending_bookings").hide();
+    $("#accepted_bookings").hide();
+    $("#rejected_bookings").hide();
+    $("#all_bookings").show()
   });
 });
 </script>

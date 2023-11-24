@@ -10,6 +10,7 @@
                 <h2 class="title">Your <strong>Tour Programmes</strong></h2>
                 <div class="description">
                   <p>Let success motivate you. Find a picture of what epitomizes success to you and then pull it out when you are in need.</p>
+                  <a href="{{ url_for('adding_tourpackages') }}" class="btn btn-primary" style="padding: 10px;">New package..</a>
                 </div>
               </div>
             </div>
@@ -20,9 +21,6 @@
               <div class="listing-item">
                 <div class="listing-image bg-overlay-half-bottom">
                   <img class="img-fluid" src="{{ url_for('static', filename=row[10]) }}" alt="{{row[10]}}">
-                  <div class="listing-favourite">
-                    <i class="fa-regular fa-heart"></i>
-                  </div>
                 </div>
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">

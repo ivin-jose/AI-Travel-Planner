@@ -38,16 +38,8 @@
                 </div>
               </div>
               <div class="listing-favourite mt-4">
-                
-                {% if delt_flash %}
-                    <a href="{{ url_for('tour_package_saving', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2" id="save-btn"></i>Save</a>
-                {% else %}
-                    <a href="{{ url_for('tour_package_saved_dlt', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3" style="background-color: red";><i class="fa-solid fa-download me-2" id="save-btn"></i>UnSave</a>
-                {% endif %}
-                <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-bookmark me-2"></i>Bookmark</a> -->
-                <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Write a review</a> -->
-                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-share-nodes me-2"></i>Share</a>
-                <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-receipt me-2"></i></i>Report</a>
+                <a href="{{ url_for('remove_package', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-delete-nodes me-2"></i>Remove Package</a>
+                <a href="{{ url_for('pro_tour_package_edit', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-receiptf me-2"></i></i>Edit Package</a>
               </div>
             </div>
             
@@ -60,7 +52,7 @@
                     </div>
                     <div class="mt-4">
                       <div class="detail-title">
-                        <h5 class="fw-600">Listing Description{{ row[10]}}</h5>
+                        <h5 class="fw-600">Listing Description</h5>
                       </div>
                       <p>{{ row[7] }}</p>
                     </div>
