@@ -39,11 +39,8 @@
               </div>
               <div class="listing-favourite mt-4">
                 
-                {% if delt_flash %}
-                    <a href="{{ url_for('tour_package_saving', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2" id="save-btn"></i>Save</a>
-                {% else %}
-                    <a href="{{ url_for('tour_package_saved_dlt', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3" style="background-color: red";><i class="fa-solid fa-download me-2" id="save-btn"></i>UnSave</a>
-                {% endif %}
+                <a href="{{ url_for('tour_package_saving', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-download me-2" id="save-btn"></i>Save</a>
+
                 <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-bookmark me-2"></i>Bookmark</a> -->
                 <!-- <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Write a review</a> -->
                 <a href="#" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-share-nodes me-2"></i>Share</a>
@@ -286,7 +283,7 @@
                         <div class="collapse show" id="filters">
                           <!-- Booking Form start -->
                           <!--  -->
-                          <form action="{{url_for('user_tour_package_booking')}}" method="POST">
+                          <form action="{{url_for('user_tour_package_booking')}}" method="POST" onsubmit="return validateForm()">
                                 <div class="mb-3 datetimepickers">
 
                                 <!-- START BOOKING FORM  -->
@@ -294,15 +291,15 @@
                                   <input type="text" name="package_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[0] }}" hidden>
                                   <input type="text" name="pro_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[1] }}" hidden>
                                 {% endfor %}
-                                <label id="message"></label>
+                                <label id="message" style="color: red;"></label>
                                 <div class="mb-3 select-border">
-                                  <input type="text" name="username" class="form-control datetimepicker-input" placeholder="Name">
+                                  <input type="text" name="username" class="form-control datetimepicker-input" placeholder="Name" id="username">
                                 </div>
                                 <div class="mb-3 select-border">
-                                  <input type="text" name="phone" class="form-control datetimepicker-input" placeholder="Phone Number" value="+91 ">
+                                  <input type="text" name="phone" class="form-control datetimepicker-input" placeholder="Phone Number"  id="phone_number">
                                 </div>
                                  <div class="mb-3 select-border">
-                                  <input type="text" name="user_identity_document" class="form-control datetimepicker-input" placeholder="ID/PASSPORT">
+                                  <input type="text" name="user_identity_document" class="form-control datetimepicker-input" placeholder="ID/PASSPORT" id="user_identity_document">
                                 </div>
                                  <label>Number of People: <span class="days-label" style="color: red;"></span></label>
                                 <input class="form-control" type="text" name="days" id="days">
@@ -315,8 +312,6 @@
                                     </div>
                                 </div>
                             <!-- END  -->
-
-
                           </form>
                           <!-- Booking Form end -->
                       </div>
@@ -375,7 +370,7 @@
       </div>
     </div>
   </section>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 {% if flash %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
     <strong></strong> {{ flash }}
@@ -392,17 +387,6 @@
     </button>
   </div>
 {% endif %}
-
-
-  <!-- //to change the background color and text value when the save button is clicked.  -->
-<script>
-  $(document).ready(function() {
-    $('#save-button').click(function() {
-      $(this).css('background-color', 'grey'); // Change the background color to grey
-      $('#save-btn').text('Saved'); // Change the text value to 'Saved'
-    });
-  });
-</script>
 
   <!-- // JavaScript to add input fields based on the number of days -->
 
@@ -438,26 +422,42 @@
     // Update the hidden field with the number of days
     document.getElementById('num_days').value = days;
   });
-</script>
 
-<!-- Booking Form varification -->
-<script>
-$(document).ready(function() {
-    $('form').submit(function(e) {
-        var name = $('input[name="username"]').val();
-        var phone = $('input[name="phone"]').val();
-        var idPassport = $('input[name="user_identity_document"]').val();
-        var numPeople = $('input[name="days"]').val();
-        var messageLabel = $('#message');
 
-        if (name === '' || idPassport === '' || numPeople === '' || phone = '') {
-            e.preventDefault(); // Prevent form submission
-            messageLabel.text('Please fill in all fields.').css('color', 'red');
-        } else {
-            messageLabel.text(''); // Clear the error message if all fields are filled
+// <!-- Booking Form varification -->
+
+    function validateForm() {
+        var username = document.getElementById('username').value;
+        var phone = document.getElementById('phone_number').value;
+        var user_identity_document = document.getElementById('user_identity_document').value;
+        var days = document.getElementById('days').value;
+        
+
+        // Check if any field is empty
+        if (username == "") {
+            document.getElementById("message").innerHTML = "Enter name";
+            return false;
         }
-    });
-});
+        if (phone == "") {
+            document.getElementById("message").innerHTML = "Enter Phone Number";
+            return false;
+        }
+        else if (user_identity_document == "") {
+            document.getElementById("message").innerHTML = "Enter Identity card";
+            return false;
+        }
+        else if (days == "") {
+            document.getElementById("message").innerHTML = "Enter number Companine Travalers";
+            return false;
+        }
+        else if (!/^\d{10}$/.test(phone)) {
+          document.getElementById("message").innerHTML = "Phone number must be 10 digits";
+          return false;
+        }
+        else {
+          return true; // Form is valid, allow submission
+      }
+    }
 </script>
 
 

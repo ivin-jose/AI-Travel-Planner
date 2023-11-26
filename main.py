@@ -953,60 +953,54 @@ def tour_package_saving(package_id):
     # Inserting the saved package
     try:
         # Define the SQL query to insert data into the table
-        query = "INSERT INTO saved_packages (package_id, user_id) VALUES (%s, %s)"
+        query = "SELECT * FROM saved_packages WHERE package_id = %s AND user_id = %s"
         # Execute the query with the actual values
         cursor.execute(query, (package_id, session['userid']))
         # Commit the transaction to save the changes to the database
-        flash = "Saved Succefully.."
-        mysql.connection.commit()
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
+        saved_packages_data = cursor.fetchall()
+
+        if saved_packages_data:
+            flash = "Already Saved..!"
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
+        else:
+            # Define the SQL query to insert data into the table
+            query = "INSERT INTO saved_packages (package_id, user_id) VALUES (%s, %s)"
+            # Execute the query with the actual values
+            cursor.execute(query, (package_id, session['userid']))
+            # Commit the transaction to save the changes to the database
+            flash = "Saved Succefully.."
+            mysql.connection.commit()
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
     except:
         flash = "Something Wrong..!!"
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+    return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
 
 # Deleting Saving packages
 @app.route('/sepwrite.com/tour-packages-remove/<package_id>', methods=['POST', 'GET'])
 def tour_package_saved_dlt(package_id):
-    query1 ="""
-        SELECT tp.*, pi.image_path
+    if 'username' in session:
+        # SQL query to select Tour Packages
+        query = """ SELECT tp.*, pi.image_path
         FROM tour_packages tp
         LEFT JOIN (
             SELECT package_id, MIN(image_path) AS image_path
             FROM package_images
             GROUP BY package_id
         ) pi ON tp.package_id = pi.package_id
-        WHERE tp.package_id = %s; -- Specify the table for package_id
-    """
-    # Execute the query and retrieve the data
-    cursor = mysql.connection.cursor()
-    cursor.execute(query1, (package_id,))
-    tour_packages_data = cursor.fetchall()
-
-    for pro_id in tour_packages_data:
-        pro_id = pro_id[1]
-
-    query4 = "SELECT * FROM pro_users WHERE pro_usersid = %s"
-    # Execute the query and retrieve the data
-    cursor = mysql.connection.cursor()
-    cursor.execute(query4, (pro_id,))
-    pro_user_details = cursor.fetchall()
-
-     # SELECTING TOUR PACKAGE
-    query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
-    # Execute the query and retrieve the data
-    cursor = mysql.connection.cursor()
-    cursor.execute(query2, (package_id,))
-    tour_packages_day = cursor.fetchall()
-
-     # SELECTING TOUR PACKAGE
-    query3 = "SELECT * FROM package_images WHERE package_id = %s"
-    # Execute the query and retrieve the data
-    cursor = mysql.connection.cursor()
-    cursor.execute(query3, (package_id,))
-    tour_packages_image = cursor.fetchall()    
-    cursor = mysql.connection.cursor()
+        WHERE tp.package_id IN (
+            SELECT DISTINCT  package_id
+            FROM saved_packages
+            WHERE user_id = %s
+        );
+        """
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query, (str(session['userid']),))
+        tour_packages_data = cursor.fetchall()
+        # Close the cursor and database connection if necessary
     try:
         # Define the SQL query to insert data into the table
         query = "DELETE FROM saved_packages WHERE package_id = %s"
@@ -1015,12 +1009,10 @@ def tour_package_saved_dlt(package_id):
         # Commit the transaction to save the changes to the database
         mysql.connection.commit()
         delt_flash = "Unsaved...."
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, delt_flash=delt_flash)
+        return render_template('saved_packages.html', tour_packages_data=tour_packages_data, delt_flash=delt_flash)
     except:
         delt_flash = "Something Wrong.."
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, delt_flash=delt_flash)
+        return render_template('saved_packages.html', tour_packages_data=tour_packages_data, delt_flash=delt_flash)
 
 # user_tour_package_booking
 @app.route('/sepwrite.com/tour-packages-booking', methods=['POST', 'GET'])
@@ -1064,21 +1056,80 @@ def user_tour_package_booking():
 
             # Commit the changes to the database
             mysql.connection.commit()
+            flash = "Request Submitted..!"
 
         except Exception as e:
             # Handle any exceptions that may occur during the database operations
             # You should add appropriate error handling and logging here
             print("An error occurred:", e)
-
-
         except Exception as e:
             mysql.connection.rollback()
             return f"Error: {str(e)}"
 
-    return render_template('index.html')
+    return render_template('index.html', flash = flash)
 
 
+# User saved Tour packages
 
+@app.route('/sepwrite.com/saved-tour-packages')
+def saved_packages():
+    flash = None
+    if 'username' in session:
+        # SQL query to select Tour Packages
+        query = """ SELECT tp.*, pi.image_path
+                    FROM tour_packages tp
+                    LEFT JOIN (
+                        SELECT package_id, MIN(image_path) AS image_path
+                        FROM package_images
+                        GROUP BY package_id
+                    ) pi ON tp.package_id = pi.package_id
+                    WHERE tp.package_id IN (
+                        SELECT DISTINCT  package_id
+                        FROM saved_packages
+                        WHERE user_id = %s
+                    );
+                """
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query, (str(session['userid']),))
+        tour_packages_data = cursor.fetchall()
+        # Close the cursor and database connection if necessary
+        cursor.close()
+        return render_template('saved_packages.html', tour_packages_data=tour_packages_data)
+    else:
+        return redirect('/login')
+
+# User package searching 
+
+@app.route('/sepwrite.com/packages/searching', methods=['POST', 'GET'])
+def user_package_searching():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        # SQL query to select Tour Packages
+        search_value = request.form.get('search_value')
+
+        # SQL query to select Tour Packages with a search condition
+        query = """ 
+            SELECT tp.*, pi.image_path
+            FROM tour_packages tp
+            LEFT JOIN (
+                SELECT package_id, MIN(image_path) AS image_path
+                FROM package_images
+                GROUP BY package_id
+            ) pi ON tp.package_id = pi.package_id
+            WHERE tp.tourname LIKE %s OR tp.country LIKE %s OR tp.territory LIKE %s OR tp.price LIKE %s OR tp.description LIKE %s
+        """
+
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query, ('%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%'))
+
+        # Fetch the result
+        tour_packages_data = cursor.fetchall()
+        # Close the cursor and database connection if necessary
+        cursor.close()
+    return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
+    
 
 #---------------------------------------------------------
 #---------------------------------------------------------

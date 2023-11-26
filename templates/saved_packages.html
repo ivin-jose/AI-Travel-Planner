@@ -1,55 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<style type="text/css">
-  .search-div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .search-div button {
-    border: 0;
-    padding: 12px;
-    margin-left: 10px;
-    border-radius: 6px;
-    background: whitesmoke;
-    border-color: black;
-  }
-</style>
  <section class="space-ptb">
         <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="section-title text-center">
-                  <h2 class="title"><strong>Tour Programmes</strong></h2>
-                </div>
-                <div class="widget">
-                  <div class="search">
-                    <form action="{{ url_for('user_package_searching') }}" method="POST">
-                      <div class="search-div">
-                          <div>
-                             <input type="text" class="form-control" placeholder="Search Tours, Packages . . . ." style="border-color: black;" name="search_value" required>
-                          </div>
-                          <div>
-                            <button type="submit" name="" ><i class="fas fa-search"></i></button>
-                          </div> 
-                        </div>                     
-                    </form>
+          <div class="row">
+            {% if tour_packages_data %}
+               <div class="row justify-content-center">
+                <div class="col-lg-6">
+                  <div class="section-title text-center">
+                    <h2 class="title"><strong>Your Saved Packages</strong></h2>
+                    <div class="description">
+                      <p>Let's SELECT one.</p>
+                    </div>
                   </div>
                 </div>
-            </div>
-          </div>
-          <br>
-          <div class="row">
+              </div>
+            {% else %}
+             <div class="row justify-content-center">
+                <div class="col-lg-6">
+                  <div class="section-title text-center">
+                    <h2 class="title"><strong>Nothing Saved..!</strong></h2>
+                    <div class="description">
+                      <p>Start Exploration</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
             {% for row in tour_packages_data %}
             <div class="col-lg-4 col-md-6 mb-4 ">
               <div class="listing-item">
                 <div class="listing-image bg-overlay-half-bottom">
                   <img class="img-fluid" src="{{url_for('static', filename=row[10])}}" alt="{{row[10]}}" style="width: 100%;">
-                  <!-- <div class="listing-favourite">
-                    <i class="fa-regular fa-heart"></i>
-                  </div> -->
+                  <div class="listing-favourite">
+                    <a href="{{ url_for('tour_package_saved_dlt', package_id=row[0]) }}"><i class="fa-solid fa-heart" style="color: red ;"></i></a>
+                  </div>
                 </div>
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">
@@ -86,5 +72,12 @@
     </section>
 
 
-
+{% if delt_flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ delt_flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
  {% endblock %}
