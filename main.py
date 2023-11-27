@@ -1129,7 +1129,49 @@ def user_package_searching():
         # Close the cursor and database connection if necessary
         cursor.close()
     return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
-    
+
+# User Bookings 
+
+@app.route('/sepwrite.com/user-bookings', methods=['POST', 'GET'])
+def user_bookings():
+    cursor = mysql.connection.cursor()
+    query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE user_id = %s;
+    """
+    cursor.execute(query, (session['userid'],))
+    tour_bookings = cursor.fetchall()
+    cursor.close()
+
+    return render_template('user_bookings.html', tour_bookings=tour_bookings)  
+
+
+# user booking Details
+
+@app.route('/sepwrite.com/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
+def user_booking_details(booking_id):
+    cursor = mysql.connection.cursor()
+    query = """SELECT tour_packages.*, package_bookings.package_status
+            FROM tour_packages
+            JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+            WHERE package_bookings.booked_id = %s;
+    """
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    if booking_details:
+        for row in booking_details:
+            tour_provider_id = row[1]
+        query = """ SELECT * FROM pro_users WHERE pro_usersid = %s """
+        cursor.execute(query, (tour_provider_id,))
+        provider_details = cursor.fetchall()
+
+    query1 = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query1, (booking_id,))
+    booking_persons = cursor.fetchall()
+
+    return render_template('user_booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id, provider_details=provider_details)
 
 #---------------------------------------------------------
 #---------------------------------------------------------
