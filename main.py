@@ -1065,8 +1065,16 @@ def user_tour_package_booking():
         except Exception as e:
             mysql.connection.rollback()
             return f"Error: {str(e)}"
+        query = """SELECT pb.*, tp.tourname
+        FROM package_bookings pb
+        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+        WHERE user_id = %s;
+        """
+        cursor.execute(query, (session['userid'],))
+        tour_bookings = cursor.fetchall()
+        cursor.close();
 
-    return render_template('index.html', flash = flash)
+    return render_template('user_bookings.html', flash = flash, tour_bookings=tour_bookings)
 
 
 # User saved Tour packages
@@ -1173,6 +1181,86 @@ def user_booking_details(booking_id):
 
     return render_template('user_booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id, provider_details=provider_details)
 
+# Canceling the tour package by user
+@app.route('/sepwrite.com/user-booking-cancel/<booking_id>/<package_id>/<provider_id>', methods=['POST', 'GET'])
+def user_booking_cancel(booking_id, package_id, provider_id):
+    pro_view = "0"
+    user_view = "0"
+    try:
+        # Create a new cursor for the delete queries
+        delete_cursor = mysql.connection.cursor()
+
+        # Delete from package_bookings table
+        try:
+            delete_query_1 = "DELETE FROM package_bookings WHERE booked_id = %s"
+            delete_cursor.execute(delete_query_1, (booking_id,))
+        except:
+            flash = "e1"
+        try:
+            # Delete from accepted_bookings table
+            delete_query_2 = "DELETE FROM accepted_bookings WHERE booking_id = %s"
+            delete_cursor.execute(delete_query_2, (booking_id,))
+        except:
+            flash = "e2"
+        try:
+            # Delete from package_booked_travalers table
+            delete_query_3 = "DELETE FROM package_booked_travalers WHERE booking_id = %s"
+            delete_cursor.execute(delete_query_3, (booking_id,))
+        except:
+            flash = "e3"
+        try:
+            # Delete from package_booking table
+            delete_query_4 = "DELETE FROM package_booking WHERE booked_id = %s"
+            delete_cursor.execute(delete_query_4, (booking_id,))
+        except:
+            flash = "e4"
+        try:
+            # Delete from rejected_booking table
+            delete_query_5 = "DELETE FROM rejected_booking WHERE booking_id = %s"
+            delete_cursor.execute(delete_query_5, (booking_id,))
+        except:
+            flash = "e5"
+
+        # Commit the changes
+        mysql.connection.commit()
+        delete_cursor.close()
+        flash_message = "Booking Cancelled..!!"
+
+        # Create a cursor for the first query
+        cursor = mysql.connection.cursor()
+
+        # Fetch tour bookings
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE user_id = %s;
+        """
+        cursor.execute(query, (session['userid'],))
+        tour_bookings = cursor.fetchall()
+
+        #Inserting  the data into cancelled table 
+
+        query_inserting = """
+            INSERT INTO cancelled_bookings (booking_id, user_id, provider_id, pro_view, user_view)
+            VALUES (%s, %s, %s, %s, %s);
+        """
+
+        # Execute the query with the specified values
+        cursor.execute(query_inserting, (str(booking_id), str(session['userid']), str(provider_id), pro_view, user_view))
+
+        # Commit the changes
+        mysql.connection.commit()
+        cursor.close()
+
+    except Exception as e:
+        print(f"Error: {e}")
+        flash_message = "Something went wrong."
+
+
+    return render_template('user_bookings.html', tour_bookings=tour_bookings, flash=flash_message)
+
+
+      
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

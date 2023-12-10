@@ -112,7 +112,7 @@
 					        <div class="col">
 					          <div class="form-group">
 					            <label>Tour Name: <span class="tourname-label" style="color: red;"></span></label>
-					            <input class="form-control" type="text" name="tourname" id="tourname">
+					            <input class="form-control" type="text" name="tourname" id="tournames">
 					          </div>
 					          <div class="form-group">
 					            <label>Number of Days: <span class="days-label" style="color: red;"></span></label>
@@ -206,7 +206,7 @@ $(document).ready(function() {
     $('.error-label').text('');
 
     // Validate Tour Name
-    var tourname = $('#tourname').val();
+    var tourname = $('#tournames').val();
     var days = $('#days').val();
     var price = $('#price').val();
     var from_date = $('#from_date').val();
@@ -216,37 +216,37 @@ $(document).ready(function() {
     if (tourname === '') {
       alert("get")
       $('.tourname-label').text('Tour Name is required');
-      $('.tourname').focus();
-      isValid = false;
+      $('#tourname').focus();
+      return false;
     }
     
-    else if (days === ''){
+    if (days === ''){
       $('.days-label').text('Number of Days is required');
-      $('.days').focus();
+      $('#days').focus();
       isValid = false;
     }
 
     else if (price === ''){
       $('.price-label').text('Price is required');
-      $('.price').focus();
+      $('#price').focus();
       isValid = false;
     }
 
     else if (from_date === '') {
       $('.from-date-label').text('From Date is required');
-      $('.from_date').focus();
+      $('#from_date').focus();
       isValid = false;
     }
 
     else if (to_date === '') {
       $('.to-date-label').text('To Date is required');
-      $('.to_date').focus();
+      $('#to_date').focus();
       isValid = false;
     }
 
     else if (description === '') {
       $('.description-label').text('Description is required');
-      $('.description').focus();
+      $('#description').focus();
       isValid = false;
     }
 
@@ -255,7 +255,7 @@ $(document).ready(function() {
       $('.days-label').text('');
     } else {
       $('.days-label').text('Number of Days must be a valid number');
-      $('.days').focus();
+      $('#days').focus();
       isValid = false;
     }
 

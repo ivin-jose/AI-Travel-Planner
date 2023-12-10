@@ -1,5 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
+ <style>
+    #cancel_confirm {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: auto;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000; /* Adjust the z-index as needed */
+      display: flex;
+    justify-content: space-around
+    }
+  </style>
 <div class="col-md-7 col-xl-8">
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="account" role="tabpanel">
@@ -68,6 +86,18 @@
                             <p>Address : {{ row[10] }}</p>
                         {% endfor %}
                       </div>
+
+                      <a href="#" class="btn btn-primary" id="cancel_btn">Cancel My Booking</a>
+
+                      <div id="cancel_confirm">
+                        {% for row in booking_details %}
+                            {% for rows in provider_details %}
+                                <a href="{{ url_for('user_booking_cancel', booking_id=bookingid, package_id=row[1], provider_id=rows[0] )}}" class="btn btn-primary" style="background-color: red;">Cancel My order</a>
+                            {% endfor %}
+                        {% endfor %}
+                        <a href="#" class="btn btn-primary" id="back_btn">Go Back</a>
+                      </div>
+
                         </div>
                       </div>
                     </div>
@@ -87,4 +117,22 @@
     </button>
   </div>
 {% endif %}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#cancel_confirm").hide();
+
+    $("#cancel_btn").click(function() {
+      $("#cancel_confirm").show();
+      $("#cancel_btn").hide()
+    });
+    $("#back_btn").click(function() {
+       $("#cancel_confirm").hide();
+      $("#cancel_btn").show()
+    })
+  });
+</script>
+
+
 {% endblock %}

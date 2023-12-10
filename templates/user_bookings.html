@@ -7,6 +7,7 @@
                 <div class="col">
                 <div class="row">
                   <div class="col mb-3">
+                  	{% if tour_bookings %}
                     <div class="card">
                       <div class="card-body">
                       	<!-- <button id="all_bookings_btn" class="btn btn-primary">All</button>
@@ -28,7 +29,6 @@
 
                           <div class="tab-content pt-3">
 															<div id="pending_bookings">
-																{% if tour_bookings %}
 																<h6>Your Bookings </h6>
 															  	<table class="table table-dark">
 																  <thead>
@@ -57,9 +57,7 @@
 																	      <td><a href="{{ url_for('user_booking_details', booking_id=row[0])}}">view details</a></td>
 																	    </tr>
 																    {% endfor %}
-																    {% else %}
-																    <center><h5>You have no bookings..!</h5></center>
-																    {% endif %}
+																    
 																  </tbody>
 																</table>
 															</div>
@@ -70,6 +68,15 @@
                       </div>
                     </div>
                   </div>
+                  {% else %}
+                  	<div  style="height: 40vh;
+                  							width: 100%;
+														    display: flex;
+														    align-items: center;
+														    justify-content: flex-end;">
+                  			<h2><strong>You have no bookings..!</strong></h2>
+                  	</div>
+								   {% endif %}
               </div>
             </div>
             </div>
