@@ -1150,9 +1150,13 @@ def user_bookings():
     """
     cursor.execute(query, (session['userid'],))
     tour_bookings = cursor.fetchall()
+
+    query_1 = """SELECT * FROM cancelled_bookings WHERE user_id = %s"""
+    cursor.execute(query_1, (session['userid'],))
+    cancelled_bookings = cursor.fetchall()
     cursor.close()
 
-    return render_template('user_bookings.html', tour_bookings=tour_bookings)  
+    return render_template('user_bookings.html', tour_bookings=tour_bookings, cancelled_bookings=cancelled_bookings)  
 
 
 # user booking Details
@@ -1182,10 +1186,9 @@ def user_booking_details(booking_id):
     return render_template('user_booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id, provider_details=provider_details)
 
 # Canceling the tour package by user
-@app.route('/sepwrite.com/user-booking-cancel/<booking_id>/<package_id>/<provider_id>', methods=['POST', 'GET'])
-def user_booking_cancel(booking_id, package_id, provider_id):
+@app.route('/sepwrite.com/user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
+def user_booking_cancel(booking_id, package_name, provider_id):
     pro_view = "0"
-    user_view = "0"
     try:
         # Create a new cursor for the delete queries
         delete_cursor = mysql.connection.cursor()
@@ -1224,7 +1227,6 @@ def user_booking_cancel(booking_id, package_id, provider_id):
         # Commit the changes
         mysql.connection.commit()
         delete_cursor.close()
-        flash_message = "Booking Cancelled..!!"
 
         # Create a cursor for the first query
         cursor = mysql.connection.cursor()
@@ -1240,17 +1242,28 @@ def user_booking_cancel(booking_id, package_id, provider_id):
 
         #Inserting  the data into cancelled table 
 
-        query_inserting = """
-            INSERT INTO cancelled_bookings (booking_id, user_id, provider_id, pro_view, user_view)
-            VALUES (%s, %s, %s, %s, %s);
-        """
+        cancelled_date = today_date
 
-        # Execute the query with the specified values
-        cursor.execute(query_inserting, (str(booking_id), str(session['userid']), str(provider_id), pro_view, user_view))
+        # Checking the canclation lready done or not
 
-        # Commit the changes
-        mysql.connection.commit()
-        cursor.close()
+        select_query ="SELECT * FROM cancelled_bookings WHERE booking_id = %s"
+        cursor.execute(select_query, (booking_id,))
+        checking_booking = cursor.fetchall()
+
+        if checking_booking:
+            flash_message = "Already Cancelled.."
+        else:
+            query_inserting = """
+                INSERT INTO cancelled_bookings (booking_id, user_id, provider_id, pro_view, package_name, cancelled_date)
+                VALUES (%s, %s, %s, %s, %s, %s);
+            """
+            # Execute the query with the specified values
+            cursor.execute(query_inserting, (str(booking_id), str(session['userid']), str(provider_id), pro_view, str(package_name), cancelled_date))
+
+            # Commit the changes
+            mysql.connection.commit()
+            cursor.close()
+            flash_message = "Booking Cancelled..!!"
 
     except Exception as e:
         print(f"Error: {e}")
@@ -1320,7 +1333,13 @@ def pro_logout_section():
         query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id=%s;"
         cursor.execute(query, str(session['proid']))
         result = cursor.fetchone()
-        return render_template('pro/logout.html', noti_count=result)
+
+        query2 = "SELECT COUNT(*) AS total_count2 FROM ai_travel_planner.cancelled_bookings WHERE pro_view = 0 AND provider_id = %s;"
+        cursor.execute(query2, (str(session['proid']),))
+        result2 = cursor.fetchone()
+
+
+        return render_template('pro/logout.html', noti_count=result, noti_count1=result2)
     else:
         return redirect('pro.login')
     
@@ -1366,10 +1385,15 @@ def pro_tour_packages():
 def pro_password_change():
     if 'prousercompany' in session:
        cursor = mysql.connection.cursor()
-       query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
-       cursor.execute(query, str(session['proid']))
-       result = cursor.fetchone()
-       return render_template('pro/pro_change_password.html', noti_count=result)
+       query1 = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
+       cursor.execute(query1, (str(session['proid']),))
+       result1 = cursor.fetchone()
+
+       query2 = "SELECT COUNT(*) AS total_count2 FROM ai_travel_planner.cancelled_bookings WHERE pro_view = 0 AND provider_id = %s;"
+       cursor.execute(query2, (str(session['proid']),))
+       result2 = cursor.fetchone()
+
+       return render_template('pro/pro_change_password.html', noti_count=result1, noti_count1=result2)
     else:
         return redirect('pro.login')
 
@@ -1453,7 +1477,7 @@ def pro_notifications():
 
         # end
 
-        # watched Notofications
+        # watched Notifications
         cursor = mysql.connection.cursor()
         cursor.close()
         cursor = mysql.connection.cursor()
@@ -1465,11 +1489,28 @@ def pro_notifications():
         cursor.execute(query1, str(session['proid']))
         watched = cursor.fetchall()
 
+        #cancelled Notifications
+        query2 = """
+                SELECT * FROM cancelled_bookings WHERE pro_view = 1 AND provider_id = %s; 
+        """
+        cursor.execute(query2, str(session['proid']))
+        cancel_watched = cursor.fetchall()
+
+        query2 = """
+                SELECT * FROM cancelled_bookings WHERE pro_view = 0 AND provider_id = %s; 
+        """
+        cursor.execute(query2, str(session['proid']))
+        cancel_unwatched = cursor.fetchall()
+
         query = "UPDATE package_bookings SET viewed = 1 WHERE package_provider_id = %s"
         cursor.execute(query, str(session['proid']))
         mysql.connection.commit()
 
-        return render_template('pro/pro_notifications.html', unwatched=unwatched, watched=watched)
+        query = "UPDATE cancelled_bookings SET pro_view = 1 WHERE provider_id = %s"
+        cursor.execute(query, str(session['proid']))
+        mysql.connection.commit()
+
+        return render_template('pro/pro_notifications.html', unwatched=unwatched, watched=watched, cancel_watched=cancel_watched,cancel_unwatched=cancel_unwatched)
     else:
         return redirect('pro.login')
 
@@ -1483,6 +1524,10 @@ def pro_settings():
         query = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
         cursor.execute(query, str(session['proid']))
         noti_result = cursor.fetchone()
+
+        query2 = "SELECT COUNT(*) AS total_count2 FROM ai_travel_planner.cancelled_bookings WHERE pro_view = 0 AND provider_id = %s;"
+        cursor.execute(query2, (str(session['proid']),))
+        result2 = cursor.fetchone()
 
         email_error = ""
         cursor = mysql.connection.cursor()
@@ -1535,7 +1580,7 @@ def pro_settings():
 
         cursor.close()
 
-        return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash, noti_count=noti_result)
+        return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash, noti_count=noti_result, noti_count1=result2)
     else:
         return redirect('/sepwrite.com/account.pro/login')  # Use the redirect function here
 

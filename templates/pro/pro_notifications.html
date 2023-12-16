@@ -143,6 +143,24 @@
                             </div>
                             {% endfor %}
 
+                            {% for row in cancel_unwatched %}
+                            <div class="tab-pane active">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box">
+                                  <strong>Cancelation :</strong> <span style="color: red">Cancelation </span> of <b>{{ row[5] }}</b> Package
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                          {% for row in cancel_watched %}
+                            <div class="tab-pane active">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="notifcation-box" style="background-color: lightgrey !important";>
+                                  <strong>Cancelation:</strong> <span style="color: red">Cancelation </span>  of <b>{{ row[5] }}</b> Package
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+
                             <!-- end -->
 
                           </div>

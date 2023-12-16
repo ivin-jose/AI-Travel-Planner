@@ -92,7 +92,7 @@
                       <div id="cancel_confirm">
                         {% for row in booking_details %}
                             {% for rows in provider_details %}
-                                <a href="{{ url_for('user_booking_cancel', booking_id=bookingid, package_id=row[1], provider_id=rows[0] )}}" class="btn btn-primary" style="background-color: red;">Cancel My order</a>
+                                <a href="{{ url_for('user_booking_cancel', booking_id=bookingid, package_name=row[2], provider_id=rows[0] )}}" class="btn btn-primary" style="background-color: red;">Cancel My order</a>
                             {% endfor %}
                         {% endfor %}
                         <a href="#" class="btn btn-primary" id="back_btn">Go Back</a>

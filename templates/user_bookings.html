@@ -76,9 +76,68 @@
 														    justify-content: flex-end;">
                   			<h2><strong>You have no bookings..!</strong></h2>
                   	</div>
+								   
+              </div>
+            </div>
+						{% endif %}
+						
+							{% if cancelled_bookings %}
+                <div class="row">
+                  <div class="col mb-3">
+                  
+                    <div class="card">
+                      <div class="card-body">
+
+                        <div class="e-profile">
+                          <div class="row">
+
+                            <div class="col-12 col-sm-auto mb-3">        
+                          </div>
+
+                          <ul class="nav nav-tabs">
+                            <li class="nav-item"><a href="" class="active nav-link">Booking Cancellations</a></li>
+                          </ul>
+
+
+                          <div class="tab-content pt-3">
+															<div id="pending_bookings">
+																<h6>Cancelled Bookings </h6>
+															  	<table class="table table-dark">
+																  <thead>
+																    <tr>
+																       <th>Booking Id</th>
+																      	<th scope="col">Tour Name</th>
+																      	<th scope="col">Date</th>
+																      	<th scope="col">Status</th>
+																    </tr>
+																  </thead>
+																  <tbody>
+																  	{% for row in cancelled_bookings %}
+																	    <tr>
+																	      <td>{{row[0]}}</td>
+																	      <td>{{row[5]}}</td>
+																	      <td>{{row[6]}}</td>
+																	      <!-- Checking the status -->
+																	      <td style="color: red;">Cancelled</td>
+																	    </tr>
+																    {% endfor %}
+																    
+																  </tbody>
+																</table>
+															</div>
+                            </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  	
 								   {% endif %}
               </div>
             </div>
+
             </div>
         </div>
     </div>
