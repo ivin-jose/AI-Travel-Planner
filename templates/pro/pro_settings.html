@@ -114,7 +114,7 @@
                             <div class="col-12 col-sm-auto mb-3">
                               {% for row in data %}
                               <div class="mx-auto" style="width: 140px;">
-                                 <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="">
+                                 <!-- <form class="form" method="POST" enctype="multipart/form-data" name="user-avatar-update-form" action="">
                                   <span>
                                     <label for="fileToUpload">
                                       <div class="profile-pic" id="profilePic" style="background-image: url('{{ row[5] }}'); background-size: cover; background-repeat: no-repeat;">
@@ -124,7 +124,7 @@
                                     </label>
                                    <input type="file" name="file" autocomplete="off" required id="fileToUpload" accept="image">
                                   </span>
-                                <!-- </form> -->
+                                </form> -->
                               </div>
                             </div>
                             <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
@@ -235,17 +235,18 @@
   </div>
 {% endif %}
 
+
 <script type="text/javascript">
   $(document).ready(function() {
     // When the file input changes
     $("#fileToUpload").change(function() {
         // Check if a file is selected
-        if ($(this).val() !== "") {
+        if ($(this).val() == "") {
             // Show the "Change" button
-            $("#Useravatarbtn").show();
+            $("#Useravatarbtn").hide();
         } else {
             // Hide the "Change" button if no file is selected
-            $("#Useravatarbtn").hide();
+            $("#Useravatarbtn").show();
         }
     });
 });

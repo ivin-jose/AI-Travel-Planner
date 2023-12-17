@@ -866,19 +866,18 @@ def tour_package_details(package_id):
     pro_id = None
     if 'username' in session:
         # SELECTING TOUR PACKAGE
-        query1 ="""
-            SELECT tp.*, pi.image_path
-            FROM tour_packages tp
-            LEFT JOIN (
-                SELECT package_id, MIN(image_path) AS image_path
-                FROM package_images
-                GROUP BY package_id
-            ) pi ON tp.package_id = pi.package_id
-            WHERE tp.package_id = %s; -- Specify the table for package_id
-        """
+        query1 = """SELECT tp.*, pi.image_path
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        WHERE tp.package_id = %s;"""
+
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query1, (package_id,))
+        cursor.execute(query1, (str(package_id),))
         tour_packages_data = cursor.fetchall()
 
         for pro_id in tour_packages_data:
@@ -1300,16 +1299,17 @@ def pro_account():
         unwatched = cursor.fetchall()
 
         # SQL query to select Tour Packages
-        query = """ SELECT tp.*, pi.image_path
-                    FROM tour_packages tp
-                    LEFT JOIN (
-                        SELECT package_id, MIN(image_path) AS image_path
-                        FROM package_images
-                        GROUP BY package_id
-                    ) pi ON tp.package_id = pi.package_id;
-                """
+        query = """SELECT tp.*, pi.image_path
+           FROM tour_packages tp
+           LEFT JOIN (
+               SELECT DISTINCT package_id, MIN(image_path) AS image_path
+               FROM package_images
+               GROUP BY package_id
+           ) pi ON tp.package_id = pi.package_id
+           WHERE tp.pro_id = %s;"""
+
         # Execute the query and retrieve the data
-        cursor.execute(query)
+        cursor.execute(query, (session['proid'],))
         tour_packages_data = cursor.fetchall()
         # Close the cursor and database connection if necessary
         cursor.close()
@@ -1359,19 +1359,20 @@ def pro_logout():
 def pro_tour_packages():
     if 'prousercompany' in session:
         # SQL query to select Tour Packages
-        query = """ SELECT tp.*, pi.image_path
-                    FROM tour_packages tp
-                    LEFT JOIN (
-                        SELECT package_id, MIN(image_path) AS image_path
-                        FROM package_images
-                        GROUP BY package_id
-                    ) pi ON tp.package_id = pi.package_id;
-                """
+        query = """SELECT tp.*, pi.image_path
+           FROM tour_packages tp
+           LEFT JOIN (
+               SELECT package_id, MIN(image_path) AS image_path
+               FROM package_images
+               GROUP BY package_id
+           ) pi ON tp.package_id = pi.package_id
+           WHERE tp.pro_id = %s;
+        """
 
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query)
-        tour_packages_data = cursor.fetchall()
+        cursor.execute(query, (str(session['proid']),))
+        tour_packages_data = cursor.fetchall()        
         # Close the cursor and database connection if necessary
         cursor.close()
 
@@ -1591,7 +1592,7 @@ def adding_tourpackages():
     cursor = mysql.connection.cursor()
     if request.method == 'POST':      
         tourname = request.form.get('tourname')
-        num_days = request.form.get('num_days')
+        num_days = request.form.get('days')
         price = request.form.get('price')
         from_date = request.form.get('from_date')
         to_date = request.form.get('to_date')
@@ -1662,6 +1663,84 @@ def adding_tourpackages():
             return render_template('pro/tour-packages-adding-form.html')
     return render_template('pro/tour-packages-adding-form.html')
 
+#EDITING AND UPDATING TOURPACKAGES BY TOUR OPERATOR
+
+@app.route('/sepwrite.com/account.pro/tour-packages/edit-form', methods=['POST', 'GET'])
+def pro_editing_tourpackages():
+    cursor = mysql.connection.cursor()
+    if request.method == 'POST':
+        package_id = request.form.get('package_id')     
+        tourname = request.form.get('tourname')
+        num_days = request.form.get('days')
+        price = request.form.get('price')
+        from_date = request.form.get('from_date')
+        to_date = request.form.get('to_date')
+        description = request.form.get('description')
+
+        # here, updating query to tourpackages table
+        try:
+            # Update the data in the "tour_packages" table
+            update_query = "UPDATE tour_packages SET tourname = %s, num_days = %s, price = %s, from_date = %s, to_date = %s, description = %s WHERE pro_id = %s AND package_id = %s"
+            values = (tourname, num_days, price, from_date, to_date, description, session['proid'], package_id)
+            cursor.execute(update_query, values)
+
+            # Commit the changes to the database
+            mysql.connection.commit()
+        except Exception as e:
+            # Handle the exception (e.g., log or return an error message)
+            print("Error:", str(e))
+            mysql.connection.rollback()
+            flash = "Error updating tour package"
+            return redirect('/sepwrite.com/account.pro/tour-packages')
+
+        # Retrieve day program data based on the number of days
+        day_programs = [request.form.get(f'day_program_{i}') for i in range(1, int(num_days) + 1)]
+
+        ''' Here, Updating code for day_programes to db'''
+        try:
+            # Update day programs in the "package_day_programme" table
+            update_day_program_query = "UPDATE package_day_programme SET programme = %s WHERE pro_id = %s AND package_id = %s AND day = %s"
+            for day, program_text in enumerate(day_programs, start=1):
+                cursor.execute(update_day_program_query, (program_text, session['proid'], package_id, f"day {day}"))
+
+            # Commit the changes to the database
+            mysql.connection.commit()
+        except Exception as e:
+            mysql.connection.rollback()
+            flash = f"Error updating day programs: {str(e)}"
+            return redirect('/sepwrite.com/account.pro/tour-packages')
+
+        '''Here Updating images to db'''
+        try:
+            # Update images in the "package_images" table
+            files = request.files.getlist('images')
+            inserted_image_paths = []  # Store the paths of all inserted images
+
+            # Get the current package_id from the database
+            cursor.execute("SELECT package_id FROM tour_packages WHERE pro_id = %s AND your_condition_for_selecting_the_right_package" % (session['proid']))
+            package_id = cursor.fetchone()[0]
+
+            for file in files:
+                path = 'images/tour_packages'
+                file_path = (path + '/' + file.filename)
+                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['TOUR_PACKAGE_IMAGES'], file.filename))
+                inserted_image_paths.append(file_path)  # Store the path in the list
+
+            update_image_query = "UPDATE package_images SET image_path = %s WHERE pro_id = %s AND package_id = %s"
+            for image_path in inserted_image_paths:
+                cursor.execute(update_image_query, (image_path, session['proid'], package_id))
+
+            mysql.connection.commit()
+            flash = "Tour package updated successfully"
+            return redirect('/sepwrite.com/account.pro/tour-packages')
+        except Exception as e:
+            flash = f"Error updating images: {str(e)}"
+    return redirect('/sepwrite.com/account.pro/tour-packages')
+
+
+    return render_template('pro/tour-packages-adding-form.html')
+
+
 ## Tour Edit Package Details
 @app.route('/sepwrite.com/account.pro/pro-tour-packages-edit/<package_id>', methods=['POST', 'GET'])
 def pro_tour_package_edit(package_id):
@@ -1679,21 +1758,21 @@ def pro_tour_package_edit(package_id):
             """
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query1, package_id)
+        cursor.execute(query1, (package_id,))
         tour_packages_data = cursor.fetchall()
 
          # SELECTING TOUR PACKAGE
         query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query2, package_id)
+        cursor.execute(query2, (package_id,))
         tour_packages_day = cursor.fetchall()
 
          # SELECTING TOUR PACKAGE
         query3 = "SELECT * FROM package_images WHERE package_id = %s"
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query3, package_id)
+        cursor.execute(query3, (package_id,))
         tour_packages_image = cursor.fetchall()
 
         return render_template('pro/tour_package_edit_form.html', tour_packages_data=tour_packages_data,
@@ -1715,23 +1794,24 @@ def pro_tour_package_details(package_id):
                 GROUP BY package_id
             ) pi ON tp.package_id = pi.package_id
             WHERE tp.package_id = %s;"""
+
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query1, package_id)
+        cursor.execute(query1, (package_id,))
         tour_packages_data = cursor.fetchall()
 
-         # SELECTING TOUR PACKAGE
+        # SELECTING TOUR PACKAGE
         query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query2, package_id)
+        cursor.execute(query2, (package_id,))
         tour_packages_day = cursor.fetchall()
 
-         # SELECTING TOUR PACKAGE
+        # SELECTING TOUR PACKAGE IMAGES
         query3 = "SELECT * FROM package_images WHERE package_id = %s"
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
-        cursor.execute(query3, package_id)
+        cursor.execute(query3, (package_id,))
         tour_packages_image = cursor.fetchall()
 
         return render_template('pro/tour_package_details.html', tour_packages_data=tour_packages_data,
@@ -1867,6 +1947,61 @@ def bookings():
     return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d)
 
 
+# Provider account and datas deletion
+
+@app.route('/sepwrite.com/account.pro/provider_deletion')
+def provider_deletion():
+    # Create a cursor
+    cursor = conn.cursor()
+
+    # Delete from pro_users table
+    delete_query_pro_users = "DELETE FROM pro_users WHERE provider_id = %s"
+    cursor.execute(delete_query_pro_users, (str(session['proid']),))
+
+    # Delete from package_bookings table
+    delete_query_package_bookings = "DELETE FROM package_bookings WHERE provider_id = %s"
+    cursor.execute(delete_query_package_bookings, (str(session['proid']),))
+
+    # Delete from cancelled_bookings table
+    delete_query_cancelled_bookings = "DELETE FROM cancelled_bookings WHERE provider_id = %s"
+    cursor.execute(delete_query_cancelled_bookings, (str(session['proid']),))
+
+    # Delete from package_bookings table (assuming this is a different table from the first one)
+    delete_query_another_package_bookings = "DELETE FROM another_package_bookings WHERE provider_id = %s"
+    cursor.execute(delete_query_another_package_bookings, (str(session['proid']),))
+
+    # Delete from tour_packages table
+    delete_query_tour_packages = "DELETE FROM tour_packages WHERE provider_id = %s"
+    cursor.execute(delete_query_tour_packages, (str(session['proid']),))
+
+    # Commit the changes
+    conn.commit()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+    if 'prousercompany' in session:
+        session.pop('prousercompany', None)  # Remove the user_id from the session
+        session.pop('proid', None)
+        return redirect('/sepwrite.com/account.pro')
+    else:
+        return redirect('pro.login')
+    return redirect('pro.login')
+
+# Provider contact us page
+
+@app.route('/sepwrite.com/account.pro/contact-us')
+def contactus():
+    return render_template('pro/contactus.html')
+
+@app.route('/sepwrite.com/account.pro/provider-search')
+def provider_searching():
+    if 'prousercompany' in session:
+        if request.method == 'POST':
+            search_value = request.form.get('search_value')
+        return render_template('pro/contactus.html')
+    else:
+        return redirect('pro.login')
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

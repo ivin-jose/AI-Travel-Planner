@@ -107,23 +107,14 @@
                 <div class="col-12 col-sm-auto mb-3" style="width: 50%;">
                   <h3>EDIT PACKAGE</h3>
 
+                  <p style="color: red;">Due to our security policy you can only edit below options if you want change anything else delete this package and create new one</p>
+
                   {% for row in tour_packages_data %}
-                  1--{{ row[0] }}<br>,
-                  2--{{ row[1] }}<br>,
-                  3--{{ row[2] }}<br>,
-                  4--{{ row[3] }}<br>,
-                  5--{{ row[4] }}<br>,
-                  6--{{ row[5] }}<br>,
-                  7--{{ row[6] }}<br>,
-                  8--{{ row[7] }}<br>,
-                  9--{{ row[8] }}<br>,
-                  10--{{ row[9] }}<br>,
-                  11--{{ row[10] }}<br>,
-                  12--{{ row[11] }}<br>,
-                  13--{{ row[12] }}<br>,
-        					<form class="form" name="tourpackage-add-form" method="POST" enctype="multipart/form-data" action="{{ url_for('adding_tourpackages') }}" id="tourpackage-add-form">
+        					<form class="form" name="tourpackage-add-form" method="POST" enctype="multipart/form-data" action="{{ url_for('pro_editing_tourpackages') }}" id="tourpackage-add-form">
         					  <div class="row">
         					    <div class="col">
+
+                        <input type="hidden" name="package_id" value="{{ row[0] }}">
 
         					      <div class="row">
         					        <div class="col">
@@ -132,8 +123,8 @@
         					            <input class="form-control" type="text" name="tourname" id="tourname" value="{{ row[2] }}">
         					          </div>
         					          <div class="form-group">
-        					            <label>Number of Days: <span class="days-label" style="color: red;"></span></label>
-        					            <input class="form-control" type="text" name="days" id="days" value="{{ row[3] }}">
+        					            <!-- <label>Number of Days: <span class="days-label" style="color: red;"></span></label> -->
+        					            <input class="form-control" type="hidden" name="days" id="days" value="{{ row[3] }}">
         					          </div>
         					          <div class="form-group">
         					            <label>Price of Package: <span class="price-label" style="color: red;"></span></label>
@@ -155,7 +146,10 @@
         					      <div class="row">
         					        <div class="col">
         					        	<!-- multiple images -->
-        					        	<div class="form-group">
+    
+<!-- IMAGE BUTTON -->
+
+    <!--     					        	<div class="form-group">
         					        		<div class="upload__box">
         					        			<div class="upload__btn-box">
         					        				<label class="upload__btn">
@@ -165,16 +159,18 @@
         					        			</div>
         					        			<div class="upload__img-wrap"></div>
         					        		</div>
-        					        	</div>
+        					        	</div> -->
 
                             {% endfor %}
 
-                            {% for row in  tour_packages_image %}
+<!-- IMAGE SHOWING -->
+
+<!--                             {% for row in  tour_packages_image %}
                            <div class='upload__img-box'><div style="background-image: url('{{ url_for("static", filename=row[3]) }}')"
  data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'>
                                 <a href="{{ url_for('delete_blog_img', bid= row[0] ) }}"><div class='upload__img-close'></div></a>
                               </div></div>
-                              {% endfor %}
+                              {% endfor %} -->
 
         					        </div>
         					      </div>
@@ -189,10 +185,12 @@
                         </div>
                       </div>
 
-                      {% for row in tour_packages_day %}
-                        <!-- Iterate through your rows and set the data-value attribute for each row -->
-                        <input type="text" class="num-days-input" value="{{ row[4] }}" name="numdays+{{row[2]}}">
-                      {% endfor %}
+<!-- DAY PROGRAMMES -->
+
+                      <!-- {% for row in tour_packages_day %} -->
+                          <!-- Iterate through your rows and set the data-value attribute for each row -->
+<!--                           <input type="text" class="num-days-input" data-value="{{ row[4] }}" value="{{ row[4] }}" name="numdays+{{row[2]}}">
+                      {% endfor %} -->
 
         					    </div>
         					  </div>
@@ -240,6 +238,7 @@ $(document).ready(function() {
     var bio = $('#bio').val();
 
     if (tourname === '') {
+      event.preventDefault();
       $('.tourname-label').text('Tour Name is required');
       $('.tourname').focus();
       isValid = false;
@@ -252,24 +251,28 @@ $(document).ready(function() {
     }
 
     else if (price === ''){
+      event.preventDefault();
       $('.price-label').text('Price is required');
       $('.price').focus();
       isValid = false;
     }
 
     else if (from_date === '') {
+      event.preventDefault();
       $('.from-date-label').text('From Date is required');
       $('.from_date').focus();
       isValid = false;
     }
 
     else if (to_date === '') {
+      event.preventDefault();
       $('.to-date-label').text('To Date is required');
       $('.to_date').focus();
       isValid = false;
     }
 
     else if (description === '') {
+      event.preventDefault();
       $('.description-label').text('Description is required');
       $('.description').focus();
       isValid = false;
@@ -329,36 +332,34 @@ function calculateToDate() {
 $('#from_date, #num_days').on('change', calculateToDate);
 
 </script>
-
+<script>
 
 <!-- // JavaScript to add input fields based on the number of days -->
 
-<script>
 window.addEventListener('load', function () {
     // Get all the elements with class 'num-days-input'
     const numDaysInputs = document.querySelectorAll('.num-days-input');
 
     numDaysInputs.forEach(function (input) {
-      const rowValue = input.getAttribute('data-value');
-      document.getElementById('num_days').value = rowValue;
+        const rowValue = parseInt(input.getAttribute('data-value'));
+        console.log('Row Value:', rowValue);
 
-      const days = parseInt(rowValue);
-      const dayProgramContainer = document.getElementById('day-program-container');
+        document.getElementById('num_days').value = rowValue;
 
-      // Clear any existing day program input fields
-      dayProgramContainer.innerHTML = '';
+        const dayProgramContainer = document.getElementById('day-program-container');
+        dayProgramContainer.innerHTML = ''; // Clear existing day program input fields
 
-      // Create input fields for day programs and update the hidden field
-      for (let i = 1; i <= days; i++) {
-        const dayInput = document.createElement('input');
-        dayInput.className = 'form-control';
-        dayInput.type = 'text';
-        dayInput.name = `day_program_${i}`;
-        dayInput.placeholder = `Day ${i} Program`;
-        dayProgramContainer.appendChild(dayInput);
-      }
+        // Create input fields for day programs and update the hidden field
+        for (let i = 1; i <= rowValue; i++) {
+            const dayInput = document.createElement('input');
+            dayInput.className = 'form-control';
+            dayInput.type = 'text';
+            dayInput.name = `day_program_${i}`;
+            dayInput.placeholder = `Day ${i} Program`;
+            dayProgramContainer.appendChild(dayInput);
+        }
     });
-  });
+});
 </script>
 
 <!-- // Multiple  Image uploading -->

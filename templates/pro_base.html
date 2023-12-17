@@ -126,9 +126,7 @@
                 <a class="nav-link" href="{{ url_for('pro_account') }}" role="button" >Home</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
-                <a class="nav-link" href="" role="button" >Portfolio</i></a>
-              </li>
+              
 
               <li class="nav-item dropdown {% if 'pro_tour_packages' in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('pro_tour_packages') }}" role="button">Tour Packages</i></a>
@@ -137,8 +135,12 @@
               <li class="nav-item dropdown {% if 'bookings' in request.url_rule.endpoint %}active{% endif %}">
                  <a class="nav-link" href="{{ url_for('bookings') }}">Bookings</i></a>
               </li>
-              <li class="nav-item dropdown  {% if 'pro_settings' or 'pro_logout' in request.url_rule.endpoint %}active{% endif %}">
+              <li class="nav-item dropdown  {% if 'pro_settings'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('pro_settings') }}">Profile</i></a>
+              </li>
+
+              <li class="nav-item dropdown {% if 'contactus'  in request.url_rule.endpoint %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('contactus') }}" role="button" >Contact US</i></a>
               </li>
                <!-- <a href="sign-up.html" class="btn btn-primary menu-btn ms-4 d-none d-xl-block">Sign In</a> -->
             </div>

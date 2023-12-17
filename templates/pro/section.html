@@ -1,4 +1,82 @@
-{% extends 'pro_base.html' %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description" content="Ciyatrip - Tour & Travel Hotel Booking HTML Template" />
+    <meta name="author" content="potenzaglobalsolutions.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico" />
+
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS Global Compulsory (Do not remove)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" />
+    <!-- Page CSS Implementing Plugins (Remove the plugin CSS here if site does not use that feature)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datetimepicker/datetimepicker.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl-carousel/owl.carousel.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate/animate.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/swiper/swiper.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/range-slider/ion.rangeSlider.css') }}" />
+
+    <!-- Template Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+
+  <!-- BOOTSTRAP 5 CDN -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  <!-- JQUERY AJAX CDN -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- jQuery CDN -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS Global Compulsory (Do not remove)-->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}" />
+    <!-- Page CSS Implementing Plugins (Remove the plugin CSS here if site does not use that feature)-->
+
+        <!-- Page CSS Implementing Plugins (Remove the plugin CSS here if site does not use that feature)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datetimepicker/datetimepicker.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl-carousel/owl.carousel.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate/animate.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/swiper/swiper.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/range-slider/ion.rangeSlider.css') }}" />
+    <!-- Template Style -->
+
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Internal js -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.appear.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap/bootstrap.min.js') }}"></script>
+        
+</head>
 {% block content %}
 
 <section class="space-ptb">

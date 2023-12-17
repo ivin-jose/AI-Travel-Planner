@@ -130,6 +130,16 @@
 					            <label>To Date: <span class="to-date-label" style="color: red;"></span></label>
 					            <input class="form-control" type="date" name="to_date" id="to_date">
 					          </div>
+
+                    <div class="form-group">
+                      <label>Country: <span class="country-label" style="color: red;"></span></label>
+                      <input class="form-control" type="text" name="country" id="country" value="India">
+                    </div>
+                    <div class="form-group">
+                      <label>Region: <span class="region-label" style="color: red;"></span></label>
+                      <input class="form-control" type="text" name="region" id="region" placeholder="Destination Region">
+                    </div>
+
 					          <div class="form-group">
 					            <label>Description: <span class="description-label" style="color: red;"></span></label>
 					            <textarea class="form-control" rows="5" name="description" id="description"></textarea>
@@ -199,7 +209,6 @@
   // Form Validation
 $(document).ready(function() {
   $('#tourpackage-add-form').submit(function(event) {
-    alert("gell")
     var isValid = true;
 
     // Reset error messages
@@ -209,42 +218,63 @@ $(document).ready(function() {
     var tourname = $('#tournames').val();
     var days = $('#days').val();
     var price = $('#price').val();
+    var country = $('#country').val();
+    var region = $('#region').val();
     var from_date = $('#from_date').val();
     var to_date = $('#to_date').val();
     var description = $('#description').val();
 
     if (tourname === '') {
-      alert("get")
+      event.preventDefault();
       $('.tourname-label').text('Tour Name is required');
       $('#tourname').focus();
       return false;
     }
     
-    if (days === ''){
+    else if (days === ''){
+      event.preventDefault();
       $('.days-label').text('Number of Days is required');
       $('#days').focus();
       isValid = false;
     }
 
     else if (price === ''){
+      event.preventDefault();
       $('.price-label').text('Price is required');
       $('#price').focus();
       isValid = false;
     }
 
+    else if (country === ''){
+      event.preventDefault();
+      $('.country-label').text('Country is required');
+      $('#country').focus();
+      isValid = false;
+    }
+
+    else if (region === ''){
+      event.preventDefault();
+      $('.region-label').text('Region is required');
+      $('#region').focus();
+      isValid = false;
+    }
+
     else if (from_date === '') {
+      event.preventDefault();
       $('.from-date-label').text('From Date is required');
       $('#from_date').focus();
       isValid = false;
     }
 
     else if (to_date === '') {
+      event.preventDefault();
       $('.to-date-label').text('To Date is required');
       $('#to_date').focus();
       isValid = false;
     }
 
     else if (description === '') {
+      event.preventDefault();
       $('.description-label').text('Description is required');
       $('#description').focus();
       isValid = false;
@@ -253,7 +283,9 @@ $(document).ready(function() {
     // Checking if days is numeric
     if (!isNaN(days)) {
       $('.days-label').text('');
-    } else {
+    } 
+    else {
+      event.preventDefault();
       $('.days-label').text('Number of Days must be a valid number');
       $('#days').focus();
       isValid = false;
