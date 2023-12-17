@@ -1994,12 +1994,23 @@ def provider_deletion():
 def contactus():
     return render_template('pro/contactus.html')
 
-@app.route('/sepwrite.com/account.pro/provider-search')
+@app.route('/sepwrite.com/account.pro/provider-search', methods=['POST', 'GET'])
 def provider_searching():
     if 'prousercompany' in session:
         if request.method == 'POST':
             search_value = request.form.get('search_value')
-        return render_template('pro/contactus.html')
+            cursor = mysql.connection.cursor()
+            query = """SELECT pb.*, tp.tourname
+                FROM package_bookings pb
+                INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+                WHERE pb.package_provider_id = %s
+                AND pb.booked_id = %s;
+            """
+            cursor.execute(query, (session['proid'], search_value))
+            all_d = cursor.fetchall()
+            cursor.close()
+
+        return render_template('pro/search_results.html', bookings=all_d, se=all_d)
     else:
         return redirect('pro.login')
 #---------------------------------------------------------
