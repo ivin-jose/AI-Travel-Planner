@@ -53,6 +53,30 @@
   }
 </style>
 
+    <style>
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff; /* Change the background color as needed */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #preloader img {
+            width: 50px; /* Adjust the size of your preloader spinner */
+            height: 50px;
+            /* Add your preloader spinner styles or use an image */
+        }
+    </style>
+
+    <!-- Your preloader goes here -->
+    <div id="preloader">
+        <img src="path/to/preloader.gif" alt="Loading">
+    </div>
 <body>
 
 	<header class="header header-sticky default">
@@ -332,5 +356,14 @@ Back To Top-->
 
 <!-- Template Scripts (Do not remove)-->
 <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+<!-- Preloader scripts go here -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Hide the preloader when the content is loaded
+        var preloader = document.getElementById("preloader");
+        preloader.style.display = "none";
+    });
+</script>
 
 
