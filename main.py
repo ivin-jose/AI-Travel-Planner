@@ -5,6 +5,7 @@ import mysql.connector
 import os
 from os.path import realpath, dirname, join
 from flask_paginate import Pagination
+from datetime import date
 
 app = Flask(__name__)
 
@@ -1199,12 +1200,6 @@ def user_booking_cancel(booking_id, package_name, provider_id):
         except:
             flash = "e1"
         try:
-            # Delete from accepted_bookings table
-            delete_query_2 = "DELETE FROM accepted_bookings WHERE booking_id = %s"
-            delete_cursor.execute(delete_query_2, (booking_id,))
-        except:
-            flash = "e2"
-        try:
             # Delete from package_booked_travalers table
             delete_query_3 = "DELETE FROM package_booked_travalers WHERE booking_id = %s"
             delete_cursor.execute(delete_query_3, (booking_id,))
@@ -1271,7 +1266,17 @@ def user_booking_cancel(booking_id, package_name, provider_id):
 
     return render_template('user_bookings.html', tour_bookings=tour_bookings, flash=flash_message)
 
+# About us page
 
+@app.route('/sepwrite.com/about-us')
+def aboutus():
+    return render_template('aboutus.html')
+
+# Contact us page
+
+@app.route('/sepwrite.com/contact-us')
+def usercontactus():
+    return render_template('contactus.html')
       
 #---------------------------------------------------------
 #---------------------------------------------------------
@@ -1313,8 +1318,50 @@ def pro_account():
         tour_packages_data = cursor.fetchall()
         # Close the cursor and database connection if necessary
         cursor.close()
-        return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data)
+
+        cursor = mysql.connection.cursor()
+        current_date = date.today()
+
+        # Execute the SQL query to select tourname where from_date is equal to the current date
+        query = "SELECT * FROM tour_packages WHERE from_date = %s AND pro_id = %s"
+        cursor.execute(query, (current_date, str(session['proid'])))
+
+        # Fetch the results
+        matching_tournames = cursor.fetchall()
+
+        # Close the cursor and connection
+        cursor.close()
+        return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data, current_date=current_date, matching_tournames=matching_tournames)
     return render_template('pro/section.html')
+
+# Current day tour list of users
+@app.route('/sepwrite.com/account.pro/travalers-list/<package_id>')
+def travalers_list(package_id):
+    cursor = mysql.connection.cursor()
+    query = """ SELECT pb.user_id, pb.booked_id, pbt.*
+                FROM package_bookings pb
+                JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
+                WHERE pb.package_id = %s;
+            """
+    cursor.execute(query, (package_id,))
+
+    travalers_list = cursor.fetchall()
+    return render_template('pro/travalers_list.html', travalers_list=travalers_list, package_id=package_id)
+
+# Current day tour list of users
+@app.route('/sepwrite.com/account.pro/travaler-attendance/<travaler_id>/<package_id>')
+def travaler_attendance(travaler_id, package_id):
+    cursor = mysql.connection.cursor()
+    query = """ SELECT pb.user_id, pb.booked_id, pbt.*
+                FROM package_bookings pb
+                JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
+                WHERE pb.package_id = %s;
+            """
+    cursor.execute(query, (package_id,))
+
+    travalers_list = cursor.fetchall()
+    return render_template('pro/travalers_list.html', travalers_list=travalers_list,package_id=package_id)
+
 
 # New notification mark as read
 @app.route('/sepwrite.com/account.pro/mark-us-read/<booking_id>')
@@ -1852,6 +1899,7 @@ def pro_tour_booking_details(booking_id):
 
     return render_template('pro/booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
 
+
 # Accepting Package Booking request
 @app.route('/sepwrite.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_accept(booking_id):
@@ -2133,14 +2181,10 @@ def admin_logout():
    session['admin_name'] = None
    return redirect('admin')
 
-@app.route('/admin_blog')
-def admin_blog():
-   return render_template('admin/admin_blog.html')
-
 
 ''' Facts Page '''
 
-@app.route('/admin_facts', methods=['GET', 'POST'])
+@app.route('/sepwriteadmins.com/admin_facts', methods=['GET', 'POST'])
 def admin_facts():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM facts"
@@ -2148,7 +2192,8 @@ def admin_facts():
     facts = cursor.fetchall()
     return render_template('admin/admin_facts.html', facts=facts)
 
-@app.route('/add_facts', methods=['GET', 'POST'])
+# Adding new facts
+@app.route('/sepwriteadmins.com/add_facts', methods=['GET', 'POST'])
 def add_facts():
     if request.method == 'POST':
         facts = request.form.get('facts')
@@ -2167,7 +2212,9 @@ def add_facts():
 
     return render_template('admin/admin_facts.html', add_status_message=status_message, facts=facts)
 
-@app.route('/delete_fact/<int:fid>', methods=['GET', 'POST'])
+#Deletion of facts
+
+@app.route('/sepwriteadmins.com/delete_fact/<int:fid>', methods=['GET', 'POST'])
 def delete_fact(fid):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM facts WHERE facts_id = %s"
@@ -2183,6 +2230,61 @@ def delete_fact(fid):
     facts = cursor.fetchall()
 
     return render_template('admin/admin_facts.html', facts = facts, dlt_status_message=status_message)
+
+@app.route('/sepwriteadmins.com/users_admin')
+def users_admin():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM users"
+    cursor.execute(query)
+    users = cursor.fetchall()
+    return render_template('admin/admin_users.html', users=users)
+
+# Searching of user
+@app.route('/sepwriteadmins.com/users_admin', methods=['POST', 'GET'])
+def search_user():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM users WHERE user_id LIKE %s OR email LIKE %s OR username LIKE %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        users = cursor.fetchall()
+        return render_template('admin/admin_users.html', users=users)
+#Deletion of user
+
+@app.route('/sepwriteadmins.com/delete_user/<int:userid>', methods=['GET', 'POST'])
+def delete_user(userid):
+    # cursor = mysql.connection.cursor()
+    # delete_query = "DELETE FROM facts WHERE facts_id = %s"
+    # delete_val = (fid,)
+    # cursor.execute(delete_query, delete_val)
+    # mysql.connection.commit()
+    status_message = "User Deleted!!"
+
+    # fetching facts 
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM users"
+    cursor.execute(query)
+    users = cursor.fetchall()
+
+    return render_template('admin/admin_users.html', users = users, dlt_status_message=status_message)
+
+
+
+@app.route('/sepwriteadmins.com/blogs_admin')
+def blogs_admin():
+   return render_template('admin/admin_blog.html')
+
+@app.route('/sepwriteadmins.com/admin_providers')
+def admin_providers():
+   return render_template('admin/admin_blog.html')
+   
+@app.route('/sepwriteadmins.com/packages_admin')
+def packages_admin():
+   return render_template('admin/admin_blog.html')
+
+@app.route('/sepwriteadmins.com/bookings_admin')
+def bookings_admin():
+   return render_template('admin/admin_blog.html')
 
     
 

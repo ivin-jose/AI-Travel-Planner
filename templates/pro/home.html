@@ -110,6 +110,24 @@
           </div>
         </div>
       </section>
+
+      <div style="display: flex;justify-content: center;
+            align-content: center; padding: 50px;">
+        <div>
+          {% if not matching_tournames %}
+            <h5>No Tours Today</h5>
+          {% else %}
+          <h4>Today Tour Lists</h4>
+          <ul>
+            {% for row in matching_tournames %}
+                <a href="{{ url_for('travalers_list', package_id=row[0] ) }}"><li>{{row[2]}}</li></a>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+
+
       <section style="margin-top: 60px;">
         <div style="display: flex;
                 flex-direction: row;
@@ -120,7 +138,7 @@
              <form action="{{ url_for('provider_searching') }}" method="POST">
                   <div class="search-div">
                       <div>
-                          <input type="text" class="form-control" placeholder="Search Tours_Packages, booking id . . . ." style="border-color: black;" name="search_value" required>
+                          <input type="text" class="form-control" placeholder="Search booking id . . . ." style="border-color: black;" name="search_value" required>
                           </div>
                           <div>
                             <button type="submit" name="" ><i class="fas fa-search"></i></button>

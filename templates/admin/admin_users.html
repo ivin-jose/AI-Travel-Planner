@@ -1,0 +1,173 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 900" id="adminAddPlus">+</button>
+
+<button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD FACT</button>
+
+
+
+<!-- admin adding status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: green;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ add_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- admin deleting status Modal -->
+<div class="modal fade" id="dltErrorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: red;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ dlt_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal add facts form  -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Fact</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url_for('add_facts') }}" method="POST" id="fact_Add_Form">
+            <span id="nameError" class="error"></span> <!-- Error message container -->
+            <textarea placeholder="Facts..." name="facts" value="" class="form-control space" required rows="8"></textarea>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary main_theme">Save</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div>
+    <form action="{{ url_for('search_user') }}" method="POST">
+        <input type="text" name="search_value" placeholder="search user">
+        <input type="submit" name="">
+    </form>
+      <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">user ID</th>
+      <th scope="col">user name</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Joined Date</th>
+      <th scope="col">Profile Pic</th>
+      <th scope="col">Country</th>
+      <th scope="col">About</th>
+      <th scope="col" style="width: 15% !important;">More</th>
+    </tr>
+  </thead>
+
+
+    <tbody>
+{% for row in users %}
+<tr>
+  <th scope="row">{{ row[0] }}</th>
+  <td>{{ row[1] }}</td>
+  <td>{{ row[2] }}</td>
+  <td>{{ row[4] }}</td>
+  <td><img src="{{row[5]}}" width="30" height="30"> </td>
+  <td>{{ row[6] }}</td>
+  <td>{{ row[7] }}</td>
+  
+  <!-- Add unique IDs for the Remove link and its associated close button -->
+  <td>
+    <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('delete_user', userid=row[0]) }}">
+      <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+    </a>
+
+    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+      <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+    </a>
+  {% endfor %}
+  </tbody>
+</table>
+    </div>
+</div>
+
+<!-- Fact validating  -->
+<script>
+$(document).ready(function() {
+     {% if add_status_message %}
+        $('#statusModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
+    {% if dlt_status_message %}
+        $('#dltErrorModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
+
+    $("#fact_Add_Form").submit(function(e) {
+        // Prevent the form from submitting by default
+        e.preventDefault();
+
+        // Get the textarea value
+        var factText = $("textarea[name='facts']").val().trim();
+        var words = factText.split(/\s+/).filter(function(word) {
+            return word.length > 0;
+        });
+
+        // Perform validation
+        if (words.length < 20) {
+            $("#nameError").text("The fact should contain at least 20 words.");
+        } else if (words.length > 150) {
+            $("#nameError").text("The fact should not exceed 150 words.");
+        } else {
+           // Clear any previous error messages
+            $("#nameError").text("");
+            // Submit the form if validation passes
+            $(this).unbind("submit").submit();
+            
+            // Clear the form after successful submission
+            $(this)[0].reset();
+        }
+    });
+   
+});
+    $(document).ready(function() {
+        $(".factRemoveConfirmation").click(function() {
+            $(".factRemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
+
+        $("#adminAddPlus").hover(function() {
+            $("#adminAddText").show()
+        })
+         $("#adminAddPlus").mouseleave(function() {
+            $("#adminAddText").hide()
+        })
+    })
+</script>
+
+{% endblock %}

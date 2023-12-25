@@ -119,27 +119,27 @@
           </a>
           <div class="navbar-collapse collapse justify-content-end justify-content-lg-center">
             <ul class="nav navbar-nav">
-              <li class="nav-item dropdown active">
+              <li class="nav-item dropdown {% if 'home'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('home') }}" role="button" >Home</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
+              <li class="nav-item dropdown {% if 'j'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="portfolio-5-masonry.html" role="button" >Portfolio</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
+              <li class="nav-item dropdown {% if 'tour_packages'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('tour_packages') }}" role="button">Tour Packages</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
+              <li class="nav-item dropdown {% if 'blog_home'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('blog_home') }}" role="button" >Blog</i></a>
               </li>
 
-              <li class="nav-item dropdown ">
-                <a class="nav-link" href="contact-us.html">Contact Us</i></a>
+              <li class="nav-item dropdown {% if 'usercontactus'  in request.url_rule.endpoint %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('usercontactus') }}">Contact Us</i></a>
               </li>
-              <li class="nav-item dropdown ">
-                <a class="nav-link" href="about-us.html">About Us</i></a>
+              <li class="nav-item dropdown {% if 'aboutus'  in request.url_rule.endpoint %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('aboutus') }}">About Us</i></a>
               </li>
               <li class="nav-item dropdown">
                 <!-- inner -->

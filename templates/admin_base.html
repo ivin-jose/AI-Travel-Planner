@@ -71,25 +71,43 @@
         <li class="{% if 'admin_dashboard' in request.url_rule.endpoint %}active{% endif %}">
           <a class="" href="{{url_for('admin_dashboard')}}">
               <i class="icon_house_alt"></i>
-              <span>Manage Admins</span>
+              <span>ADMINS</span>
           </a>
        </li>
-      <li class="{% if 'admin_blog' in request.url_rule.endpoint %}active{% endif %}">
-        <a class="" href="{{url_for('admin_blog')}}">
+      <li class="{% if 'users_admin' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('users_admin')}}">
           <i class="icon_house_alt"></i>
-          <span>Blogs</span>
+          <span>USERS</span>
         </a>
       </li>
-      <li class="">
-        <a class="" href="">
+      <li class="{% if 'admin_providers' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('admin_providers')}}">
           <i class="icon_house_alt"></i>
-          <span>HOTELS</span>
+          <span>TOUR PROVIDERS</span>
+        </a>
+      </li>
+      <li class="{% if 'blogs_admin' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('blogs_admin')}}">
+          <i class="icon_house_alt"></i>
+          <span>BLOGS</span>
+        </a>
+      </li>
+      <li class="{% if 'packages_admin' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('packages_admin')}}">
+          <i class="icon_house_alt"></i>
+          <span>PACKAGES</span>
+        </a>
+      </li>
+      <li class="{% if 'bookings_admin' in request.url_rule.endpoint %}active{% endif %}">
+        <a class="" href="{{url_for('bookings_admin')}}">
+          <i class="icon_house_alt"></i>
+          <span>BOOKINGS</span>
         </a>
       </li>
       <li class="{% if 'admin_facts' in request.url_rule.endpoint %}active{% endif %}">
         <a class="" href="{{url_for('admin_facts')}}">
           <i class="icon_house_alt"></i>
-          <span>Facts</span>
+          <span>FACTS</span>
         </a>
       </li>
      </ul>

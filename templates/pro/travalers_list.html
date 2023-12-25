@@ -1,0 +1,159 @@
+{% extends 'pro_base.html' %}
+{% block content %}<br>
+<div class="col-md-7 col-xl-8">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="account" role="tabpanel">
+
+                <div class="col">
+                <div class="row">
+                  <div class="col mb-3">
+                  	{% if travalers_list %}
+                    <div class="card">
+                      <div class="card-body">
+                      	<!-- <button id="all_bookings_btn" class="btn btn-primary">All</button>
+                      	<button id="pending_bookings_btn" class="btn btn-primary">Show Pending</button>
+												<button id="accepted_bookings_btn" class="btn btn-primary">Show Accepted</button>
+												<button id="rejected_bookings_btn" class="btn btn-primary">Show Rejected</button> -->
+                        <div class="e-profile">
+                          <div class="row">
+
+                            <div class="col-12 col-sm-auto mb-3">
+                              
+                              
+                          </div>
+
+                          <ul class="nav nav-tabs">
+                            <li class="nav-item"><a href="" class="active nav-link">Travalers List</a></li>
+                          </ul>
+
+
+                          <div class="tab-content pt-3">
+															<div id="pending_bookings">
+																<h6>Travalers List </h6>
+															  	<table class="table table-dark">
+																  <thead>
+																    <tr>
+																       <th>Booking Id</th>
+																      	<th scope="col">Travaler Name</th>
+																      	<th scope="col">Phone</th>
+																      	<th scope="col">Id</th>
+																      	<th scope="col">More</th>
+																      	<th scope="col">Attendance</th>
+																    </tr>
+																  </thead>
+																  <tbody>
+																  	{% for row in travalers_list %}
+																	    <tr>
+																	      <td>{{row[1]}}</td>
+																	       <td>{{row[4]}}</td>
+																	       <td>{{row[6]}}</td>
+																	       <td>{{row[5]}}</td>
+
+																	      <!-- Checking the status -->
+<!-- 																	      {% if row[5] == 1 %}
+																	        	<td style="color: green;">Accepted</td>
+																	      {% elif row[5] == 0 %}
+																	       		<td style="color: red;">Rejected</td>
+																	      {% else %}
+																	       		<td style="color: grey;">Pending</td>
+																	      {% endif %} -->
+																	      
+																	      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[1])}}">view details</a></td>
+																	      <td style="text-align: center;"><a href="{{ url_for('travaler_attendance',travaler_id=row[1], package_id = package_id)}}"><i class="fa-solid fa-check"></i></a></td>
+																	    </tr>
+																    {% endfor %}
+																    
+																  </tbody>
+																</table>
+															</div>
+                            </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  	<div  style="height: 40vh;
+                  							width: 100%;
+														    display: flex;
+														    align-items: center;
+														    justify-content: flex-end;">
+                  			<h2><strong>You have no bookings..!</strong></h2>
+                  	</div>
+								   
+              </div>
+            </div>
+						{% endif %}
+						
+							{% if cancelled_bookings %}
+                <div class="row">
+                  <div class="col mb-3">
+                  
+                    <div class="card">
+                      <div class="card-body">
+
+                        <div class="e-profile">
+                          <div class="row">
+
+                            <div class="col-12 col-sm-auto mb-3">        
+                          </div>
+
+                          <ul class="nav nav-tabs">
+                            <li class="nav-item"><a href="" class="active nav-link">Booking Cancellations</a></li>
+                          </ul>
+
+
+                          <div class="tab-content pt-3">
+															<div id="pending_bookings">
+																<h6>Cancelled Bookings </h6>
+															  	<table class="table table-dark">
+																  <thead>
+																    <tr>
+																       <th>Booking Id</th>
+																      	<th scope="col">Tour Name</th>
+																      	<th scope="col">Date</th>
+																      	<th scope="col">Status</th>
+																    </tr>
+																  </thead>
+																  <tbody>
+																  	{% for row in cancelled_bookings %}
+																	    <tr>
+																	      <td>{{row[0]}}</td>
+																	      <td>{{row[5]}}</td>
+																	      <td>{{row[6]}}</td>
+																	      <!-- Checking the status -->
+																	      <td style="color: red;">Cancelled</td>
+																	    </tr>
+																    {% endfor %}
+																    
+																  </tbody>
+																</table>
+															</div>
+                            </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  	
+								   {% endif %}
+              </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+{% endblock %}
