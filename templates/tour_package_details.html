@@ -132,6 +132,41 @@
                     </div>
                   </div>
 
+                                    <!-- Review form -->
+                  <div class="listing-detail-box mb-lg-0">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Add a Review</h5>
+                    </div>
+                    <form action="{{ url_for('review_adding') }}" method="POST" id="Review-adding-form">
+                      <div class="row">
+                        <div class="mb-3 col-md-12">
+                          <div class="ratings">
+                            <div id="star-rating">
+                                <span class="star" onclick="setRating(1)" id="star1">★</span>
+                                <span class="star" onclick="setRating(2)" id="star2">★</span>
+                                <span class="star" onclick="setRating(3)" id="star3">★</span>
+                                <span class="star" onclick="setRating(4)" id="star4">★</span>
+                                <span class="star" onclick="setRating(5)" id="star5">★</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                          <label class="form-label">Your message</label>
+                          <input type="hidden" id="rating-input" name="rating">
+                          {% for row in tour_packages_data %}
+                          <input type="hidden" name="package_id" value="{{ row[0] }}">
+                          {% endfor %}
+                          <textarea class="form-control" rows="4" placeholder="Your message" name="review"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                          <input class="btn btn-primary" type="submit" value="Submit Review">
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- End Review form -->
+
                   <!-- Listing Location -->
                   <div class="listing-detail-box">
                     <div class="detail-title">
@@ -182,40 +217,7 @@
 
                   <!-- end -->
 
-                  <!-- Review form -->
-                  <div class="listing-detail-box mb-lg-0">
-                    <div class="detail-title">
-                      <h5 class="fw-600">Add a Review</h5>
-                    </div>
-                    <form action="{{ url_for('review_adding') }}" method="POST" id="Review-adding-form">
-                      <div class="row">
-                        <div class="mb-3 col-md-12">
-                          <div class="ratings">
-                            <div id="star-rating">
-                                <span class="star" onclick="setRating(1)" id="star1">★</span>
-                                <span class="star" onclick="setRating(2)" id="star2">★</span>
-                                <span class="star" onclick="setRating(3)" id="star3">★</span>
-                                <span class="star" onclick="setRating(4)" id="star4">★</span>
-                                <span class="star" onclick="setRating(5)" id="star5">★</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mb-3 col-md-12">
-                          <label class="form-label">Your message</label>
-                          <input type="hidden" id="rating-input" name="rating">
-                          {% for row in tour_packages_data %}
-                          <input type="hidden" name="package_id" value="{{ row[0] }}">
-                          {% endfor %}
-                          <textarea class="form-control" rows="4" placeholder="Your message" name="review"></textarea>
-                        </div>
-                        <div class="col-md-12">
-                          <input class="btn btn-primary" type="submit" value="Submit Review">
-                        </div>
-                      </div>
-                    </form>
-                  </div>
 
-                  <!-- End Review form -->
 
                 </div>
               </div>

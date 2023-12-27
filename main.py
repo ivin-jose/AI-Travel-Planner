@@ -1281,6 +1281,53 @@ def user_booking_cancel(booking_id, package_name, provider_id):
 
     return render_template('user_bookings.html', tour_bookings=tour_bookings, flash=flash_message)
 
+# Review adding to the form
+@app.route('/sepwrite.com/package-review-adding/', methods=['POST', 'GET'])
+def review_adding():
+    if 'username' in session:
+        cursor = mysql.connection.cursor()
+        if request.method == "POST":
+            review = request.form.get("review")
+            rating = request.form.get("rating")
+            package_id=request.form.get("package_id")
+            if rating == "":
+                rating = 0
+
+            query_select = """
+                SELECT * FROM package_reviews WHERE user_id = %s AND package_id = %s
+            """
+            cursor.execute(query_select, (session['userid'], package_id))
+            package_review = cursor.fetchall()
+
+            if package_review:
+                if  review != "":
+                    query_updating = """
+                        UPDATE package_reviews
+                        SET review = %s, ratings = %s
+                        WHERE user_id = %s AND package_id = %s;
+                    """
+                    query_values_update = (review, rating, session['userid'], package_id)
+                    cursor.execute(query_updating, query_values_update)
+                    mysql.connection.commit()
+                else:
+                    query_updating = """
+                        UPDATE package_reviews
+                        SET ratings = %s
+                        WHERE user_id = %s AND package_id = %s;
+                    """
+                    query_values_update = (rating, session['userid'], package_id)
+                    cursor.execute(query_updating, query_values_update)
+                    mysql.connection.commit()
+            else:
+                query_inserting = """
+                INSERT INTO package_reviews (user_id, package_id, review, ratings)
+                VALUES (%s, %s, %s, %s);
+                """
+                query_values = (session['userid'], package_id, review, rating)
+                cursor.execute(query_inserting, query_values)
+                mysql.connection.commit()
+
+        return redirect(url_for('tour_package_details', package_id=package_id))
 
 
 # About us page
