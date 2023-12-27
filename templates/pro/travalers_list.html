@@ -45,9 +45,10 @@
 																  	{% for row in travalers_list %}
 																	    <tr>
 																	      <td>{{row[1]}}</td>
-																	       <td>{{row[4]}}</td>
-																	       <td>{{row[6]}}</td>
 																	       <td>{{row[5]}}</td>
+																	       <td>{{row[7]}}</td>
+																	       <td>{{row[6]}}</td>
+      																														      
 
 																	      <!-- Checking the status -->
 <!-- 																	      {% if row[5] == 1 %}
@@ -59,7 +60,13 @@
 																	      {% endif %} -->
 																	      
 																	      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[1])}}">view details</a></td>
-																	      <td style="text-align: center;"><a href="{{ url_for('travaler_attendance',travaler_id=row[1], package_id = package_id)}}"><i class="fa-solid fa-check"></i></a></td>
+
+																	      {% if row[8] == 1 %}   
+																	      	<td style="text-align: center;"><a href="{{ url_for('travaler_attendance_remove',travaler_id=row[2], user_id=row[0], booking_id=row[1], package_id = package_id)}}"> <i class="fa-solid fa-xmark" style="color: #e40c0c;"></i> (present)</a></td>						      
+																	      {% else %}
+																	      	<td style="text-align: center;"><a href="{{ url_for('travaler_attendance',travaler_id=row[2], user_id=row[0], booking_id=row[1], package_id = package_id)}}"><i class="fa-solid fa-check"></i> (not)</a></td>																      
+																	      {% endif %}
+
 																	    </tr>
 																    {% endfor %}
 																    

@@ -904,7 +904,15 @@ def tour_package_details(package_id):
         cursor.execute(query3, (package_id,))
         tour_packages_image = cursor.fetchall()
 
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+        # SQL query to check user is attended the package
+        select_query = "SELECT * FROM package_bookings WHERE user_id = %s AND package_id = %s AND attendance = 1"
+        select_values = (session['userid'], package_id)
+        # Execute the query
+        cursor.execute(select_query, select_values)
+        user_attendance = cursor.fetchall()
+
+
+        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
     else:
         return redirect('/login')
@@ -948,8 +956,15 @@ def tour_package_saving(package_id):
     # Execute the query and retrieve the data
     cursor = mysql.connection.cursor()
     cursor.execute(query3, (package_id,))
-    tour_packages_image = cursor.fetchall()    
-    cursor = mysql.connection.cursor()
+    tour_packages_image = cursor.fetchall()  
+
+    # SQL query to check user is attended the package
+    select_query = "SELECT * FROM package_bookings WHERE user_id = %s AND package_id = %s AND attendance = 1"
+    select_values = (session['userid'], package_id)
+    # Execute the query
+    cursor.execute(select_query, select_values)
+    user_attendance = cursor.fetchall()
+
     # Inserting the saved package
     try:
         # Define the SQL query to insert data into the table
@@ -961,7 +976,7 @@ def tour_package_saving(package_id):
 
         if saved_packages_data:
             flash = "Already Saved..!"
-            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
                 tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
         else:
             # Define the SQL query to insert data into the table
@@ -971,11 +986,11 @@ def tour_package_saving(package_id):
             # Commit the transaction to save the changes to the database
             flash = "Saved Succefully.."
             mysql.connection.commit()
-            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
                 tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
     except:
         flash = "Something Wrong..!!"
-    return render_template('tour_package_details.html', tour_packages_data=tour_packages_data,
+    return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
 
 # Deleting Saving packages
@@ -1266,6 +1281,8 @@ def user_booking_cancel(booking_id, package_name, provider_id):
 
     return render_template('user_bookings.html', tour_bookings=tour_bookings, flash=flash_message)
 
+
+
 # About us page
 
 @app.route('/sepwrite.com/about-us')
@@ -1338,21 +1355,42 @@ def pro_account():
 @app.route('/sepwrite.com/account.pro/travalers-list/<package_id>')
 def travalers_list(package_id):
     cursor = mysql.connection.cursor()
-    query = """ SELECT pb.user_id, pb.booked_id, pbt.*
-                FROM package_bookings pb
-                JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
-                WHERE pb.package_id = %s;
+    query = """ SELECT pb.user_id, pb.booked_id, pbt.travaler_id, pbt.*, pb.attendance
+FROM package_bookings pb
+JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
+WHERE pb.package_id = %s;
+
+
             """
     cursor.execute(query, (package_id,))
 
     travalers_list = cursor.fetchall()
     return render_template('pro/travalers_list.html', travalers_list=travalers_list, package_id=package_id)
 
-# Current day tour list of users
-@app.route('/sepwrite.com/account.pro/travaler-attendance/<travaler_id>/<package_id>')
-def travaler_attendance(travaler_id, package_id):
+# Travaler attendance
+@app.route('/sepwrite.com/account.pro/travaler-attendance/<travaler_id>/<user_id>/<booking_id>/<package_id>')
+def travaler_attendance(travaler_id, user_id, booking_id, package_id):
     cursor = mysql.connection.cursor()
-    query = """ SELECT pb.user_id, pb.booked_id, pbt.*
+
+    # SQL query to insert values into travelers_attendance table
+    insert_query = "INSERT INTO travalers_attendance (user_id, booking_id, package_id, travaler_id) VALUES (%s, %s, %s, %s)"
+    insert_values = (user_id, booking_id, package_id, travaler_id)
+    cursor.execute(insert_query, insert_values)
+    mysql.connection.commit()
+
+    # SQL query to update the attendance column to 1
+    update_query = "UPDATE package_bookings SET attendance = 1 WHERE user_id = %s"
+    update_values = (user_id,)
+    cursor.execute(update_query, update_values)
+    mysql.connection.commit()
+
+    # SQL query to update the attendance column to 1 in travaler table
+    update_query = "UPDATE package_booked_travalers SET attendance = 1 WHERE travaler_id = %s"
+    update_values = (travaler_id,)
+    cursor.execute(update_query, update_values)
+    mysql.connection.commit()
+
+    query = """ SELECT pb.user_id, pb.booked_id, pbt.travaler_id, pbt.*, pb.attendance
                 FROM package_bookings pb
                 JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
                 WHERE pb.package_id = %s;
@@ -1361,6 +1399,43 @@ def travaler_attendance(travaler_id, package_id):
 
     travalers_list = cursor.fetchall()
     return render_template('pro/travalers_list.html', travalers_list=travalers_list,package_id=package_id)
+
+# REmmove travelr form list of travalers
+@app.route('/sepwrite.com/account.pro/travaler-attendance-remove/<travaler_id>/<user_id>/<booking_id>/<package_id>')
+def travaler_attendance_remove(travaler_id, user_id, booking_id, package_id):
+    cursor = mysql.connection.cursor()
+
+    # SQL query to delete rows from travalers_attendance table
+    delete_query = "DELETE FROM travalers_attendance WHERE travaler_id = %s"
+    delete_values = (travaler_id,)
+    cursor.execute(delete_query, delete_values)
+    mysql.connection.commit()
+
+    # SQL query to update the attendance column to 0 in travaler table
+    update_query = "UPDATE package_booked_travalers SET attendance = 0 WHERE travaler_id = %s"
+    update_values = (travaler_id,)
+    cursor.execute(update_query, update_values)
+    mysql.connection.commit()
+
+    # SQL query to update the attendance column to 0
+    update_query = "UPDATE package_bookings SET attendance = 0 WHERE user_id = %s"
+    update_values = (user_id,)
+    cursor.execute(update_query, update_values)
+    mysql.connection.commit()
+
+    
+    cursor = mysql.connection.cursor()
+
+    query = """ SELECT pb.user_id, pb.booked_id, pbt.travaler_id, pbt.*, pb.attendance
+                FROM package_bookings pb
+                JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
+                WHERE pb.package_id = %s;
+            """
+    cursor.execute(query, (package_id,))
+
+    travalers_list = cursor.fetchall()
+    return render_template('pro/travalers_list.html', travalers_list=travalers_list,package_id=package_id)
+
 
 
 # New notification mark as read
