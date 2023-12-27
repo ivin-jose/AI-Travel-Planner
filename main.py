@@ -842,18 +842,24 @@ def tour_packages():
     flash = None
     if 'username' in session:
         # SQL query to select Tour Packages
-        query = """ SELECT tp.*, pi.image_path
-                    FROM tour_packages tp
-                    LEFT JOIN (
-                        SELECT package_id, MIN(image_path) AS image_path
-                        FROM package_images
-                        GROUP BY package_id
-                    ) pi ON tp.package_id = pi.package_id;
+        query = """ SELECT tp.*, pi.image_path,
+               COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+        WHERE tp.package_id = tp.package_id
+        GROUP BY tp.package_id;
+
                 """
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
         cursor.execute(query)
         tour_packages_data = cursor.fetchall()
+
         # Close the cursor and database connection if necessary
         cursor.close()
         return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
@@ -911,6 +917,7 @@ def tour_package_details(package_id):
         cursor.execute(select_query, select_values)
         user_attendance = cursor.fetchall()
 
+        #selecting reviews to display
         review_select = """SELECT pr.*, u.username, u.profile_pic
                 FROM package_reviews pr
                 JOIN users u ON pr.user_id = u.user_id
@@ -919,8 +926,15 @@ def tour_package_details(package_id):
         cursor.execute(review_select, (package_id,))
         package_reviews = cursor.fetchall()
 
+        # checking the user travaled or not
 
-        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
+        review_select = """SELECT * FROM package_bookings WHERE user_id = %s AND package_id = %s AND attendance = %s;
+        """
+        cursor.execute(review_select, (session['userid'], package_id, 1))
+        user_travaled = cursor.fetchall()
+
+
+        return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, user_travaled=user_travaled,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, package_reviews=package_reviews)
     else:
         return redirect('/login')
@@ -983,9 +997,12 @@ def tour_package_saving(package_id):
     cursor.execute(review_select, (package_id,))
     package_reviews = cursor.fetchall()
 
+    # checking the user travaled or not
 
-
-
+    review_select = """SELECT * FROM package_bookings WHERE user_id = %s AND package_id = %s AND attendance = %s;
+    """
+    cursor.execute(review_select, (session['userid'], package_id, 1))
+    user_travaled = cursor.fetchall()
 
     # Inserting the saved package
     try:
@@ -998,7 +1015,7 @@ def tour_package_saving(package_id):
 
         if saved_packages_data:
             flash = "Already Saved..!"
-            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, user_travaled=user_travaled,
                 tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash, package_reviews=package_reviews)
         else:
             # Define the SQL query to insert data into the table
@@ -1008,12 +1025,12 @@ def tour_package_saving(package_id):
             # Commit the transaction to save the changes to the database
             flash = "Saved Succefully.."
             mysql.connection.commit()
-            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
+            return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, user_travaled=user_travaled,
                 tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash, package_reviews=package_reviews)
     except:
         flash = "Something Wrong..!!"
     return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, package_reviews=package_reviews,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, user_travaled=user_travaled)
 
 # Deleting Saving packages
 @app.route('/sepwrite.com/tour-packages-remove/<package_id>', methods=['POST', 'GET'])
@@ -1155,14 +1172,15 @@ def user_package_searching():
 
         # SQL query to select Tour Packages with a search condition
         query = """ 
-            SELECT tp.*, pi.image_path
-            FROM tour_packages tp
-            LEFT JOIN (
-                SELECT package_id, MIN(image_path) AS image_path
-                FROM package_images
-                GROUP BY package_id
-            ) pi ON tp.package_id = pi.package_id
-            WHERE tp.tourname LIKE %s OR tp.country LIKE %s OR tp.territory LIKE %s OR tp.price LIKE %s OR tp.description LIKE %s
+            SELECT tp.*, pi.image_path,
+       COALESCE((SELECT AVG(ratings) FROM package_reviews pr WHERE pr.package_id = pr.package_id), 0) AS average_rating
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        WHERE tp.tourname LIKE %s OR tp.country LIKE %s OR tp.territory LIKE %s OR tp.price LIKE %s OR tp.description LIKE %s;
         """
 
         # Execute the query and retrieve the data
@@ -1173,7 +1191,8 @@ def user_package_searching():
         tour_packages_data = cursor.fetchall()
         # Close the cursor and database connection if necessary
         cursor.close()
-    return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
+        rating_true = True
+    return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
 
 # User Bookings 
 
@@ -1350,6 +1369,18 @@ def review_adding():
                 mysql.connection.commit()
 
         return redirect(url_for('tour_package_details', package_id=package_id))
+
+
+# Review adding to the form
+@app.route('/sepwrite.com/package-review-deleting/<review_id>/<package_id>', methods=['POST', 'GET'])
+def review_deleting(review_id, package_id):
+    cursor = mysql.connection.cursor()
+    # SQL query to delete rows from travalers_attendance table
+    delete_query = "DELETE FROM package_reviews WHERE review_id = %s"
+    delete_values = (review_id,)
+    cursor.execute(delete_query, delete_values)
+    mysql.connection.commit()
+    return redirect(url_for('tour_package_details', package_id=package_id))
 
 
 # About us page

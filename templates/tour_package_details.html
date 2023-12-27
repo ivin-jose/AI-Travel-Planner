@@ -32,7 +32,7 @@
                       <i class="fa-regular fa-calendar-days me-2"></i><span> {{ row[4] }}  </span>
                     </div>
                     <div class="rating mb-3 mb-sm-0">
-                      <i class="fa-solid fa-star me-1 text-yellow"></i><span>Days {{ row[3] }}</span>
+                      <span>Days {{ row[3] }}</span>
                     </div>
                     <a href="#" class="listing-loaction ms-sm-4"><i class="fa fa-location-dot"></i>{{row[8]}}, {{row[9]}}</a>
                   </div>
@@ -132,7 +132,8 @@
                     </div>
                   </div>
 
-                                    <!-- Review form -->
+                  <!-- Review form -->
+                  {% if user_travaled %}
                   <div class="listing-detail-box mb-lg-0">
                     <div class="detail-title">
                       <h5 class="fw-600">Add a Review</h5>
@@ -164,6 +165,7 @@
                       </div>
                     </form>
                   </div>
+                  {% endif %}
 
                   <!-- End Review form -->
 
@@ -178,12 +180,12 @@
 
 
                   <!-- Reviews -->
-                  {% for row in package_reviews %}
                   <div class="listing-detail-box reviews-box">
                     <div class="detail-title">
                       <h5 class="fw-600">Reviews</h5>
                     </div>
                     <div class="row">
+                      {% for row in package_reviews %}
                       <div class="col-md-12">
                         <div class="d-block d-md-flex mb-4">
                           <div class="avatar mb-3">
@@ -202,6 +204,9 @@
                                             <li><i class="far fa-star text-light"></i></li>
                                         {% endif %}
                                     {% endfor %}
+                                    {% if row[1] == session['userid'] %}
+                                    <a href="{{ url_for('review_deleting', review_id=row[0], package_id=row[2])}}" style="margin-left: 10px;"><i class="fa-solid fa-trash" style="color: #f10909;"></i></a>
+                                    {% endif %}
                                 </ul>
 
                                 </ul>
@@ -210,16 +215,13 @@
                             <p>{{ row[3] }}</p>
                           </div>
                         </div>
-          
                       </div>
+                      {% endfor %}
                     </div>
                   </div>
-                  {% endfor %}
+                  
 
                   <!-- end -->
-
-
-
                 </div>
               </div>
               <div class="col-lg-4">

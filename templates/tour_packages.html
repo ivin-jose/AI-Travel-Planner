@@ -65,7 +65,12 @@
                         <i class="fa-regular fa-calendar-days me-2"></i><span> Days {{ row[3] }} </span>
                       </div>
                       <div class="rating">
-                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>{{ row[4] }}</span>
+                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>
+                          {% if rating_true == True %}
+                            {{ row[11]|round(1) }}
+                          {% else %}
+                            {{row[11]|int/5}}</span>
+                          {% endif %}
                       </div>
                     </div>
                     <div class="price">
