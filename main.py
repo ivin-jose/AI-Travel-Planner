@@ -911,9 +911,17 @@ def tour_package_details(package_id):
         cursor.execute(select_query, select_values)
         user_attendance = cursor.fetchall()
 
+        review_select = """SELECT pr.*, u.username, u.profile_pic
+                FROM package_reviews pr
+                JOIN users u ON pr.user_id = u.user_id
+                WHERE pr.package_id = %s;
+        """
+        cursor.execute(review_select, (package_id,))
+        package_reviews = cursor.fetchall()
+
 
         return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, package_reviews=package_reviews)
     else:
         return redirect('/login')
 
@@ -965,6 +973,20 @@ def tour_package_saving(package_id):
     cursor.execute(select_query, select_values)
     user_attendance = cursor.fetchall()
 
+    # selecting package reviews
+
+    review_select = """SELECT pr.*, u.username, u.profile_pic
+            FROM package_reviews pr
+            JOIN users u ON pr.user_id = u.user_id
+            WHERE pr.package_id = %s;
+    """
+    cursor.execute(review_select, (package_id,))
+    package_reviews = cursor.fetchall()
+
+
+
+
+
     # Inserting the saved package
     try:
         # Define the SQL query to insert data into the table
@@ -977,7 +999,7 @@ def tour_package_saving(package_id):
         if saved_packages_data:
             flash = "Already Saved..!"
             return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
-                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
+                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash, package_reviews=package_reviews)
         else:
             # Define the SQL query to insert data into the table
             query = "INSERT INTO saved_packages (package_id, user_id) VALUES (%s, %s)"
@@ -987,10 +1009,10 @@ def tour_package_saving(package_id):
             flash = "Saved Succefully.."
             mysql.connection.commit()
             return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
-                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash)
+                tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, flash=flash, package_reviews=package_reviews)
     except:
         flash = "Something Wrong..!!"
-    return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance,
+    return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, package_reviews=package_reviews,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details)
 
 # Deleting Saving packages
@@ -1986,7 +2008,7 @@ def pro_tour_package_details(package_id):
         return render_template('pro/tour_package_details.html', tour_packages_data=tour_packages_data,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
     else:
-        return render_template('pro/login')
+        return render_template('pro/section.html')
 
 
 # Remove Tour Packages Details
