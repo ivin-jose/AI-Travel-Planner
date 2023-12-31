@@ -36,11 +36,15 @@
                         <i class="fa-regular fa-calendar-days me-2"></i><span> Days {{ row[3] }} </span>
                       </div>
                       <div class="rating">
-                        <i class="fa-solid fa-star me-1 text-yellow"></i><span>{{ row[4] }}</span>
+                        <i class="fa-solid fa-star me-1 text-yellow"></i>
+                        {% if row[11] %}
+                        {{ row[11]|round(1) }}
+                        {% endif %}
+
                       </div>
                     </div>
                     <div class="price">
-                      <span class="text-decoration-line-through">{{ row[6]|int - 200 }}</span>{{ row[6] }}
+                      <span class="text-decoration-line-through">{{ row[6]|int + 200 }}</span>{{ row[6] }}
                     </div>
                   </div>
                   <div class="listing-info">

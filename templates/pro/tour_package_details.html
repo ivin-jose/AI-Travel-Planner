@@ -115,6 +115,49 @@
                       <!--  -->
                     </div>
                   </div>
+
+                   <!-- Reviews -->
+                  <div class="listing-detail-box reviews-box">
+                    <div class="detail-title">
+                      <h5 class="fw-600">Reviews</h5>
+                    </div>
+                    <div class="row">
+                      {% for row in package_reviews %}
+                      <div class="col-md-12">
+                        <div class="d-block d-md-flex mb-4">
+                          <div class="avatar mb-3">
+                            <img src="{{url_for('static', filename=row[6])}}" class="rounded-circle img-fluid" alt="">
+                          </div>
+                          <div class="p-4 border border-radius-sm ms-0 ms-md-3" style="width: 100%;">
+                            <div class="d-flex align-items-center">
+                              <h6 class="mt-0">{{ row[5] }}</h6>
+                              <div class="d-flex ms-auto mb-3">
+                                <span class="px-2 border text-success border-radius-sm d-inline-block me-2"> {{ row[4] }}.0</span>
+                                <ul class="list-unstyled d-flex mb-0">
+                                    {% for i in range(1, 6) %}
+                                        {% if i <= row[4] %}
+                                            <li><i class="fas fa-star text-warning"></i></li>
+                                        {% else %}
+                                            <li><i class="far fa-star text-light"></i></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if row[1] == session['userid'] %}
+                                    <a href="{{ url_for('review_deleting', review_id=row[0], package_id=row[2])}}" style="margin-left: 10px;"><i class="fa-solid fa-trash" style="color: #f10909;"></i></a>
+                                    {% endif %}
+                                </ul>
+
+                                </ul>
+                              </div>
+                            </div>
+                            <p>{{ row[3] }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  
+                  
     
                   <div class="listing-detail-box mb-lg-0">
 

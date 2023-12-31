@@ -1581,14 +1581,17 @@ def pro_logout():
 def pro_tour_packages():
     if 'prousercompany' in session:
         # SQL query to select Tour Packages
-        query = """SELECT tp.*, pi.image_path
-           FROM tour_packages tp
-           LEFT JOIN (
-               SELECT package_id, MIN(image_path) AS image_path
-               FROM package_images
-               GROUP BY package_id
-           ) pi ON tp.package_id = pi.package_id
-           WHERE tp.pro_id = %s;
+        query = """SELECT tp.*, pi.image_path, AVG(pr.ratings) AS average_rating
+FROM tour_packages tp
+LEFT JOIN (
+    SELECT package_id, MIN(image_path) AS image_path
+    FROM package_images
+    GROUP BY package_id
+) pi ON tp.package_id = pi.package_id
+LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+WHERE tp.pro_id = %s
+GROUP BY tp.package_id;
+
         """
 
         # Execute the query and retrieve the data
@@ -2036,8 +2039,17 @@ def pro_tour_package_details(package_id):
         cursor.execute(query3, (package_id,))
         tour_packages_image = cursor.fetchall()
 
+        #selecting reviews to display
+        review_select = """SELECT pr.*, u.username, u.profile_pic
+                FROM package_reviews pr
+                JOIN users u ON pr.user_id = u.user_id
+                WHERE pr.package_id = %s;
+        """
+        cursor.execute(review_select, (package_id,))
+        package_reviews = cursor.fetchall()
+
         return render_template('pro/tour_package_details.html', tour_packages_data=tour_packages_data,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image)
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, package_reviews=package_reviews)
     else:
         return render_template('pro/section.html')
 
