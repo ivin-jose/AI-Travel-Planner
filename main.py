@@ -61,7 +61,51 @@ def page_not_found(e):
 # Direct to home page
 @app.route('/sepwrite.com')
 def home():
-    return render_template('index.html')
+    notification = "Root"
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    booking_notifications = cursor.fetchall()
+    return render_template('index.html', booking_notifications=booking_notifications, notification=notification)
+
+# user booking Details on notification bar
+
+@app.route('/sepwrite.com/tour-packages-booking-details-noti/<booking_id>', methods=['POST', 'GET'])
+def user_booking_details_not(booking_id):
+    provider_details = ""
+    cursor = mysql.connection.cursor()
+
+    # updating the row to viewd by user 
+
+    update_query = "UPDATE package_bookings SET user_view_status = 1 WHERE booked_id = %s"
+    cursor.execute(update_query, (booking_id,))
+    mysql.connection.commit()
+
+    #selecting the details of booking
+
+    query = """SELECT tour_packages.*, package_bookings.package_status
+            FROM tour_packages
+            JOIN package_bookings ON tour_packages.package_id = package_bookings.package_id
+            WHERE package_bookings.booked_id = %s;
+    """
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    if booking_details:
+        for row in booking_details:
+            tour_provider_id = row[1]
+        query = """ SELECT * FROM pro_users WHERE pro_usersid = %s """
+        cursor.execute(query, (tour_provider_id,))
+        provider_details = cursor.fetchall()
+
+    query1 = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query1, (booking_id,))
+    booking_persons = cursor.fetchall()
+
+    return render_template('user_booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id, provider_details=provider_details)
+
+
 
 # if home 
 @app.route('/user.settings')
@@ -1161,7 +1205,7 @@ def saved_packages():
     else:
         return redirect('/login')
 
-# User package searching 
+        # User package searching 
 
 @app.route('/sepwrite.com/packages/searching', methods=['POST', 'GET'])
 def user_package_searching():
@@ -1172,8 +1216,8 @@ def user_package_searching():
 
         # SQL query to select Tour Packages with a search condition
         query = """ 
-            SELECT tp.*, pi.image_path,
-       COALESCE((SELECT AVG(ratings) FROM package_reviews pr WHERE pr.package_id = pr.package_id), 0) AS average_rating
+           SELECT tp.*, pi.image_path,
+        COALESCE((SELECT AVG(ratings) FROM package_reviews pr WHERE pr.package_id = tp.package_id), 0) AS average_rating
         FROM tour_packages tp
         LEFT JOIN (
             SELECT package_id, MIN(image_path) AS image_path
@@ -1219,6 +1263,7 @@ def user_bookings():
 
 @app.route('/sepwrite.com/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
 def user_booking_details(booking_id):
+    provider_details = ""
     cursor = mysql.connection.cursor()
     query = """SELECT tour_packages.*, package_bookings.package_status
             FROM tour_packages
