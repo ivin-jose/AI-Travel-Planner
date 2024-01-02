@@ -2,10 +2,6 @@
 {% block content %}
 <div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 900" id="adminAddPlus">+</button>
-
-<button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD FACT</button>
-
 
 
 <!-- admin adding status Modal -->
@@ -44,31 +40,9 @@
 
 
 
-<!-- Modal add facts form  -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Fact</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-
-        <form action="{{ url_for('add_facts') }}" method="POST" id="fact_Add_Form">
-            <span id="nameError" class="error"></span> <!-- Error message container -->
-            <textarea placeholder="Facts..." name="facts" value="" class="form-control space" required rows="8"></textarea>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary main_theme">Save</button>
-            </div>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
 
     <div>
+        <br><br><br>
     <form action="{{ url_for('search_user') }}" method="POST">
         <input type="text" name="search_value" placeholder="search user">
         <input type="submit" name="">
@@ -155,19 +129,5 @@ $(document).ready(function() {
     });
    
 });
-    $(document).ready(function() {
-        $(".factRemoveConfirmation").click(function() {
-            $(".factRemoveConfirmation").hide()
-            $(".deleteConfirmation_").show()
-        })
-
-        $("#adminAddPlus").hover(function() {
-            $("#adminAddText").show()
-        })
-         $("#adminAddPlus").mouseleave(function() {
-            $("#adminAddText").hide()
-        })
-    })
-</script>
 
 {% endblock %}

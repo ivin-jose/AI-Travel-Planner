@@ -61,13 +61,16 @@ def page_not_found(e):
 # Direct to home page
 @app.route('/sepwrite.com')
 def home():
-    notification = "Root"
-    cursor = mysql.connection.cursor()
-    query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
-    values = (str(session['userid']),)
-    cursor.execute(query, values)
-    booking_notifications = cursor.fetchall()
-    return render_template('index.html', booking_notifications=booking_notifications, notification=notification)
+    if 'userid' in session:
+        notification = "Root"
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
+        values = (str(session['userid']),)
+        cursor.execute(query, values)
+        booking_notifications = cursor.fetchall()
+        return render_template('index.html', booking_notifications=booking_notifications, notification=notification)
+    else:
+        return render_template('index.html')
 
 # user booking Details on notification bar
 
@@ -2485,11 +2488,11 @@ def search_user():
 
 @app.route('/sepwriteadmins.com/delete_user/<int:userid>', methods=['GET', 'POST'])
 def delete_user(userid):
-    # cursor = mysql.connection.cursor()
-    # delete_query = "DELETE FROM facts WHERE facts_id = %s"
-    # delete_val = (fid,)
-    # cursor.execute(delete_query, delete_val)
-    # mysql.connection.commit()
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM users WHERE user_id = %s"
+    delete_val = (userid,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
     status_message = "User Deleted!!"
 
     # fetching facts 
@@ -2501,15 +2504,153 @@ def delete_user(userid):
     return render_template('admin/admin_users.html', users = users, dlt_status_message=status_message)
 
 
-
-@app.route('/sepwriteadmins.com/blogs_admin')
-def blogs_admin():
-   return render_template('admin/admin_blog.html')
-
-@app.route('/sepwriteadmins.com/admin_providers')
+# Provider details
+@app.route('/sepwriteadmins.com/admin-providers')
 def admin_providers():
-   return render_template('admin/admin_blog.html')
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM pro_users"
+    cursor.execute(query)
+    pro_users = cursor.fetchall()
+    return render_template('admin/admin_pro_users.html', pro_users = pro_users)
+
+#Deletion of user
+
+@app.route('/sepwriteadmins.com/delete_pro_user/<int:prouserid>', methods=['GET', 'POST'])
+def delete_pro_user(prouserid):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM pro_users WHERE proid = %s"
+    delete_val = (userid,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Provider Deleted!!"
+
+    # fetching facts 
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM pro_users"
+    cursor.execute(query)
+    pro_users = cursor.fetchall()
+
+    return render_template('admin/admin_users.html', pro_users = pro_users, dlt_status_message=status_message)
+
+
+# Searching of user
+@app.route('/sepwriteadmins.com/pro_users_admin', methods=['POST', 'GET'])
+def search_pro_user():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM pro_users WHERE CONCAT(company, email, country, state) LIKE %s"
+        cursor.execute(query, (f'%{search_value}%',))
+        pro_users = cursor.fetchall()
+        return render_template('admin/admin_pro_users.html', pro_users=pro_users)
+
+
+
+
+
+@app.route('/sepwriteadmins.com/admin-blogs')
+def blogs_admin():
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog"
+    cursor.execute(query)
+    blogs = cursor.fetchall()
+    return render_template('admin/admin_blog.html', blogs=blogs)
+
+# Deletion of blog
+@app.route('/sepwriteadmins.com/delete_blog/<int:blog_id>', methods=['GET', 'POST'])
+def admin_delete_blog(blog_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM blog WHERE blogid = %s"
+    delete_val = (blog_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Blog Deleted!!"
+
+    # Fetching blogs after deletion
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog"
+    cursor.execute(query)
+    blogs = cursor.fetchall()
+
+    return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
+
+# Searching for blogs
+@app.route('/sepwriteadmins.com/blogs_admin', methods=['POST', 'GET'])
+def search_admin_blog():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM blog WHERE heading LIKE %s OR content LIKE %s OR userid LIKE %s OR blogid LIKE %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        blogs = cursor.fetchall()
+        return render_template('admin/admin_blog.html', blogs=blogs)
+
+# details of blogs
+@app.route('/sepwriteadmins.com/blog-details/<int:blog_id>', methods=['GET', 'POST'])
+def admin_blog_details(blog_id):
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog_comment WHERE blogid = %s"
+    cursor.execute(query, (blog_id,))
+    blog_comments = cursor.fetchall()
+
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog_images WHERE blog_id = %s"
+    cursor.execute(query, (blog_id,))
+    blog_images = cursor.fetchall()
+
+    return render_template('admin/blog_details.html', blog_images=blog_images, blog_comments=blog_comments, blog_id=blog_id)
    
+# Deletion of blog images
+@app.route('/sepwriteadmins.com/delete_blog_images/<int:image_id>', methods=['GET', 'POST'])
+def admin_delete_blog_images(image_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM blog_images WHERE blog_image_id = %s"
+    delete_val = (image_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Blog Image Deleted!!"
+
+    # Fetching blogs after deletion
+
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog"
+    cursor.execute(query)
+    blogs = cursor.fetchall()
+
+    return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
+
+# Deletion of blog comment
+@app.route('/sepwriteadmins.com/delete_blog_comment/<int:comment_id>', methods=['GET', 'POST'])
+def admin_delete_blog_comment(comment_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM blog_comment WHERE commentid = %s"
+    delete_val = (comment_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Blog Comment Deleted!!"
+
+    # Fetching blog  after deletion
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog"
+    cursor.execute(query)
+    blogs = cursor.fetchall()
+    return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
+
+
+
+
+@app.route('/sepwriteadmins.com/search-blogs-comments-admin', methods=['POST', 'GET'])
+def search_admin_blog_comment():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        blog_id = request.form.get('blog_id')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM blog_comment WHERE (comment LIKE %s OR userid LIKE %s OR blogid LIKE %s) AND blogid = %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', blog_id))
+        blog_comments = cursor.fetchall()
+        return render_template('admin/blog_details.html', blog_comments=blog_comments,blog_id=blog_id)
+
+
 @app.route('/sepwriteadmins.com/packages_admin')
 def packages_admin():
    return render_template('admin/admin_blog.html')

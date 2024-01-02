@@ -1,0 +1,184 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="col-lg-6" style="margin-top: 0px; margin-left: 200px;">
+<!-- Button trigger modal -->
+
+
+<!-- admin adding status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: green;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ add_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- admin deleting status Modal -->
+<div class="modal fade" id="dltErrorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: red;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ dlt_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div>
+    <br><br><br>
+        <form action="{{ url_for('search_admin_blog_comment') }}" method="POST">
+        <input type="text" name="search_value" placeholder="search comments ">
+        <input type="hidden" name="blog_id" value="{{blog_id}}">
+        <input type="submit" name="">
+    </form>
+    <br>
+    
+
+    {% if blog_images %}
+    <h3>Blog Images</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">comment ID</th>
+          <th scope="col">blog ID</th>
+          <th scope="col">user ID</th>
+          <th scope="col">Image</th>
+          <th scope="col" style="width: 15% !important;">More</th>
+      </tr>
+  </thead>
+
+
+  <tbody>
+    {% for row in blog_images %}
+    <tr>
+      <th scope="row">{{ row[0] }}</th>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td><img src="{{ url_for('static', filename=row[3] )}}" width="100" height="100" style="object-fit: contain;"></td>
+      <td>{{ row[4] }}</td>
+
+
+
+      <!-- Add unique IDs for the Remove link and its associated close button -->
+      <td>
+        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog_images', image_id=row[0]) }}">
+          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+      </a>
+
+      <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+      </a>
+      {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% if blog_comments %}
+<h3>Blog Comments</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">comment ID</th>
+      <th scope="col">blog ID</th>
+      <th scope="col">user ID</th>
+      <th scope="col">comment</th>
+      <th scope="col">Date</th>
+      <th scope="col" style="width: 15% !important;">More</th>
+  </tr>
+</thead>
+
+
+<tbody>
+    {% for row in blog_comments %}
+    <tr>
+      <th scope="row">{{ row[0] }}</th>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td>{{ row[3] }}</td>
+      <td>{{ row[4] }}</td>
+
+
+
+      <!-- Add unique IDs for the Remove link and its associated close button -->
+      <td>
+        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog_comment', comment_id=row[0]) }}">
+          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+      </a>
+
+      <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+      </a>
+      {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<h5>No comments found</h5>
+{% endif %}
+
+
+</div>
+</div>
+
+<!-- Fact validating  -->
+<script>
+$(document).ready(function() {
+     {% if add_status_message %}
+        $('#statusModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
+    {% if dlt_status_message %}
+        $('#dltErrorModal').modal('show');
+        $('#fact_Add_Form')[0].reset();
+    {% endif %}
+
+    $("#fact_Add_Form").submit(function(e) {
+        // Prevent the form from submitting by default
+        e.preventDefault();
+
+        // Get the textarea value
+        var factText = $("textarea[name='facts']").val().trim();
+        var words = factText.split(/\s+/).filter(function(word) {
+            return word.length > 0;
+        });
+
+        // Perform validation
+        if (words.length < 20) {
+            $("#nameError").text("The fact should contain at least 20 words.");
+        } else if (words.length > 150) {
+            $("#nameError").text("The fact should not exceed 150 words.");
+        } else {
+           // Clear any previous error messages
+            $("#nameError").text("");
+            // Submit the form if validation passes
+            $(this).unbind("submit").submit();
+            
+            // Clear the form after successful submission
+            $(this)[0].reset();
+        }
+    });
+   
+});
+</script>
+{% endblock %}

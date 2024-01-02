@@ -43,49 +43,43 @@
 
     <div>
         <br><br><br>
-    <form action="{{ url_for('search_admin_blog') }}" method="POST">
-        <input type="text" name="search_value" placeholder="search blogs, IDs ">
+    <form action="{{ url_for('search_pro_user') }}" method="POST">
+        <input type="text" name="search_value" placeholder="search Provider ">
         <input type="submit" name="">
     </form>
       <table class="table">
   <thead>
     <tr>
-      <th scope="col">blog ID</th>
       <th scope="col">user ID</th>
-      <th scope="col">Date</th>
-      <th scope="col">Heading</th>
-      <th scope="col">Content</th>
-      <th scope="col">Categories</th>
+      <th scope="col">Company</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Joined Date</th>
+      <th scope="col">State</th>
+      <th scope="col">Country</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Address</th>
       <th scope="col" style="width: 15% !important;">More</th>
     </tr>
   </thead>
 
 
     <tbody>
-{% for row in blogs %}
+{% for row in pro_users %}
 <tr>
   <th scope="row">{{ row[0] }}</th>
-  <td>{{ row[1] }}</td>
   <td>{{ row[2] }}</td>
-  <td><a href="{{ url_for('admin_blog_details', blog_id=row[0]) }}" style="color: blue;">{{ row[3] }}</a></td>
+  <td>{{ row[3] }}</td>
+  <td>{{ row[11] }}</td>
+  <td>{{ row[5] }}</td>
   <td>{{ row[4] }}</td>
-
-<td>
-  {% if row[5] == '1' %} adventure, {% endif %}
-  {% if row[6] == '1' %} business, {% endif %}
-  {% if row[7] == '1' %} solo, {% endif %}
-  {% if row[8] == '1' %} cruise, {% endif %}
-  {% if row[9] == '1' %} honey moon, {% endif %}
-  {% if row[10] == '1' %} nature, {% endif %}
-  {% if row[11] == '1' %} vacation {% endif %}
-</td>
-
+  <td>{{ row[8] }}</td>
+  <td>{{ row[10] }}</td>
   
   <!-- Add unique IDs for the Remove link and its associated close button -->
   <td>
     <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog', blog_id=row[0]) }}">
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('delete_pro_user', prouserid=row[0]) }}">
       <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
     </a>
 
