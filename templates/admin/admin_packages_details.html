@@ -45,7 +45,7 @@
     <br><br><br>
         <form action="{{ url_for('search_admin_package_review') }}" method="POST">
         <input type="text" name="search_value" placeholder="search reviews ">
-        <input type="text" name="package_id" value="{{ package_id }}">
+        <input type="hidden" name="package_id" value="{{ package_id }}">
         <input type="submit" name="">
     </form>
     <br>
@@ -144,11 +144,11 @@
       <td>
         <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_package_image', image_id=row[0], package_id=row[1]) }}">
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="RemoveConfirmation" href="{{ url_for('admin_delete_package_image', image_id=row[0], package_id=row[1]) }}">
           <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
         </a>
 
-        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="RemoveConfirmation">
           <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
         </a>
     </td>
@@ -187,11 +187,11 @@
       <td>
         <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_package_review', review_id=row[0], package_id=row[2]) }}">
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="RemoveConfirmation" href="{{ url_for('admin_delete_package_review', review_id=row[0], package_id=row[2]) }}">
           <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
         </a>
 
-        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="RemoveConfirmation">
           <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
         </a>
     </td>
@@ -246,5 +246,11 @@ $(document).ready(function() {
     });
    
 });
+$(document).ready(function() {
+     $(".RemoveConfirmation").click(function() {
+            $(".RemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
+})
 </script>
 {% endblock %}

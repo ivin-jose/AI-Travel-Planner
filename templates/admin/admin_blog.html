@@ -85,11 +85,11 @@
   <td>
     <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog', blog_id=row[0]) }}">
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="RemoveConfirmation" href="{{ url_for('admin_delete_blog', blog_id=row[0]) }}">
       <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
     </a>
 
-    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="RemoveConfirmation" href="#">
       <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
     </a>
   {% endfor %}
@@ -112,32 +112,26 @@ $(document).ready(function() {
         $('#fact_Add_Form')[0].reset();
     {% endif %}
 
-    $("#fact_Add_Form").submit(function(e) {
-        // Prevent the form from submitting by default
-        e.preventDefault();
+        $(document).ready(function() {
+        $(".adminRemoveConfirmation").click(function() {
+            $(".adminRemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
 
-        // Get the textarea value
-        var factText = $("textarea[name='facts']").val().trim();
-        var words = factText.split(/\s+/).filter(function(word) {
-            return word.length > 0;
-        });
-
-        // Perform validation
-        if (words.length < 20) {
-            $("#nameError").text("The fact should contain at least 20 words.");
-        } else if (words.length > 150) {
-            $("#nameError").text("The fact should not exceed 150 words.");
-        } else {
-           // Clear any previous error messages
-            $("#nameError").text("");
-            // Submit the form if validation passes
-            $(this).unbind("submit").submit();
-            
-            // Clear the form after successful submission
-            $(this)[0].reset();
-        }
+        $("#adminAddPlus").hover(function() {
+            $("#adminAddText").show()
+        })
+         $("#adminAddPlus").mouseleave(function() {
+            $("#adminAddText").hide()
+        })
     });
    
 });
+$(document).ready(function() {
+     $(".RemoveConfirmation").click(function() {
+            $(".RemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
+})
 </script>
 {% endblock %}

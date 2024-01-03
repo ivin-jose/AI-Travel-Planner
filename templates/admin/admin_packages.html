@@ -76,11 +76,11 @@
   <td>
     <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
 
-    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog', blog_id=row[0]) }}">
+    <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="RemoveConfirmation" href="{{ url_for('admin_delete_blog', blog_id=row[0]) }}">
       <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
     </a>
 
-    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+    <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="RemoveConfirmation" href="#">
       <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
     </a>
 </td>
@@ -129,5 +129,11 @@ $(document).ready(function() {
     });
    
 });
+$(document).ready(function() {
+     $(".RemoveConfirmation").click(function() {
+            $(".RemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
+})
 </script>
 {% endblock %}
