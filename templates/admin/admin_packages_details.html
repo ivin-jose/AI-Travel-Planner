@@ -43,99 +43,164 @@
 
 <div>
     <br><br><br>
-        <form action="{{ url_for('search_admin_blog_comment') }}" method="POST">
-        <input type="text" name="search_value" placeholder="search comments ">
-        <input type="hidden" name="blog_id" value="{{blog_id}}">
+        <form action="{{ url_for('search_admin_package_review') }}" method="POST">
+        <input type="text" name="search_value" placeholder="search reviews ">
+        <input type="text" name="package_id" value="{{ package_id }}">
         <input type="submit" name="">
     </form>
     <br>
     
 
-    {% if blog_images %}
-    <h3>Blog Images</h3>
+    {% if tour_packages_data %}
+    <h3>Package Details</h3>
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">comment ID</th>
-          <th scope="col">blog ID</th>
-          <th scope="col">user ID</th>
-          <th scope="col">Image</th>
-          <th scope="col" style="width: 15% !important;">More</th>
+          <th scope="col">Package ID</th>
+          <th scope="col">Pro ID</th>
+          <th scope="col">Tour</th>
+          <th scope="col">No of days</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Price</th>
+          <th scope="col">Description</th>
+          <th scope="col">Country</th>
+          <th scope="col">Territory</th>
       </tr>
   </thead>
 
 
   <tbody>
-    {% for row in blog_images %}
-    <tr>
-      <th scope="row">{{ row[0] }}</th>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
-      <td><img src="{{ url_for('static', filename=row[3] )}}" width="100" height="100" style="object-fit: contain;"></td>
-      <td>{{ row[4] }}</td>
-
-
-
-      <!-- Add unique IDs for the Remove link and its associated close button -->
-      <td>
-        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
-
-        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog_images', image_id=row[0]) }}">
-          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
-      </a>
-
-      <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
-          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
-      </a>
-  </td>
-      {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-
-{% if blog_comments %}
-<h3>Blog Comments</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">comment ID</th>
-      <th scope="col">blog ID</th>
-      <th scope="col">user ID</th>
-      <th scope="col">comment</th>
-      <th scope="col">Date</th>
-      <th scope="col" style="width: 15% !important;">More</th>
-  </tr>
-</thead>
-
-
-<tbody>
-    {% for row in blog_comments %}
+    {% for row in tour_packages_data %}
     <tr>
       <th scope="row">{{ row[0] }}</th>
       <td>{{ row[1] }}</td>
       <td>{{ row[2] }}</td>
       <td>{{ row[3] }}</td>
       <td>{{ row[4] }}</td>
+      <td>{{ row[5] }}</td>
+      <td>{{ row[6] }}</td>
+      <td>{{ row[7] }}</td>
+      <td>{{ row[8] }}</td>
+      <td>{{ row[9] }}</td>
+      {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% if tour_packages_day %}
+<h3>Day Programmes</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Day ID</th>
+      <th scope="col">Package ID</th>
+      <th scope="col">Pro ID</th>
+      <th scope="col">Day</th>
+      <th scope="col">Programme</th>
+  </tr>
+</thead>
 
 
-
-      <!-- Add unique IDs for the Remove link and its associated close button -->
-      <td>
-        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
-
-        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_blog_comment', comment_id=row[0]) }}">
-          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
-      </a>
-
-      <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
-          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
-      </a>
+<tbody>
+    {% for row in tour_packages_day %}
+    <tr>
+      <th scope="row">{{ row[0] }}</th>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td>{{ row[3] }}</td>
+      <td>{{ row[4] }}</td>
       {% endfor %}
   </tbody>
 </table>
 
 {% else %}
-<h5>No comments found</h5>
+<!-- <h5>No Programmes found</h5> -->
+{% endif %}
+
+{% if tour_packages_image %}
+<h3>Package Images</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Image ID</th>
+      <th scope="col">Package ID</th>
+      <th scope="col">Pro ID</th>
+      <th scope="col">Image</th>
+      <th scope="col">More</th>
+  </tr>
+</thead>
+
+
+<tbody>
+    {% for row in tour_packages_image %}
+    <tr>
+      <th scope="row">{{ row[0] }}</th>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td><img src="{{ url_for('static', filename=row[3]) }}" width="100" height="100"></td>
+      <td>{{ row[4] }}</td>
+        <!-- Add unique IDs for the Remove link and its associated close button -->
+      <td>
+        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_package_image', image_id=row[0], package_id=row[1]) }}">
+          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+        </a>
+
+        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+        </a>
+    </td>
+      {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<!-- <h5>No Images found</h5> -->
+{% endif %}
+
+{% if package_reviews %}
+<h3>Package Reviews</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Review ID</th>
+      <th scope="col">user ID</th>
+      <th scope="col">Package ID</th>
+      <th scope="col">Review</th>
+      <th scope="col">Rating</th>
+      <th scope="col">More</th>
+  </tr>
+</thead>
+
+
+<tbody>
+    {% for row in package_reviews %}
+    <tr>
+      <th scope="row">{{ row[0] }}</th>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td>{{ row[3] }}</td>
+      <td>{{ row[4] }} <i class="fa-solid fa-star" style="color: #ffc23d;"></i></td>
+        <!-- Add unique IDs for the Remove link and its associated close button -->
+      <td>
+        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
+
+        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="factRemoveConfirmation" href="{{ url_for('admin_delete_package_review', review_id=row[0], package_id=row[2]) }}">
+          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
+        </a>
+
+        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="factRemoveConfirmation" href="#">
+          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
+        </a>
+    </td>
+      {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<h5>No Reviews found</h5>
 {% endif %}
 
 

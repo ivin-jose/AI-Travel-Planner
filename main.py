@@ -2416,6 +2416,7 @@ def admin_logout():
    session['admin_name'] = None
    return redirect('admin')
 
+# ________________________________________________________#
 
 ''' Facts Page '''
 
@@ -2465,6 +2466,8 @@ def delete_fact(fid):
     facts = cursor.fetchall()
 
     return render_template('admin/admin_facts.html', facts = facts, dlt_status_message=status_message)
+
+# ________________________________________________________#
 
 @app.route('/sepwriteadmins.com/users_admin')
 def users_admin():
@@ -2545,9 +2548,9 @@ def search_pro_user():
         return render_template('admin/admin_pro_users.html', pro_users=pro_users)
 
 
+# ________________________________________________________#
 
-
-
+#blogs
 @app.route('/sepwriteadmins.com/admin-blogs')
 def blogs_admin():
     cursor = mysql.connection.cursor()
@@ -2637,8 +2640,6 @@ def admin_delete_blog_comment(comment_id):
     return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
 
 
-
-
 @app.route('/sepwriteadmins.com/search-blogs-comments-admin', methods=['POST', 'GET'])
 def search_admin_blog_comment():
     if request.method == 'POST':
@@ -2650,10 +2651,108 @@ def search_admin_blog_comment():
         blog_comments = cursor.fetchall()
         return render_template('admin/blog_details.html', blog_comments=blog_comments,blog_id=blog_id)
 
+# ________________________________________________________#
 
+#Packages
 @app.route('/sepwriteadmins.com/packages_admin')
 def packages_admin():
-   return render_template('admin/admin_blog.html')
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM tour_packages"
+    cursor.execute(query)
+    packages = cursor.fetchall()
+    return render_template('admin/admin_packages.html',packages=packages)
+
+# Details of Packages
+@app.route('/sepwriteadmins.com/packages-details/<int:package_id>', methods=['GET', 'POST'])
+def admin_package_details(package_id):
+    # SELECTING TOUR PACKAGE
+    query1 = """SELECT tp.*, pi.image_path
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        WHERE tp.package_id = %s;"""
+
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query1, (package_id,))
+    tour_packages_data = cursor.fetchall()
+
+    # SELECTING TOUR PACKAGE
+    query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query2, (package_id,))
+    tour_packages_day = cursor.fetchall()
+
+    # SELECTING TOUR PACKAGE IMAGES
+    query3 = "SELECT * FROM package_images WHERE package_id = %s"
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query3, (package_id,))
+    tour_packages_image = cursor.fetchall()
+
+    #selecting reviews to display
+    review_select = """SELECT pr.*, u.username, u.profile_pic
+            FROM package_reviews pr
+            JOIN users u ON pr.user_id = u.user_id
+            WHERE pr.package_id = %s;
+    """
+    cursor.execute(review_select, (package_id,))
+    package_reviews = cursor.fetchall()
+
+    return render_template('admin/admin_packages_details.html', tour_packages_data=tour_packages_data,
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, package_reviews=package_reviews, package_id=package_id)
+ 
+# Search packages
+@app.route('/sepwriteadmins.com/packages_admin', methods=['POST', 'GET'])
+def search_admin_packages():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM tour_packages WHERE tourname LIKE %s OR description LIKE %s OR package_id LIKE %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        packages = cursor.fetchall()
+        return render_template('admin/admin_packages.html', packages=packages)
+
+# Deletion of package image
+@app.route('/sepwriteadmins.com/delete_package_image/<int:image_id>/<int:package_id>', methods=['GET', 'POST'])
+def admin_delete_package_image(image_id, package_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM package_images WHERE package_image_id = %s"
+    delete_val = (image_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Package Image Deleted!!"
+
+    return redirect(url_for('admin_package_details', package_id=package_id))
+
+# Deletion of package review
+@app.route('/sepwriteadmins.com/delete_package_review/<int:review_id>/<int:package_id>', methods=['GET', 'POST'])
+def admin_delete_package_review(review_id, package_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM package_review WHERE review_id = %s"
+    delete_val = (review_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Package Review Deleted!!"
+
+    return redirect(url_for('admin_package_details', package_id=package_id))
+
+@app.route('/sepwriteadmins.com/search-package-review-admin', methods=['POST', 'GET'])
+def search_admin_package_review():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        package_id = request.form.get('package_id')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM package_reviews WHERE (review LIKE %s OR user_id LIKE %s) AND package_id = %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', package_id))
+        package_reviews = cursor.fetchall()
+        return render_template('admin/admin_packages_details.html', package_reviews=package_reviews,package_id=package_id)
+
+# ________________________________________________________#
 
 @app.route('/sepwriteadmins.com/bookings_admin')
 def bookings_admin():
