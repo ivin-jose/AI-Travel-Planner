@@ -2756,7 +2756,147 @@ def search_admin_package_review():
 
 @app.route('/sepwriteadmins.com/bookings_admin')
 def bookings_admin():
-   return render_template('admin/admin_blog.html')
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM package_bookings"
+    cursor.execute(query)
+    bookings = cursor.fetchall()
+    return render_template('admin/admin_bookings.html', bookings=bookings)
+
+@app.route('/sepwriteadmins.com/bookings_admin-details/<int:booking_id>/<int:package_id>')
+def admin_booking_details(booking_id, package_id):
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
+    cursor.execute(query, (booking_id,))
+    booking_details = cursor.fetchall()
+
+    # selecting package_details
+
+    query1 = """SELECT tp.*, pi.image_path
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        WHERE tp.package_id = %s;"""
+
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query1, (package_id,))
+    tour_packages_data = cursor.fetchall()
+
+    # SELECTING TOUR PACKAGE
+    query2 = "SELECT * FROM package_day_programme WHERE package_id = %s"
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query2, (package_id,))
+    tour_packages_day = cursor.fetchall()
+
+    # SELECTING TOUR PACKAGE IMAGES
+    query3 = "SELECT * FROM package_images WHERE package_id = %s"
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query3, (package_id,))
+    tour_packages_image = cursor.fetchall()
+
+    return render_template('admin/admin_booking_details.html', tour_packages_image=tour_packages_image, booking_details=booking_details
+        , tour_packages_day=tour_packages_day, tour_packages_data=tour_packages_data)
 
     
+# Canceling the tour package by user
+@app.route('/sepwrite.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
+def admin_booking_cancel(booking_id, package_name, provider_id):
+    pro_view = "0"
+    try:
+        # Create a new cursor for the delete queries
+        delete_cursor = mysql.connection.cursor()
 
+        # Delete from package_bookings table
+        try:
+            delete_query_1 = "DELETE FROM package_bookings WHERE booked_id = %s"
+            delete_cursor.execute(delete_query_1, (booking_id,))
+        except:
+            flash = "e1"
+        try:
+            # Delete from package_booked_travalers table
+            delete_query_3 = "DELETE FROM package_booked_travalers WHERE booking_id = %s"
+            delete_cursor.execute(delete_query_3, (booking_id,))
+        except:
+            flash = "e3"
+        try:
+            # Delete from package_booking table
+            delete_query_4 = "DELETE FROM package_booking WHERE booked_id = %s"
+            delete_cursor.execute(delete_query_4, (booking_id,))
+        except:
+            flash = "e4"
+        try:
+            # Delete from rejected_booking table
+            delete_query_5 = "DELETE FROM rejected_booking WHERE booking_id = %s"
+            delete_cursor.execute(delete_query_5, (booking_id,))
+        except:
+            flash = "e5"
+
+        # Commit the changes
+        mysql.connection.commit()
+        delete_cursor.close()
+
+        # Create a cursor for the first query
+        cursor = mysql.connection.cursor()
+
+        # Fetch tour bookings
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE user_id = %s;
+        """
+        cursor.execute(query, (session['userid'],))
+        tour_bookings = cursor.fetchall()
+
+        #Inserting  the data into cancelled table 
+
+        cancelled_date = today_date
+
+        # Checking the canclation lready done or not
+
+        select_query ="SELECT * FROM cancelled_bookings WHERE booking_id = %s"
+        cursor.execute(select_query, (booking_id,))
+        checking_booking = cursor.fetchall()
+
+        if checking_booking:
+            flash_message = "Already Cancelled.."
+        else:
+            query_inserting = """
+                INSERT INTO cancelled_bookings (booking_id, user_id, provider_id, pro_view, package_name, cancelled_date)
+                VALUES (%s, %s, %s, %s, %s, %s);
+            """
+            # Execute the query with the specified values
+            cursor.execute(query_inserting, (str(booking_id), str(session['userid']), str(provider_id), pro_view, str(package_name), cancelled_date))
+
+            # Commit the changes
+            mysql.connection.commit()
+            cursor.close()
+            dlt_status_message = "Booking Cancelled..!!"
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM package_bookings"
+        cursor.execute(query)
+        bookings = cursor.fetchall()
+        
+
+    except Exception as e:
+        print(f"Error: {e}")
+        flash_message = "Something went wrong."
+    return render_template('admin/admin_bookings.html', bookings=bookings, error_message="")
+
+
+
+# Search bookings
+@app.route('/sepwriteadmins.com/bookings_admin', methods=['POST', 'GET'])
+def search_admin_bookings():
+    if request.method == 'POST':
+        search_value = request.form.get('search_value')
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM package_bookings WHERE booked_id LIKE %s OR package_id LIKE %s OR package_provider_id LIKE %s"
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        bookings = cursor.fetchall()
+        return render_template('admin/admin_bookings.html', bookings=bookings)
+     

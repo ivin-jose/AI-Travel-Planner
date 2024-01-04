@@ -41,15 +41,50 @@
 
 
 
+        <div>
+            <br><br><br>
+<form action="{{ url_for('search_admin_bookings') }}" method="POST">
+    <input type="text" name="search_value" placeholder="search Booking, IDs ">
+    <input type="submit" name="">
+</form>
+<br><br>
 <div>
-    <br><br><br>
-    <form action="{{ url_for('search_admin_package_review') }}" method="POST">
-        <input type="text" name="search_value" placeholder="search reviews ">
-        <input type="hidden" name="package_id" value="{{ package_id }}">
-        <input type="submit" name="">
-    </form>
-    <br>
-    
+    <div>
+        {% for row in booking_details %}
+            {% for row2 in tour_packages_data %}
+            <a href="{{url_for('admin_booking_cancel', booking_id=row[1], package_name=row2[2], provider_id=row2[1]) }}" style="color: blue;">Cancel this Trip</a>
+              {% endfor %}
+          {% endfor %}
+    </div>
+    <div>
+        
+    </div>
+
+<h3>Travalers Details</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Travaler ID</th>
+      <th scope="col">Booking ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Identity document</th>
+      <th scope="col">Phone</th>
+    </tr>
+  </thead>
+<tbody>
+
+{% for row in booking_details %}
+<tr>
+    <th scope="row">{{ row[0] }}</th>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[2] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+  {% endfor %}
+</tr>
+</tbody>
+
+</table>
 
 {% if tour_packages_data %}
     <h3>Package Details</h3>
@@ -160,51 +195,7 @@
 <!-- <h5>No Images found</h5> -->
 {% endif %}
 
-{% if package_reviews %}
-<h3>Package Reviews</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Review ID</th>
-      <th scope="col">user ID</th>
-      <th scope="col">Package ID</th>
-      <th scope="col">Review</th>
-      <th scope="col">Rating</th>
-      <th scope="col">More</th>
-  </tr>
-</thead>
-
-
-<tbody>
-    {% for row in package_reviews %}
-    <tr>
-      <th scope="row">{{ row[0] }}</th>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
-      <td>{{ row[3] }}</td>
-      <td>{{ row[4] }} <i class="fa-solid fa-star" style="color: #ffc23d;"></i></td>
-        <!-- Add unique IDs for the Remove link and its associated close button -->
-      <td>
-        <a style="color: blue; text-transform: capitalize;" id="deleteConfirmation_{{ row[0] }}" onclick="toggleCloseButton({{ row[0] }})" class="deleteConfirmation_">Remove</a>
-
-        <a style="color: blue; text-transform: capitalize; display: none" id="deleteConfirmationtic_{{ row[0] }}" class="RemoveConfirmation" href="{{ url_for('admin_delete_package_review', review_id=row[0], package_id=row[2]) }}">
-          <i class="fa-solid fa-circle-check" style="color: #009894; font-size: 20px;"></i>
-        </a>
-
-        <a style="color: blue; text-transform: capitalize; display: none; padding-left: 30px" id="deleteConfirmationclose_{{ row[0] }}" class="RemoveConfirmation">
-          <i class="fa-solid fa-x" style="color: #000000; font-size: 15px;"></i>
-        </a>
-    </td>
-      {% endfor %}
-  </tbody>
-</table>
-
-{% else %}
-<h5>No Reviews found</h5>
-{% endif %}
-
-
-</div>
+    </div>
 </div>
 
 <!-- Fact validating  -->
@@ -219,30 +210,12 @@ $(document).ready(function() {
         $('#fact_Add_Form')[0].reset();
     {% endif %}
 
-    $("#fact_Add_Form").submit(function(e) {
-        // Prevent the form from submitting by default
-        e.preventDefault();
+        $(document).ready(function() {
+        $(".adminRemoveConfirmation").click(function() {
+            $(".adminRemoveConfirmation").hide()
+            $(".deleteConfirmation_").show()
+        })
 
-        // Get the textarea value
-        var factText = $("textarea[name='facts']").val().trim();
-        var words = factText.split(/\s+/).filter(function(word) {
-            return word.length > 0;
-        });
-
-        // Perform validation
-        if (words.length < 20) {
-            $("#nameError").text("The fact should contain at least 20 words.");
-        } else if (words.length > 150) {
-            $("#nameError").text("The fact should not exceed 150 words.");
-        } else {
-           // Clear any previous error messages
-            $("#nameError").text("");
-            // Submit the form if validation passes
-            $(this).unbind("submit").submit();
-            
-            // Clear the form after successful submission
-            $(this)[0].reset();
-        }
     });
    
 });
