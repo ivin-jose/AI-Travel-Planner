@@ -41,6 +41,11 @@ current_date = datetime.now()
 today_date = current_date.strftime("%d-%b-%Y")
 
 
+# Convert the string to a datetime object
+
+# Format the datetime object as a string in the desired format
+package_date = current_date.strftime("%Y-%m-%d")
+
 #CUSTOME ERROR PAGES
 
 #Invalid pages
@@ -61,6 +66,7 @@ def page_not_found(e):
 # Direct to home page
 @app.route('/sepwrite.com')
 def home():
+    session['todate'] = package_date
     if 'userid' in session:
         notification = "Root"
         cursor = mysql.connection.cursor()
@@ -1870,13 +1876,15 @@ def adding_tourpackages():
         from_date = request.form.get('from_date')
         to_date = request.form.get('to_date')
         description = request.form.get('description')
+        country = request.form.get('country')
+        territory = request.form.get('region')
 
         # here, inserting query to tourpackages table
 
         try:
             # Insert the data into the "tour_packages" table
-            insert_query = "INSERT INTO tour_packages (pro_id, tourname, num_days, price, from_date, to_date, description) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-            values = (session['proid'], tourname, num_days, price, from_date, to_date, description)
+            insert_query = "INSERT INTO tour_packages (pro_id, tourname, num_days, price, from_date, to_date, description, country, territory) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            values = (session['proid'], tourname, num_days, price, from_date, to_date, description, country, territory)
             cursor.execute(insert_query, values)
 
             # Commit the changes to the database

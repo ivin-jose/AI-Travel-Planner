@@ -123,7 +123,7 @@
 					            <input class="form-control" type="text" name="price" id="price">
 					          </div>
 					          <div class="form-group">
-					            <label>From Date: <span class="from-date-label" style="color: red;"></span></label>
+					            <label>From Date:(1 week time is required to start trip) <span class="from-date-label" style="color: red;"></span></label>
 					            <input class="form-control" type="date" name="from_date" id="from_date">
 					          </div>
 					          <div class="form-group">
@@ -152,9 +152,10 @@
 					        	<div class="form-group">
 					        		<div class="upload__box">
 					        			<div class="upload__btn-box">
+                          <p style="color: red;">Image is required*</p>
 					        				<label class="upload__btn">
 					        					<p>Image +</p>
-					        					<input type="file" multiple data-max_length="20" class="upload__inputfile" name="images">
+					        					<input type="file" multiple data-max_length="20" class="upload__inputfile" name="images" required>
 					        				</label>
 					        			</div>
 					        			<div class="upload__img-wrap"></div>
@@ -316,6 +317,17 @@ $(document).ready(function() {
     label.text(''); // Clear the error message
   });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  var today = new Date();
+  var nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+
+  var formattedNextWeek = nextWeek.toISOString().split('T')[0];  // Format as YYYY-MM-DD
+
+  document.getElementById('from_date').setAttribute('min', formattedNextWeek);
+});
+
 
 // end of validation 
 
