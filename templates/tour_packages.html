@@ -54,7 +54,7 @@
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">
                     
-                    {% if row[4] <= session['todate'] %}
+                    {% if row[4] <= (session['todate']) %}
                     <h5 class="mb-0">{{ row[2] }} </h5> <span style="color: red;">(Booking finished..!)</span>
                     
                     {% else %}
@@ -69,14 +69,18 @@
                   <div class="listing-rating d-flex justify-content-between">
                     <div class="d-flex">
                       <div class="date me-3">
-                        <i class="fa-regular fa-calendar-days me-2"></i><span> Days {{ row[3] }} </span>
+                        <i class="fa-regular fa-calendar-days me-2"></i><span>{{ row[4] }}</span>
                       </div>
                       <div class="rating">
                         <i class="fa-solid fa-star me-1 text-yellow"></i><span>
-                          {% if rating_true == True %}
-                            {{ row[11]|round(1) }}
+                          {% if row[11] %}
+                              {% if rating_true == True %}
+                                {{ row[11]|round(1) }}
+                              {% else %}
+                                {{row[11]|int/5}}</span>
+                              {% endif %}
                           {% else %}
-                            {{row[11]|int/5}}</span>
+                              No ratings
                           {% endif %}
                       </div>
                     </div>

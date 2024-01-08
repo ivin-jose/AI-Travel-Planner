@@ -313,20 +313,9 @@ $(document).ready(function() {
   });
 });
 
-// Function to calculate the "to_date" based on "from_date" and "num_days"
-function calculateToDate() {
-  var from_date = $('#from_date').val();
-  var num_days = parseInt($('#num_days').val());
 
-  if (from_date && !isNaN(num_days)) {
-    var fromDateObj = new Date(from_date);
-    if (!isNaN(fromDateObj)) {
-      fromDateObj.setDate(fromDateObj.getDate() + num_days);
-      var to_date = fromDateObj.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
-      $('#to_date').val(to_date);
-    }
-  }
-}
+
+
 
 // Bind the function to the change event of "from_date" and "num_days"
 $('#from_date, #num_days').on('change', calculateToDate);
@@ -360,6 +349,41 @@ window.addEventListener('load', function () {
         }
     });
 });
+
+// for date manipulation after 1 week and num days + from_date to set to date
+document.addEventListener('DOMContentLoaded', function() {
+  var today = new Date();
+  var nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+
+  var formattedNextWeek = nextWeek.toISOString().split('T')[0];  // Format as YYYY-MM-DD
+
+  // Set the minimum date for the "from_date" input
+  document.getElementById('from_date').setAttribute('min', formattedNextWeek);
+
+  // Add an event listener for the "from_date" input to trigger the date calculation
+  document.getElementById('from_date').addEventListener('input', calculateToDate);
+  
+  // Trigger the initial date calculation
+  calculateToDate();
+});
+
+function calculateToDate() {
+  var from_date = $('#from_date').val();
+  var num_days = parseInt($('#days').val());  // Assuming you want to use the "days" input for the number of days
+
+  if (from_date && !isNaN(num_days)) {
+    var fromDateObj = new Date(from_date);
+    if (!isNaN(fromDateObj)) {
+      fromDateObj.setDate(fromDateObj.getDate() + num_days);
+      var to_date = fromDateObj.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
+      $('#to_date').val(to_date);
+    }
+  }
+}
+
+
+
 </script>
 
 <!-- // Multiple  Image uploading -->

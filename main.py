@@ -66,6 +66,7 @@ def page_not_found(e):
 # Direct to home page
 @app.route('/sepwrite.com')
 def home():
+    session['todate'] = ""
     session['todate'] = package_date
     if 'userid' in session:
         notification = "Root"
@@ -986,9 +987,15 @@ def tour_package_details(package_id):
         cursor.execute(review_select, (session['userid'], package_id, 1))
         user_travaled = cursor.fetchall()
 
+        # Execute the query
+        cursor = mysql.connection.cursor()
+        avg_rating = "SELECT AVG(ratings) AS average_rating, COUNT(ratings) AS rating_count FROM package_reviews WHERE package_id = %s"
+        cursor.execute(avg_rating, (package_id,))
+        average_rating = cursor.fetchall()
+
 
         return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, user_travaled=user_travaled,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, package_reviews=package_reviews)
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, package_reviews=package_reviews, average_rating=average_rating)
     else:
         return redirect('/login')
 
@@ -1463,6 +1470,7 @@ def usercontactus():
 
 @app.route('/sepwrite.com/account.pro')
 def pro_account():
+    session['todate'] = package_date
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
 
@@ -1500,9 +1508,34 @@ def pro_account():
         # Fetch the results
         matching_tournames = cursor.fetchall()
 
+        cursor = mysql.connection.cursor()
+        query1 = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
+        cursor.execute(query1, (str(session['proid']),))
+        result1 = cursor.fetchone()
+
+        query2 = "SELECT COUNT(*) AS total_count2 FROM ai_travel_planner.cancelled_bookings WHERE pro_view = 0 AND provider_id = %s;"
+        cursor.execute(query2, (str(session['proid']),))
+        result2 = cursor.fetchone()
+
+        query = """ SELECT tp.*, pi.image_path
+           FROM tour_packages tp
+           LEFT JOIN (
+               SELECT DISTINCT package_id, MIN(image_path) AS image_path
+               FROM package_images
+               GROUP BY package_id
+           ) pi ON tp.package_id = pi.package_id
+           WHERE tp.pro_id = %s
+           AND tp.from_date < %s;
+                """
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query, (str(session['proid']), package_date))
+        tour_packages_data_out_dated = cursor.fetchall()
+
         # Close the cursor and connection
         cursor.close()
-        return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data, current_date=current_date, matching_tournames=matching_tournames)
+        return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data, current_date=current_date,
+         matching_tournames=matching_tournames, noti_count=result1, noti_count1=result2, tour_packages_data_out_dated=tour_packages_data_out_dated)
     return render_template('pro/section.html')
 
 # Current day tour list of users
@@ -1636,15 +1669,15 @@ def pro_tour_packages():
     if 'prousercompany' in session:
         # SQL query to select Tour Packages
         query = """SELECT tp.*, pi.image_path, AVG(pr.ratings) AS average_rating
-FROM tour_packages tp
-LEFT JOIN (
-    SELECT package_id, MIN(image_path) AS image_path
-    FROM package_images
-    GROUP BY package_id
-) pi ON tp.package_id = pi.package_id
-LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
-WHERE tp.pro_id = %s
-GROUP BY tp.package_id;
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+        WHERE tp.pro_id = %s
+        GROUP BY tp.package_id;
 
         """
 
@@ -2104,8 +2137,15 @@ def pro_tour_package_details(package_id):
         cursor.execute(review_select, (package_id,))
         package_reviews = cursor.fetchall()
 
+        # Execute the query
+        cursor = mysql.connection.cursor()
+        avg_rating = "SELECT AVG(ratings) AS average_rating, COUNT(ratings) AS rating_count FROM package_reviews WHERE package_id = %s"
+        cursor.execute(avg_rating, (package_id,))
+        # Fetch the result
+        average_rating = cursor.fetchall()
+
         return render_template('pro/tour_package_details.html', tour_packages_data=tour_packages_data,
-            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, package_reviews=package_reviews)
+            tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, package_reviews=package_reviews, average_rating=average_rating)
     else:
         return render_template('pro/section.html')
 
@@ -2114,13 +2154,84 @@ def pro_tour_package_details(package_id):
 @app.route('/sepwrite.com/account.pro/remove-package/<package_id>')
 def remove_package(package_id):
     cursor = mysql.connection.cursor()
-    query = """
-        DELETE FROM tour_packages
-        WHERE package_id = %s;
+    try:
+
+        query = """
+            DELETE FROM tour_packages
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        # delete package from images
+
+        query = """
+            DELETE FROM package_images
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        # delete package from reviews
+
+        query = """
+            DELETE FROM package_reviews
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        # delete package from bookings
+
+        query = """
+            DELETE FROM package_bookings
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        # delete package from day prgrammes
+
+        query = """
+            DELETE FROM package_day_programme
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        # Delete package from saved packages
+
+        query = """
+            DELETE FROM saved_packages
+            WHERE package_id = %s;
+        """
+        cursor.execute(query, (package_id,))
+        mysql.connection.commit()
+
+        flash = "Package deleted.."
+    except:
+        flash = " Something error"
+    query = """SELECT tp.*, pi.image_path, AVG(pr.ratings) AS average_rating
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+        WHERE tp.pro_id = %s
+        GROUP BY tp.package_id;
+
     """
-    cursor.execute(query, (package_id,))
-    mysql.connection.commit()
-    return redirect('/sepwrite.com/account.pro/notifcations')
+
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query, (str(session['proid']),))
+    tour_packages_data = cursor.fetchall()        
+    # Close the cursor and database connection if necessary
+    cursor.close()
+
+    return render_template('pro/tour_packages.html', tour_packages_data=tour_packages_data, flash=flash)
 
 
 
@@ -2759,6 +2870,67 @@ def search_admin_package_review():
         cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', package_id))
         package_reviews = cursor.fetchall()
         return render_template('admin/admin_packages_details.html', package_reviews=package_reviews,package_id=package_id)
+
+@app.route('/sepwriteadmins.com/remove-package-admin/<int:package_id>', methods=['POST', 'GET'])
+def admin_remove_package(package_id):
+    cursor = mysql.connection.cursor()
+    query = """
+        DELETE FROM tour_packages
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    # delete package from images
+
+    query = """
+        DELETE FROM package_images
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    # delete package from reviews
+
+    query = """
+        DELETE FROM package_reviews
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    # delete package from bookings
+
+    query = """
+        DELETE FROM package_bookings
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    # delete package from day prgrammes
+
+    query = """
+        DELETE FROM package_day_programme
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    # Delete package from saved packages
+
+    query = """
+        DELETE FROM saved_packages
+        WHERE package_id = %s;
+    """
+    cursor.execute(query, (package_id,))
+    mysql.connection.commit()
+
+    dlt_status_message = "Package deleted"
+    query = "SELECT * FROM tour_packages"
+    cursor.execute(query)
+    packages = cursor.fetchall()
+    return render_template('admin/admin_packages.html',packages=packages, dlt_status_message=dlt_status_message)
 
 # ________________________________________________________#
 

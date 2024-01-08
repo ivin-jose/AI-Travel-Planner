@@ -54,6 +54,7 @@
       <th scope="col">user ID</th>
       <th scope="col">Package ID</th>
       <th scope="col">Provider ID</th>
+      <th scope="col">Status</th>
       <th scope="col">Details</th>
     </tr>
   </thead>
@@ -66,6 +67,15 @@
   <td>{{ row[1] }}</td>
   <td>{{ row[2] }}</td>
   <td>{{ row[4] }}</td>
+  <td>
+    {% if row[5] == 0 %}
+        Rejected
+    {% elif row[5] == 1%}
+        Accepted
+    {% else %}
+        Pending
+    {% endif %}
+  </td>
   <td><a href="{{ url_for('admin_booking_details', booking_id=row[0], package_id=row[2]) }}" style="color: blue;">view details</a></td>
 </tr>
   {% endfor %}

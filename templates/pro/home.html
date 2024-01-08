@@ -52,8 +52,7 @@
       }
     </style>
   </head>
-  <body>
-    
+  <body>    
       <!--=================================
       Banner -->
       <section class="banner-02">
@@ -124,6 +123,11 @@
             {% endfor %}
           </ul>
           {% endif %}
+          <br>
+
+          {% if noti_count or noti_count1 %}
+          <a class="list-group-item list-group-item-action  {% if 'pro_notifications' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('pro_notifications')}}" role="tab">Notifications <b>({{ noti_count[0] + noti_count1[0] }})</b></a>
+          {% endif %}
         </div>
       </div>
 
@@ -148,6 +152,67 @@
           </div>
         </div>
       </section>
+
+       <section class="space-ptb">
+        <div class="container">
+          <div class="row justify-content-center">
+ 
+          </div>
+          <div class="row">
+            <center>/<h4>OUT DATED PACKAGES</h4></center>
+            {% for row in tour_packages_data_out_dated %}
+            <div class="col-lg-4 col-md-6 mb-4 ">
+              <div class="listing-item">
+                <div class="listing-image bg-overlay-half-bottom">
+                  <!-- <img class="img-fluid" src="{{ url_for('static', filename=row[10]) }}" alt="{{row[10]}}" style="width: 100%; height: 250px;"> -->
+                </div>
+                <div class="listing-details">
+                  <div class="listing-title d-flex justify-content-between">
+                    {% if row[4] < (session['todate']) %}
+                    <h5 class="mb-0">{{ row[2] }} </h5> <a style="color: red;" href="{{ url_for('pro_tour_package_edit', package_id=row[0]) }}">(Update Date)</a>
+                    
+                    {% else %}
+                    <h5 class="mb-0"><a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
+                    {% endif %}
+                    <div class="country-flags">
+                      <!-- <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#"> -->
+                    </div>
+                  </div>
+                  <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i>{{row[8]}}, {{row[9]}}</a>
+                  <div class="listing-rating d-flex justify-content-between">
+                    <div class="d-flex">
+                      <div class="date me-3">
+                        <i class="fa-regular fa-calendar-days me-2"></i><span> {{ row[4] }} </span>
+                      </div>
+                      <div class="rating">
+                        <i class="fa-solid fa-star me-1 text-yellow"></i>
+                        {% if row[11] %}
+                        {{ row[11]|round(1) }}
+                        {% endif %}
+
+                      </div>
+                    </div>
+                    <div class="price">
+                      <span class="text-decoration-line-through">{{ row[6]|int + 200 }}</span>{{ row[6] }}
+                    </div>
+                  </div>
+                  <div class="listing-info">
+                    
+                    <p class="mb-0" style="text-transform: capitalize;">{{row[7]}}</p>
+                  </div>
+                  {% if row[4] < session['todate'] %}
+                    <a class="btn btn-link" href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}">See Details</a>
+                  {% else %}
+                    <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+    </section>
+
 
       <!--=================================
       Destination Form -->
@@ -184,7 +249,12 @@
                       </div>
                       <div class="listing-details">
                         <div class="listing-title d-flex justify-content-between">
+                          {% if row[4] < (session['todate']) %}
+                          <h5 class="mb-0">{{ row[2] }} </h5> <a style="color: red;" href="{{ url_for('pro_tour_package_edit', package_id=row[0]) }}">(Update Date)</a>
+                          
+                          {% else %}
                           <h5 class="mb-0"><a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
+                          {% endif %}
                           <div class="country-flags">
                             <img class="img-fluid shadow-sm" src="" alt="">
                           </div>
@@ -207,7 +277,11 @@
                           <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
                           <p class="mb-0"  style="text-transform: capitalize;">{{row[7]}}</p>
                         </div>
-                        <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                        {% if row[4] < session['todate'] %}
+                         <p class="btn btn-link">See Details</a>
+                        {% else %}
+                          <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                        {% endif %}
                       </div>
                     </div>
                   </div>

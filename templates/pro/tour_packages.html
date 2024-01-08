@@ -24,7 +24,12 @@
                 </div>
                 <div class="listing-details">
                   <div class="listing-title d-flex justify-content-between">
+                    {% if row[4] < (session['todate']) %}
+                    <h5 class="mb-0">{{ row[2] }} </h5> <a style="color: red;" href="{{ url_for('pro_tour_package_edit', package_id=row[0]) }}">(Update Date)</a>
+                    
+                    {% else %}
                     <h5 class="mb-0"><a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
+                    {% endif %}
                     <div class="country-flags">
                       <!-- <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#"> -->
                     </div>
@@ -33,12 +38,14 @@
                   <div class="listing-rating d-flex justify-content-between">
                     <div class="d-flex">
                       <div class="date me-3">
-                        <i class="fa-regular fa-calendar-days me-2"></i><span> Days {{ row[3] }} </span>
+                        <i class="fa-regular fa-calendar-days me-2"></i><span>{{ row[4] }} </span>
                       </div>
                       <div class="rating">
                         <i class="fa-solid fa-star me-1 text-yellow"></i>
                         {% if row[11] %}
                         {{ row[11]|round(1) }}
+                        {% else %}
+                        No ratings
                         {% endif %}
 
                       </div>
@@ -51,7 +58,11 @@
                     
                     <p class="mb-0" style="text-transform: capitalize;">{{row[7]}}</p>
                   </div>
-                  <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                  {% if row[4] < session['todate'] %}
+                    <p class="btn btn-link">See Details</a>
+                  {% else %}
+                    <a href="{{ url_for('pro_tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                  {% endif %}
                 </div>
               </div>
             </div>

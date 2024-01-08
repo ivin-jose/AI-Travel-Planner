@@ -40,6 +40,19 @@
               <div class="listing-favourite mt-4">
                 <a href="{{ url_for('remove_package', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-delete-nodes me-2"></i>Remove Package</a>
                 <a href="{{ url_for('pro_tour_package_edit', package_id=row[0]) }}" class="btn btn-light btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-receiptf me-2"></i></i>Edit Package</a>
+                <a href="" class="btn  btn-md me-2 me-lg-3 mb-3"><i class="fa-solid fa-star" style="color: #ffc23d;"></i></i>
+                  {% if average_rating %}
+                    {% for row in average_rating %}
+                      {% if row[0] is not none %}
+                        <b>{{ row[0]|round(1) }}</b> ({{ row[1] }} reviews)
+                      {% else %}
+                          No Ratings 
+                      {% endif %}
+                    {% endfor %}
+                    </a>
+                  {% else %}
+                  No Ratings
+                  {% endif %}
               </div>
             </div>
             
