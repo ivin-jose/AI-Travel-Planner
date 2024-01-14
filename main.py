@@ -144,7 +144,7 @@ def login():
        if len(result) > 0:
         session['userid'] = result[0][0]
         session['username'] = result[0][1]
-        return redirect('/')
+        return redirect('/sepwrite.com')
        else:
         error_message = "Invalid username/email or password"
 
@@ -189,7 +189,7 @@ def signup():
             if len(result) > 0:
                 session['userid'] = result[0][0]
                 session['username'] = result[0][1]
-                return redirect('/')
+                return redirect('/sepwrite.com')
 
 
             return redirect('/login')
@@ -207,7 +207,7 @@ def user_logout():
 def logout():
     session.pop('userid', None)  # Remove the user_id from the session
     session.pop('username', None)
-    return redirect('/')
+    return redirect('/sepwrite.com')
 
 
 
@@ -1726,6 +1726,15 @@ def pro_password_change2():
         result = cursor.fetchall()
         ans = result[0][0]
 
+    
+        query1 = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
+        cursor.execute(query1, (str(session['proid']),))
+        result1 = cursor.fetchone()
+
+        query2 = "SELECT COUNT(*) AS total_count2 FROM ai_travel_planner.cancelled_bookings WHERE pro_view = 0 AND provider_id = %s;"
+        cursor.execute(query2, (str(session['proid']),))
+        result2 = cursor.fetchone()
+
         if ans != current_password:
             password_error_msg = "Wrong Password"
         else:
@@ -1741,8 +1750,9 @@ def pro_password_change2():
             cursor.execute(query, values)
             result = cursor.fetchall()
             flash = "Password Changed"
-            return render_template('pro/pro_change_password.html', flash=flash)
-        return render_template('pro/pro_change_password.html', error_message=password_error_msg)
+
+            return render_template('pro/pro_change_password.html', flash=flash, noti_count1=result2, noti_count=result1)
+        return render_template('pro/pro_change_password.html', error_message=password_error_msg, noti_count1=result2, noti_count=result1)
     else:
         return redirect('pro.login')
 
@@ -2139,7 +2149,7 @@ def pro_tour_package_details(package_id):
 
         # Execute the query
         cursor = mysql.connection.cursor()
-        avg_rating = "SELECT AVG(ratings) AS average_rating, COUNT(ratings) AS rating_count FROM package_reviews WHERE package_id = %s"
+        avg_rating = "SELECT AVG(ratings) AS average_rating FROM package_reviews WHERE package_id = %s"
         cursor.execute(avg_rating, (package_id,))
         # Fetch the result
         average_rating = cursor.fetchall()
