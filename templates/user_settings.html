@@ -175,7 +175,7 @@
                                       <div class="col mb-3">
                                         <div class="form-group">
                                           <label>About: <span class="updatebio-label" style="color: red;"></span></label>
-                                          <textarea class="form-control" rows="5" placeholder="My Bio" name="update-bio" id="update-bio">{{ row[7] }}</textarea><br><br>
+                                          <textarea class="form-control" rows="5" placeholder="My Bio" name="update-bio" id="update-bio">{% if row[7] %} {{ row[7] }} {% endif %}</textarea><br><br>
                                         </div>
                                       </div>
                                     </div>

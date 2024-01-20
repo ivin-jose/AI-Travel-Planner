@@ -268,6 +268,7 @@ def signup():
     email = ''
     password = ''
     email_exist_msg = ''
+    username_exist_msg = ''
     date = today_date
     profile_pic = "../static/images/default-avatar-profile.jpg"
     if request.method == 'POST':
@@ -279,13 +280,21 @@ def signup():
         '''Adding user data to MySQL db'''
 
         cursor = mysql.connection.cursor()
-        checking_username_unique = "SELECT * FROM users WHERE email = %s"
+        checking_email_unique = "SELECT * FROM users WHERE email = %s"
         values = (email,)
-        cursor.execute(checking_username_unique, values)
+        cursor.execute(checking_email_unique, values)
         result = cursor.fetchall()
+
+        cursor = mysql.connection.cursor()
+        checking_username_unique = "SELECT * FROM users WHERE username = %s"
+        values1 = (username,)
+        cursor.execute(checking_username_unique, values1)
+        result1 = cursor.fetchall()
 
         if len(result) > 0:
             email_exist_msg = "Email Already Taken"
+        elif len(result1) > 0:
+            username_exist_msg = "User Name Already In Use"
         else:
             # Insert new user data into the 'users' table
             insert_query = "INSERT INTO users (username, email, password, date, profile_pic, country) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -306,8 +315,8 @@ def signup():
 
             return redirect('/login')
 
-    return render_template('signup.html', email_exist_msg = email_exist_msg, username = username, email = email,
-                         password = password)
+    return render_template('signup.html', email_exist_msg=email_exist_msg, username=username, email=email,
+                         password=password, username_exist_msg=username_exist_msg)
 
 ''' User Session logout '''
 

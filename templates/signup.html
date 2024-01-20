@@ -55,6 +55,7 @@
                     <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style signup-form" name="signup-form" method="POST">
                       <div class="mb-3 col-sm-12">         
                         <label class="form-label">Username:</label>
+                        <label class="error-message" style="color: orange;">{{ username_exist_msg }}</label><br>
                         <label class="signupname-label" style="color: red;"></label>
                         <input type="text" class="form-control signupname" placeholder="" name="signupname"  value="{{username}}" >
                       </div>
