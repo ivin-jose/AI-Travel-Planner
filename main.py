@@ -7,6 +7,14 @@ from os.path import realpath, dirname, join
 from flask_paginate import Pagination
 from datetime import date
 
+from werkzeug.utils import secure_filename
+import json
+import numpy as np
+import pandas as pd
+import PIL
+import tensorflow as tf
+import tensorflow_hub as hub
+from geopy.geocoders import Nominatim
 app = Flask(__name__)
 
 
@@ -46,6 +54,18 @@ today_date = current_date.strftime("%d-%b-%Y")
 # Format the datetime object as a string in the desired format
 package_date = current_date.strftime("%Y-%m-%d")
 
+
+#API KEYS
+
+API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
+API_KEY_OFFICIEL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
+API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
+
+# Asian Landmark Searching y images
+
+upload = 'C:/Flask Projects/Ai_trip_planner/static/upload_images'
+app.config['UPLOAD'] = upload
+
 #CUSTOME ERROR PAGES
 
 #Invalid pages
@@ -62,6 +82,98 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('errors/505.html')
 
+@app.route('/search_image', methods=['POST', 'GET'])
+def search_image():
+    msg = ""
+    msg2 = ''
+    image_to_search = './static/upload_images/place.jpg'
+    image_loaction_address = ''
+    image_lat_lon = ''
+    related_searches = ''
+    images = ''
+    name_place = ''
+    try:
+        if request.method == 'POST':
+            image = request.files['image']
+            filename = secure_filename(image.filename)
+            new_filename = 'place.jpg'
+            image.save(os.path.join(app.config['UPLOAD'], new_filename))
+            
+            try:
+                model_url = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
+                labels = "C:/Flask Projects/Ai_trip_planner/try.csv"
+
+                img_shape = (321, 321)
+                classifier = tf.keras.Sequential([hub.KerasLayer(model_url, input_shape=img_shape+(3,), output_key="predictions:logits")])
+                df = pd.read_csv(labels)
+                labels = dict(zip(df.id, df.name))
+
+
+                img = PIL.Image.open("C:/Flask Projects/Ai_trip_planner/static/upload_images/place.jpg")
+                img = img.resize(img_shape)
+                img = np.array(img)/255.0
+                img = img[np.newaxis]
+                result = classifier.predict(img)
+
+                name_place = labels[np.argmax(result)]
+                print(labels[np.argmax(result)])
+
+                try:
+                    url = "https://image-search-api2.p.rapidapi.com/image-search"
+                    querystring = {"q": name_place, "imgc":"hd"}
+                    headers = {
+                    "X-RapidAPI-Key": API_KEY,
+                    "X-RapidAPI-Host": "image-search-api2.p.rapidapi.com"
+                    }
+                    response = requests.get(url, headers=headers, params=querystring)
+                    data = response.json()
+                    related_searches = []
+                    images = []
+                    msg2 = "still"
+
+                    if response.status_code == 200:
+                        msg2 = "200"
+                        related_searches = []
+                        images = []
+
+                        if "related_searches" in data:
+                            msg2 = "Relatedser"
+                            related_searches = data["related_searches"]
+
+                        if "images" in data:
+                            msg2 = "rimg"
+                            images = data["images"]
+
+                    else:
+                        msg2 = "Request failed with status code:", response.status_code
+                except:
+                    msg2 = "Related images not accesed"
+
+                try:
+                    address = name_place
+                    geolocator = Nominatim(user_agent="Your_name")
+                    location = geolocator.geocode(address, language="en")
+                    image_loaction_address = (location.address)
+                    image_lat_lon = (location.latitude, location.longitude)
+                except:
+                    msg2 = "Address not Available"
+            except:
+                msg2 = "Something error in fetching datas!"
+    except:
+        msg = "Image uploading failed!!"
+
+
+    notification = "Root"
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
+    values = (str(session['userid']),)
+    cursor.execute(query, values)
+    booking_notifications = cursor.fetchall()
+    return render_template('index.html', msg=msg, img=image_to_search, msg2=msg2,booking_notifications=booking_notifications, notification=notification,
+                             image_loaction_address=image_loaction_address,
+                             image_lat_lon = image_lat_lon,
+                             place_name = name_place, related_searches=related_searches,
+                             images=images)
 
 # Direct to home page
 @app.route('/sepwrite.com')
@@ -580,8 +692,9 @@ def blog_upload():
 
             for file in files:
                 path = '../static/images/blog'
-                file_path = (path + '/' + file.filename)
-                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__)), app.config['BLOG_UPLOAD_IMAGES'], file.filename)))
+                file_path = os.path.join(path, file.filename)
+                file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['BLOG_UPLOAD_IMAGES'], file.filename))
+
 
                 insert_image_query = "INSERT INTO blog_images (blog_id, user_id, image) VALUES (%s, %s, %s)"
                 image_values = (blog_id, session['userid'], file_path)
@@ -1193,7 +1306,7 @@ def user_tour_package_booking():
 
 # User saved Tour packages
 
-@app.route('/sepwrite.com/saved-tour-packages')
+@app.route('/sepwrite.com/user-saved-tour-packages')
 def saved_packages():
     flash = None
     if 'username' in session:
@@ -1726,7 +1839,7 @@ def pro_password_change2():
         result = cursor.fetchall()
         ans = result[0][0]
 
-    
+
         query1 = "SELECT COUNT(*) AS total_count FROM ai_travel_planner.package_bookings WHERE viewed = 0 AND package_provider_id = %s;"
         cursor.execute(query1, (str(session['proid']),))
         result1 = cursor.fetchone()
@@ -2020,45 +2133,8 @@ def pro_editing_tourpackages():
         # Retrieve day program data based on the number of days
         day_programs = [request.form.get(f'day_program_{i}') for i in range(1, int(num_days) + 1)]
 
-        ''' Here, Updating code for day_programes to db'''
-        try:
-            # Update day programs in the "package_day_programme" table
-            update_day_program_query = "UPDATE package_day_programme SET programme = %s WHERE pro_id = %s AND package_id = %s AND day = %s"
-            for day, program_text in enumerate(day_programs, start=1):
-                cursor.execute(update_day_program_query, (program_text, session['proid'], package_id, f"day {day}"))
-
-            # Commit the changes to the database
-            mysql.connection.commit()
-        except Exception as e:
-            mysql.connection.rollback()
-            flash = f"Error updating day programs: {str(e)}"
-            return redirect('/sepwrite.com/account.pro/tour-packages')
 
         '''Here Updating images to db'''
-        try:
-            # Update images in the "package_images" table
-            files = request.files.getlist('images')
-            inserted_image_paths = []  # Store the paths of all inserted images
-
-            # Get the current package_id from the database
-            cursor.execute("SELECT package_id FROM tour_packages WHERE pro_id = %s AND your_condition_for_selecting_the_right_package" % (session['proid']))
-            package_id = cursor.fetchone()[0]
-
-            for file in files:
-                path = 'images/tour_packages'
-                file_path = (path + '/' + file.filename)
-                file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['TOUR_PACKAGE_IMAGES'], file.filename))
-                inserted_image_paths.append(file_path)  # Store the path in the list
-
-            update_image_query = "UPDATE package_images SET image_path = %s WHERE pro_id = %s AND package_id = %s"
-            for image_path in inserted_image_paths:
-                cursor.execute(update_image_query, (image_path, session['proid'], package_id))
-
-            mysql.connection.commit()
-            flash = "Tour package updated successfully"
-            return redirect('/sepwrite.com/account.pro/tour-packages')
-        except Exception as e:
-            flash = f"Error updating images: {str(e)}"
     return redirect('/sepwrite.com/account.pro/tour-packages')
 
 

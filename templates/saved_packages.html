@@ -29,7 +29,7 @@
               {% endif %}
 
             {% for row in tour_packages_data %}
-            <div class="col-lg-4 col-md-6 mb-4 ">
+            <div class="col-lg-4 col-md-6 mb-4" style="height: 100vh">
               <div class="listing-item">
                 <div class="listing-image bg-overlay-half-bottom">
                   <img class="img-fluid" src="{{url_for('static', filename=row[10])}}" alt="{{row[10]}}" style="width: 100%; height: 40vh">
@@ -65,7 +65,7 @@
                   </div>
                   <div class="listing-info">
                     
-                    <p class="mb-0" style="text-transform: capitalize;">{{row[7]}}</p>
+                    <p class="mb-0" style="text-transform: capitalize; height: 10vh; overflow: hidden;">{{row[7]}}</p>
                   </div>
                   {% if row[4] <= session['todate'] %}
                     <p class="btn btn-link">See Details</a>

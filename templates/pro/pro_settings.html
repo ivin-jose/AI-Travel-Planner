@@ -1,6 +1,9 @@
 {% extends 'pro_base.html' %}
 {% block content %}
 <style type="text/css">
+    .bgimage {
+       background: url('C:/Flask Projects/Ai_trip_planner/static/images/backgrounds/travel1.jpg');
+    }
     #sidebar-list .active {
         background-color: black !important;
         color: #3dd1d5;
@@ -77,6 +80,10 @@
      }
 </style>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<body >
+
+<div class="bgimage">
 
 <div class="container p-0">
     <h1 class="h3 mb-3">Settings</h1>
@@ -224,7 +231,9 @@
         </div>
     </div>
 </div>
-
+</div>
+</div>
+</body>
 {% if flash %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
     <strong></strong> {{ flash }}
@@ -249,7 +258,7 @@
         }
     });
 });
-
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

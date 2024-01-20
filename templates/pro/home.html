@@ -159,7 +159,7 @@
  
           </div>
           <div class="row">
-            <center>/<h4>OUT DATED PACKAGES</h4></center>
+            <center><h4>OUT DATED PACKAGES</h4></center>
             {% for row in tour_packages_data_out_dated %}
             <div class="col-lg-4 col-md-6 mb-4 ">
               <div class="listing-item">
@@ -185,7 +185,6 @@
                         <i class="fa-regular fa-calendar-days me-2"></i><span> {{ row[4] }} </span>
                       </div>
                       <div class="rating">
-                        <i class="fa-solid fa-star me-1 text-yellow"></i>
                         {% if row[11] %}
                         {{ row[11]|round(1) }}
                         {% endif %}
@@ -228,7 +227,6 @@
                   <span>COMPANY: {{session['prousercompany']}}</span>
                 </div>
                 <h2 class="title">Your Tour <strong>Packages</strong></h2>
-                <p class="mb-0">Check Who Needs your trips, click to see Bookings</p>
               </div>
             </div>
           </div>
@@ -275,7 +273,7 @@
                         </div>
                         <div class="listing-info">
                           <img class="img-fluid" src="{{ url_for('static', filename='images/listing-brand/01.png')}}" alt="">
-                          <p class="mb-0"  style="text-transform: capitalize;">{{row[7]}}</p>
+                          <p class="mb-0" style="text-transform: capitalize; height: 10vh; overflow: hidden;">{{row[7]}}</p>
                         </div>
                         {% if row[4] < session['todate'] %}
                          <p class="btn btn-link">See Details</a>

@@ -1,10 +1,227 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>HOMEPAGE   !!</h1>
-<p>
+<style type="text/css">
+  .image-search {
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .image-search-contents {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+  }
 
-</p>
+  .img-submit {
+    background: #1abc9c;
+    border: 0;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 20px;
+    color: white;
+  }
+  @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+
+@keyframes roll {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+    transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+    box-shadow: none;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.wrapper {
+      display: flex;
+    align-items: center;
+}
+
+.wrapper:active #img-result {
+  margin-top: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.wrapper #img-result {
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+  background: #1abc9c;
+  background-size: cover;
+  background-position: center;
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s, margin 0.3s, background-image 1.5s;
+}
+
+.wrapper #img-result.no-image:before {
+  font-family: "FontAwesome";
+  content: "\f030";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: #fff;
+  font-size: 48px;
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0px 5px rgba(0, 0, 0, 0.4);
+}
+
+.wrapper button {
+  margin-top: 20px;
+  display: block;
+  font-family: "Open Sans Condensed", sans-serif;
+  background: #1abc9c;
+  width: 100%;
+  border: none;
+  color: #fff;
+  padding: 10px;
+  letter-spacing: 1.3px;
+  font-size: 1.05em;
+  border-radius: 5px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+  outline: 0;
+  transition: box-shadow 0.3s, margin-top 0.3s, padding 0.3s;
+}
+
+.wrapper button:active {
+  box-shadow: none;
+  margin-top: 24px;
+  padding: 8px;
+}
+
+.show-button {
+  background: #264974;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  float: right;
+  display: none;
+}
+
+.upload-result {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow-y: auto;
+}
+
+.upload-result__content {
+  word-break: break-all;
+  font-family: "Source Code Pro";
+  overflow-wrap: break-word;
+}
+
+</style>
+
+<div class="container image-search">
+  <div>
+    <h2>Find Places with an image</h2>
+  </div>
+  <div>
+
+    <div class="wrapper">
+      <button class="no-image" id="img-result">Upload Image</button>
+      <!-- Attach the file input form here -->
+      <form id="image_upload_form" action="{{ url_for('search_image') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" id="fileInput" style="display: none;" required>
+        <input type="submit" value="Search" class="img-submit">
+      </form>
+    </div>
+
+    <button class="show-button">Show server request</button>
+    <div class="upload-result">
+      <button class="hide-button">Close</button>
+      <pre class="upload-result__content">
+      </pre>
+    </div>
+
+  </div>
+  {% if img %}
+  <div class="image-search-contents">
+    <div>
+      <img src="{{ img }}" alt="Uploaded Image" width="150" height="150" style=" border-radius: 15px;
+">
+    </div>
+    <div class="container" style="text-align: justify;">
+      {% if place_name %}
+        <h4>{{ place_name }}</h4>
+      {% else %}
+        <h4>Not Found</h4>
+      {% endif %}
+
+      {% if image_loaction_address %}
+        <h6>{{ image_loaction_address }}</h6>
+      {% else %}
+        <h6>Not Found</h6>
+      {% endif %}
+
+      {% if image_lat_lon %}
+        <p>Lat - lon : {{ image_lat_lon }}</p>
+      {% else %}
+        <p>Not Found</p>
+      {% endif %}
+      {% if related_searches %}
+      <h1>Related Searches:</h1>
+        <ul>
+            {% for search in related_searches %}
+            <li>{{ search }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>n se</p>
+        {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+    <div id="loader" style="display: none;"><img src="./static/images/preloader.gif" width="200" height="100"></div>
+    {{ msg }}
+    <br><br>
+    <div id="image_search_results">
+        <!-- <h1>Related Searches:</h1> -->
+        <ul>
+            {% for search in related_searches %}
+            <li>{{ search }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- <h1>Images:</h1> -->
+        {% for image in images %}
+        <div>
+            <img src="{{ image.src }}" alt="Image">
+            <p>{{ image.label }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+    <div id="loader" style="display: none;">
+      <img src="./static/images/preloader.gif" width="100" height="100">
+    </div>
+
 {% if flash %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
     <strong></strong> {{ flash }}
@@ -13,4 +230,17 @@
     </button>
   </div>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var uploadButton = document.getElementById('img-result');
+  var fileInput = document.getElementById('fileInput');
+
+  // Trigger file input click event when "Upload Image" button is clicked
+  uploadButton.addEventListener('click', function() {
+    fileInput.click();
+  });
+});
+
+</script>
 {% endblock %}
