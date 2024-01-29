@@ -147,7 +147,7 @@
 
                   <!-- Review form -->
                   {% if user_travaled %}
-                  <div class="listing-detail-box mb-lg-0" >
+                  <div class="listing-detail-box mb-lg-0" id="review_section">
                     <div class="detail-title">
                       <h5 class="fw-600">Add a Review</h5>
                     </div>
@@ -250,7 +250,7 @@
                         <div class="collapse show" id="filters">
                           <!-- Booking Form start -->
                           <!--  -->
-                          <form action="{{url_for('user_tour_package_booking')}}" method="POST" onsubmit="return validateForm()">
+                          <form action="{{url_for('tour_package_booking_payment')}}" method="POST" onsubmit="return validateForm()">
                                 <div class="mb-3 datetimepickers">
 
                                 <!-- START BOOKING FORM  -->
@@ -275,7 +275,15 @@
 
                                 <div class="pt-0">
                                     <div class="mb-0 d-grid">
+                                    {% for row in tour_packages_data %}
+                                      {% if row[4] <= (session['todate']) %}
+                                            <input type="button" class="btn btn-primary d-grid" value="Date Expired" style="color: red;">
+                                      {% else %}
+                                      {{row[5]}}
                                         <input type="submit" class="btn btn-primary d-grid" value="Request Booking">
+                                 
+                                      {% endif %}
+                                     {% endfor %}
                                     </div>
                                 </div>
                             <!-- END  -->

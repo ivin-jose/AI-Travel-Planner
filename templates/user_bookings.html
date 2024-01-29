@@ -1,147 +1,332 @@
 {% extends 'base.html' %}
 {% block content %}<br>
-<div class="col-md-7 col-xl-8">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="account" role="tabpanel">
+<style type="text/css">
+	@import url('https://fonts.googleapis.com/css?family=Oswald');
 
-                <div class="col">
-                <div class="row">
-                  <div class="col mb-3">
-                  	{% if tour_bookings %}
-                    <div class="card">
-                      <div class="card-body">
-                      	<!-- <button id="all_bookings_btn" class="btn btn-primary">All</button>
-                      	<button id="pending_bookings_btn" class="btn btn-primary">Show Pending</button>
-												<button id="accepted_bookings_btn" class="btn btn-primary">Show Accepted</button>
-												<button id="rejected_bookings_btn" class="btn btn-primary">Show Rejected</button> -->
-                        <div class="e-profile">
-                          <div class="row">
+.fl-left{float: left}
 
-                            <div class="col-12 col-sm-auto mb-3">
-                              
-                              
-                          </div>
+.fl-right{float: right}
 
-                          <ul class="nav nav-tabs">
-                            <li class="nav-item"><a href="" class="active nav-link">Booking Details</a></li>
-                          </ul>
+.containerd
+{
+  width: 90%;
+  margin: 100px auto
+}
 
 
-                          <div class="tab-content pt-3">
-															<div id="pending_bookings">
-																<h6>Your Bookings </h6>
-															  	<table class="table table-dark">
-																  <thead>
-																    <tr>
-																       <th>Booking Id</th>
-																      	<th scope="col">Tour Name</th>
-																      	<th scope="col">Status</th>
-																      	<th scope="col">More</th>
-																    </tr>
-																  </thead>
-																  <tbody>
-																  	{% for row in tour_bookings %}
-																	    <tr>
-																	      <td>{{row[0]}}</td>
-																	      <td>{{row[7]}}</td>
 
-																	      <!-- Checking the status -->
-																	      {% if row[5] == 1 %}
-																	        	<td style="color: green;">Accepted</td>
-																	      {% elif row[5] == 0 %}
-																	       		<td style="color: red;">Rejected</td>
-																	      {% else %}
-																	       		<td style="color: grey;">Pending</td>
-																	      {% endif %}
-																	      
-																	      <td><a href="{{ url_for('user_booking_details', booking_id=row[0])}}">view details</a></td>
-																	    </tr>
-																    {% endfor %}
-																    
-																  </tbody>
-																</table>
-															</div>
-                            </div>
+.row{overflow: hidden}
 
+.card
+{
+	height: 25vh;
+  display: table-row;
+  width: 100%;
+  background-color: #fff;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  position: relative
+}
 
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% else %}
-                  	<div  style="height: 40vh;
-                  							width: 100%;
-														    display: flex;
-														    align-items: center;
-														    justify-content: flex-end;">
-                  			<h2><strong>You have no bookings..!</strong></h2>
-                  	</div>
-								   
-              </div>
-            </div>
-						{% endif %}
-						
-							{% if cancelled_bookings %}
-                <div class="row">
-                  <div class="col mb-3">
-                  
-                    <div class="card">
-                      <div class="card-body">
+.card + .card{margin-left: 2%}
 
-                        <div class="e-profile">
-                          <div class="row">
+.date
+{
+  display: table-cell;
+  width: 25%;
+  position: relative;
+  text-align: center;
+  border-right: 2px dashed #dadde6
+}
 
-                            <div class="col-12 col-sm-auto mb-3">        
-                          </div>
+.date:before,
+.date:after
+{
+  content: "";
+  display: block;
+  width: 30px;
+  height: 30px;
+  background-color: #DADDE6;
+  position: absolute;
+  top: -15px ;
+  right: -15px;
+  z-index: 1;
+  border-radius: 50%
+}
 
-                          <ul class="nav nav-tabs">
-                            <li class="nav-item"><a href="" class="active nav-link">Booking Cancellations</a></li>
-                          </ul>
+.date:after
+{
+  top: auto;
+  bottom: -15px
+}
 
+.date time
+{
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%)
+}
 
-                          <div class="tab-content pt-3">
-															<div id="pending_bookings">
-																<h6>Cancelled Bookings </h6>
-															  	<table class="table table-dark">
-																  <thead>
-																    <tr>
-																       <th>Booking Id</th>
-																      	<th scope="col">Tour Name</th>
-																      	<th scope="col">Date</th>
-																      	<th scope="col">Status</th>
-																    </tr>
-																  </thead>
-																  <tbody>
-																  	{% for row in cancelled_bookings %}
-																	    <tr>
-																	      <td>{{row[0]}}</td>
-																	      <td>{{row[5]}}</td>
-																	      <td>{{row[6]}}</td>
-																	      <!-- Checking the status -->
-																	      <td style="color: red;">Cancelled</td>
-																	    </tr>
-																    {% endfor %}
-																    
-																  </tbody>
-																</table>
-															</div>
-                            </div>
+.date time span{display: block}
+
+.date time span:first-child
+{
+  color: #2b2b2b;
+  font-weight: 600;
+  font-size: 250%
+}
+
+.date time span:last-child
+{
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: -10px
+}
+
+.card-cont
+{
+  display: table-cell;
+  width: 75%;
+  font-size: 85%;
+  padding: 10px 10px 30px 50px
+}
+
+.card-cont h3
+{
+  color: #3C3C3C;
+  font-size: 130%
+}
 
 
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% else %}
-                  	
-								   {% endif %}
-              </div>
-            </div>
+.card-cont > div
+{
+  display: table-row
+}
 
-            </div>
+.card-cont .even-date i,
+.card-cont .even-info i,
+.card-cont .even-date time,
+.card-cont .even-info p
+{
+  display: table-cell
+}
+
+.card-cont .even-date i,
+.card-cont .even-info i
+{
+  padding: 5% 5% 0 0
+}
+
+.card-cont .even-info p
+{
+  padding: 30px 50px 0 0
+}
+
+.card-cont .even-date time span
+{
+  display: block
+}
+
+.card-cont a
+{
+  display: block;
+  text-decoration: none;
+  width: 80px;
+  height: 30px;
+  background-color: #D8DDE0;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 2px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px
+}
+
+.row:last-child .card:first-child .card-cont a
+{
+  background-color: #037FDD
+}
+
+.row:last-child .card:last-child .card-cont a
+{
+  background-color: #F8504C
+}
+
+@media screen and (max-width: 860px)
+{
+  .card
+  {
+    display: block;
+    float: none;
+    width: 100%;
+    margin-bottom: 10px
+  }
+  
+  .card + .card{margin-left: 0}
+  
+  .card-cont .even-date,
+  .card-cont .even-info
+  {
+    font-size: 75%
+  }
+}
+
+</style>
+{% if tour_bookings %}
+	<section class="container">
+  <div class="row">
+  	{% for row in tour_bookings %}
+  	<div class="col-lg-6 col-md-6">
+    <article class="card fl-left">
+      <section class="date">
+        <time datetime="23th feb">
+        	<!-- Assuming row[10] contains the date string '2021-02-23' -->
+        	{% set date_string = row[10] %}
+
+					{% set day = date_string[-2:] %}
+					{% set month = date_string[5:7] %}
+
+				<span>{{ day }}</span><span>
+				{% if month == '01' %}
+					JAN
+				{% elif month == '02' %}
+					FEB
+				{% elif month == '03' %}
+					MAR
+				{% elif month == '04' %}
+					APR
+				{% elif month == '05' %}
+					MAY
+				{% elif month == '06' %}
+					JUN
+				{% elif month == '07' %}
+					JUL
+				{% elif month == '08' %}
+					AUG
+				{% elif month == '09' %}
+					SEP
+				{% elif month == '10' %}
+					OCT
+				{% elif month == '11' %}
+					NOV
+				{% elif month == '12' %}
+					DEC
+				{% endif %}
+
+				<!-- Display the formatted date -->
+				
+				</span>
+       
+        </time>
+      </section>
+      <section class="card-cont">
+        <h3>{{ row[9] }}</h3>
+        <div class="even-date">
+         <i class="fa fa-calendar"></i>
+         <time>
+           <span style="padding-left: 10px">
+           		{% if row[10] <= (session['todate']) %}
+           			<span style="color: red;"> Expired</span>
+           			{% if row[7] == None %}
+     							<span style="text-transform: capitalize;">(Not attendented)</span>
+			     			{% endif %}
+           		{% else %}
+           			{{ row[10] }}
+           		{% endif %}
+           	</span>
+         </time>
         </div>
-    </div>
+        <div class="even-info">
+          <i class="fa fa-map"  style="padding-right: 10px"></i>
+          <p>
+          	{% if row[10] <= (session['todate']) %}
+          				The Date is Expired
+          	{% else %}
+			          	<!-- Checking the status -->
+			            {% if row[5] == 1 %}
+						        	<span style="color: green;">Status : Accepted</span>
+						      {% elif row[5] == 0 %}
+						       		<span style="color: red;">Status : Rejected</span>
+						      {% else %}
+						       		<span style="color: grey;">Status : Pending</span>
+						      {% endif %}
+			      {% endif %}
+          </p>
+        </div>
+        {% if row[7] != None %}
+        <a href="{{ url_for('tour_package_details', package_id=row[2]) }}#review_section" style="width: 130px; background-color: #3dd1d5">Write Review</a>
+        {% elif row[10] <= (session['todate']) %}
+        <a href="{{ url_for('tour_package_details', package_id=row[2]) }}" style="width: 130px; background-color: grey">Book Again</a>
+        {% else %}
+        <a href="{{ url_for('user_booking_details', booking_id=row[0])}}">Details</a>
+        {% endif %}
+      </section>
+    	</article>
+  	</div><br><br>
+  {% endfor %}
 </div>
+</section>
+
+{% else %}
+<div  style="height: 40vh;
+	width: 100%;">
+<center><h2><strong>You have no bookings..!</strong></h2></center>
+</div>
+{% endif %}
+
+{% if cancelled_bookings %}
+	<section class="container">
+  <div class="row">
+  	{% for row in cancelled_bookings %}
+  	<div class="col-lg-6 col-md-6">
+    <article class="card fl-left">
+      <section class="date">
+        <time datetime="23th feb">
+          <!-- Assuming row[10] contains the date string '2021-02-23' -->
+        	{% set date_string = row[6] %}
+
+					{% set day = date_string[:2] %}
+					{% set month = date_string[3:6] %}
+
+				<span>{{ day }}</span><span>{{ month }}</span>
+       
+        </time>
+      </section>
+      <section class="card-cont">
+        <h3 style="text-decoration: line-through">{{ row[5] }}</h3>
+        <div class="even-date">
+         <i class="fa fa-calendar"></i>
+         <time>
+           <span style="padding-left: 10px">
+           		{{ row[6] }}
+           	</span>
+         </time>
+        </div>
+        <div class="even-info">
+          <i class="fa fa-map-marker"  style="padding-right: 10px"></i>
+          <p>
+          	<!-- Checking the status -->
+			        	<span style="color: red;">Status : Cancelled</span>
+          </p>
+        </div>
+        <a style="background-color: grey">Details</a>
+      </section>
+    	</article>
+  	</div><br><br>
+  {% endfor %}
+</div>
+</section>
+
+{% endif %}
+
+<!-- Buy me a coffe script -->
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="vbattalshn" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
 {% if flash %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">

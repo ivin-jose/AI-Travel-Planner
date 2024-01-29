@@ -46,12 +46,14 @@ app.config['TOUR_PACKAGE_IMAGES'] = TOUR_PACKAGE_IMAGES
 current_date = datetime.now()
 
 # Print the current date in a specific format
+# 12-AUG-2021
 today_date = current_date.strftime("%d-%b-%Y")
 
 
 # Convert the string to a datetime object
 
 # Format the datetime object as a string in the desired format
+# 2024-01-26
 package_date = current_date.strftime("%Y-%m-%d")
 
 
@@ -1047,6 +1049,7 @@ def tour_packages():
 @app.route('/sepwrite.com/tour-packages-details/<package_id>', methods=['POST', 'GET'])
 def tour_package_details(package_id):
     pro_id = None
+    session['todate'] = package_date
     if 'username' in session:
         # SELECTING TOUR PACKAGE
         query1 = """SELECT tp.*, pi.image_path
@@ -1124,6 +1127,7 @@ def tour_package_details(package_id):
 # Saving packages
 @app.route('/sepwrite.com/tour-packages-saving/<package_id>', methods=['POST', 'GET'])
 def tour_package_saving(package_id):
+    session['todate'] = package_date
     query1 ="""
         SELECT tp.*, pi.image_path
         FROM tour_packages tp
@@ -1250,9 +1254,16 @@ def tour_package_saved_dlt(package_id):
         delt_flash = "Something Wrong.."
         return render_template('saved_packages.html', tour_packages_data=tour_packages_data, delt_flash=delt_flash)
 
+# user package booking payament 
+@app.route('/sepwrite.com/tour-packages-booking-payment', methods=['POST', 'GET'])
+def tour_package_booking_payment():
+    return render_template('tour_package_payment.html')
+
 # user_tour_package_booking
 @app.route('/sepwrite.com/tour-packages-booking', methods=['POST', 'GET'])
 def user_tour_package_booking():
+    session['todate'] = ""
+    session['todate'] = package_date
     if request.method == 'POST':
         view = 0
         package_status = 2
@@ -1301,10 +1312,10 @@ def user_tour_package_booking():
         except Exception as e:
             mysql.connection.rollback()
             return f"Error: {str(e)}"
-        query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE user_id = %s;
+        query = """SELECT pb.*, tp.tourname, tp.from_date
+                FROM package_bookings pb
+                INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+                WHERE pb.user_id = %s;
         """
         cursor.execute(query, (session['userid'],))
         tour_bookings = cursor.fetchall()
@@ -1380,11 +1391,13 @@ def user_package_searching():
 
 @app.route('/sepwrite.com/user-bookings', methods=['POST', 'GET'])
 def user_bookings():
+    session['todate'] = ""
+    session['todate'] = package_date
     cursor = mysql.connection.cursor()
-    query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE user_id = %s;
+    query = """SELECT pb.*, tp.tourname, tp.from_date
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.user_id = %s;
     """
     cursor.execute(query, (session['userid'],))
     tour_bookings = cursor.fetchall()
@@ -1427,6 +1440,8 @@ def user_booking_details(booking_id):
 # Canceling the tour package by user
 @app.route('/sepwrite.com/user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
 def user_booking_cancel(booking_id, package_name, provider_id):
+    session['todate'] = ""
+    session['todate'] = package_date
     pro_view = "0"
     try:
         # Create a new cursor for the delete queries
@@ -1465,10 +1480,10 @@ def user_booking_cancel(booking_id, package_name, provider_id):
         cursor = mysql.connection.cursor()
 
         # Fetch tour bookings
-        query = """SELECT pb.*, tp.tourname
+        query = """SELECT pb.*, tp.tourname, tp.from_date
             FROM package_bookings pb
             INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-            WHERE user_id = %s;
+            WHERE pb.user_id = %s;
         """
         cursor.execute(query, (session['userid'],))
         tour_bookings = cursor.fetchall()

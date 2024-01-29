@@ -42,7 +42,7 @@
 </style>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-<div class="container p-0">
+<div class="container p-0 userbgimage">
     <h1 class="h3 mb-3">Settings</h1>
     <div class="row">
         <div class="col-md-5 col-xl-4">
@@ -55,7 +55,6 @@
 
                     <a class="list-group-item list-group-item-action {% if 'change_password' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('change_password')}}" role="tab" >Password</a>
 
-                    <a class="list-group-item list-group-item-action " data-section="password" href="{{ url_for('pro_account')}}" role="tab">Buisness Account</a>
                     <a class="list-group-item list-group-item-action" data-section="password" href="{{ url_for('change_password')}}" role="tab">Notifications</a>
 
                     <a class="list-group-item list-group-item-action {% if 'user_logout' in request.url_rule.endpoint %}active{% endif %}" data-section="password" href="{{ url_for('user_logout')}}" role="tab">Logout</a>
