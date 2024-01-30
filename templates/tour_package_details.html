@@ -170,7 +170,7 @@
                           {% for row in tour_packages_data %}
                           <input type="hidden" name="package_id" value="{{ row[0] }}">
                           {% endfor %}
-                          <textarea class="form-control" rows="4" placeholder="Your message" name="review"></textarea>
+                          <textarea class="form-control" rows="4" placeholder="Your message" name="review" required></textarea>
                         </div>
                         <div class="col-md-12">
                           <input class="btn btn-primary" type="submit" value="Submit Review">
@@ -257,6 +257,8 @@
                                 {% for row in tour_packages_data %}
                                   <input type="text" name="package_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[0] }}" hidden>
                                   <input type="text" name="pro_id" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[1] }}" hidden>
+                                  <input type="text" name="price" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[6] }}" hidden>
+                                  <input type="text" name="package_name" class="form-control datetimepicker-input" placeholder="Name" value="{{ row[2] }}" hidden>
                                 {% endfor %}
                                 <label id="message" style="color: red;"></label>
                                 <div class="mb-3 select-border">
@@ -279,7 +281,6 @@
                                       {% if row[4] <= (session['todate']) %}
                                             <input type="button" class="btn btn-primary d-grid" value="Date Expired" style="color: red;">
                                       {% else %}
-                                      {{row[5]}}
                                         <input type="submit" class="btn btn-primary d-grid" value="Request Booking">
                                  
                                       {% endif %}

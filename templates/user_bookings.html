@@ -187,7 +187,7 @@
       <section class="date">
         <time datetime="23th feb">
         	<!-- Assuming row[10] contains the date string '2021-02-23' -->
-        	{% set date_string = row[10] %}
+        	{% set date_string = row[11] %}
 
 					{% set day = date_string[-2:] %}
 					{% set month = date_string[5:7] %}
@@ -226,18 +226,18 @@
         </time>
       </section>
       <section class="card-cont">
-        <h3>{{ row[9] }}</h3>
+        <h3>{{ row[10] }}</h3>
         <div class="even-date">
          <i class="fa fa-calendar"></i>
          <time>
            <span style="padding-left: 10px">
-           		{% if row[10] <= (session['todate']) %}
+           		{% if row[11] <= (session['todate']) %}
            			<span style="color: red;"> Expired</span>
            			{% if row[7] == None %}
      							<span style="text-transform: capitalize;">(Not attendented)</span>
 			     			{% endif %}
            		{% else %}
-           			{{ row[10] }}
+           			Booked on {{ row[9] }}
            		{% endif %}
            	</span>
          </time>
@@ -245,7 +245,7 @@
         <div class="even-info">
           <i class="fa fa-map"  style="padding-right: 10px"></i>
           <p>
-          	{% if row[10] <= (session['todate']) %}
+          	{% if row[11] <= (session['todate']) %}
           				The Date is Expired
           	{% else %}
 			          	<!-- Checking the status -->
@@ -261,7 +261,7 @@
         </div>
         {% if row[7] != None %}
         <a href="{{ url_for('tour_package_details', package_id=row[2]) }}#review_section" style="width: 130px; background-color: #3dd1d5">Write Review</a>
-        {% elif row[10] <= (session['todate']) %}
+        {% elif row[11] <= (session['todate']) %}
         <a href="{{ url_for('tour_package_details', package_id=row[2]) }}" style="width: 130px; background-color: grey">Book Again</a>
         {% else %}
         <a href="{{ url_for('user_booking_details', booking_id=row[0])}}">Details</a>

@@ -2,30 +2,12 @@
 {% block content %}
 <style type="text/css">
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif
-}
-
-.container {
-    margin: 30px auto;
-}
-
 .container .card {
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     background: #fff;
     border-radius: 0px;
 }
-
-body {
-    background: #eee
-}
-
-
 
 .btn.btn-primary {
     background-color: #ddd;
@@ -151,8 +133,19 @@ body {
     border: 1.5px solid #1A73E8;
     box-shadow: none;
 }
-</style>
 
+.payment_processing {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    height: 100vh;
+}
+</style>
 
 <div class="container" style="width: 60%;">
         <div class="row">
@@ -180,7 +173,7 @@ body {
                                     <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green">: Name of
                                             product</span></p>
                                     <p class="mb-0"><span class="fw-bold">Price:</span><span
-                                            class="c-green">:$452.90</span></p>
+                                            class="c-green"></span></p>
                                     <p class="mb-0">We will not Save Your card Details </p>
                                 </div>
                             </div>
@@ -203,23 +196,22 @@ body {
                             <div class="row">
                                 <div class="col-lg-5 mb-lg-0 mb-3">
                                     <p class="h4 mb-0">Summary</p>
-                                    <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green">: Name of
-                                            product</span>
+                                    <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green">: {{ package_name }}</span>
                                     </p>
                                     <p class="mb-0">
                                         <span class="fw-bold">Price:</span>
-                                        <span class="c-green">:$452.90</span>
+                                        <span class="c-green">{{ package_price }}</span>
                                     </p>
                                     <p class="mb-0" style="color: red">*We will not Save Your card Details 
                                         for any reason 
                                     </p>
                                 </div>
                                 <div class="col-lg-7">
-                                    <form action="" class="form">
+                                    <form action="{{url_for('user_tour_package_booking')}}" class="form" onsubmit="return validateForm()">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="form__div">
-                                                    <input type="text" class="form-control" placeholder=" " name="cardnumber" id="cardnumber">
+                                                    <input type="text" class="form-control" placeholder=" " name="cardnumber" id="cardnumber" oninput="formatCardNumber(this)">
                                                     <label for="" class="form__label">Card Number</label>
                                                     <span id="cardNumberError" class="error"></span>
 
@@ -245,11 +237,11 @@ body {
                                                 <div class="form__div">
                                                     <input type="text" class="form-control" placeholder=" " name="nameoncard" id="nameoncard">
                                                     <label for="" class="form__label">name on the card</label>
-                                                    <span id="nameOnCardError" class="error"></span>
+                                                    <span id="nameOnCardError" class="error" style="text-transform: uppercase;"></span>
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <input type="submit" class="btn btn-primary w-100" value="Book"  onclick="validateForm()">
+                                                <input type="submit" class="btn btn-primary w-100" value="Book"  >
                                             </div>
                                         </div>
                                     </form>
@@ -265,41 +257,130 @@ body {
         </div>
     </div>
 
+<div id="payment_processing" class="payment_processing">
+    <h3>Payment proccesing...</h3>
+</div>
+
+    <!-- Add this script in the <head> section of your HTML or at the end of the body -->
 <script>
-    function validateForm() {
-        // Reset errors
-        document.getElementById('cardNumberError').innerText = '';
-        document.getElementById('expDateError').innerText = '';
-        document.getElementById('cvvError').innerText = '';
-        document.getElementById('nameOnCardError').innerText = '';
+function validateForm() {
+    // Reset error messages
+    resetErrors();
 
-        // Get form values
-        var cardNumber = document.getElementById('cardnumber').value();
-        var expDate = document.getElementById('expdate').value();
-        var cvv = document.getElementById('cvv').value();
-        var nameOnCard = document.getElementById('nameoncard').value();
+    // Get form input values
+    var cardNumber = document.getElementById('cardnumber').value.trim();
+    var expDate = document.getElementById('expdate').value.trim();
+    var cvv = document.getElementById('cvv').value.trim();
+    var nameOnCard = document.getElementById('nameoncard').value.trim();
 
-        // Validate Card Number
-        if (!/^\d{4}\s\d{4}\s\d{4}$/.test(cardNumber)) {
-            alert("")
-            document.getElementById('cardNumberError').innerText = 'Invalid Card Number';
-        }
-
-        // Validate Expiry Date
-        var expDateRegex = /^(0[1-9]|1[0-2])\/(2[4-9]|3[0-4])$/;
-        if (!expDateRegex.test(expDate)) {
-            document.getElementById('expDateError').innerText = 'Invalid Expiry Date';
-        }
-
-        // Validate CVV
-        if (!/^\d{3}$/.test(cvv)) {
-            document.getElementById('cvvError').innerText = 'Invalid CVV';
-        }
-
-        // Validate Name on Card
-        if (nameOnCard.trim() === '') {
-            document.getElementById('nameOnCardError').innerText = 'Name on Card is required';
-        }
+    // Validate card number
+    if (!isValidCardNumber(cardNumber)) {
+        displayError('cardNumberError', 'Invalid card number');
+        return false;
     }
+
+    // Validate expiration date
+    if (!isValidExpDate(expDate)) {
+        displayError('expDateError', 'Invalid expiration date');
+        return false;
+    }
+
+    // Validate CVV
+    if (!isValidCVV(cvv)) {
+        displayError('cvvError', 'Invalid CVV code');
+        return false;
+    }
+
+    // Validate name on card
+    if (!isValidNameOnCard(nameOnCard)) {
+        displayError('nameOnCardError', 'Invalid name on the card');
+        return false;
+    }
+
+    // Form is valid, you can proceed with submission or further processing
+        // Form is valid, show processing div after a delay
+    setTimeout(function() {
+        document.getElementById('payment_processing').style.display = 'block';
+    }, 5000); // 5000 milliseconds (5 seconds) delay
+
+    return true;
+}
+
+function isValidCardNumber(cardNumber) {
+    // Remove any non-digit characters
+    var numericCardNumber = cardNumber.replace(/\D/g, '');
+
+    // Check if the numeric card number has a length of 16 and has a space after every 4th digit
+    return /^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$/.test(numericCardNumber);
+}
+
+
+function isValidExpDate(expDate) {
+    // Implement expiration date validation logic based on your requirements
+    // For simplicity, let's assume the format is MM / YY and check for a valid month and year
+
+    // Allow spaces around the slash, making them optional
+    var regex = /^(0[1-9]|1[0-2])\s*\/\s*\d{2}$/;
+
+    if (!regex.test(expDate)) {
+        return false;
+    }
+
+    // Extract month and year from the entered date
+    var parts = expDate.split('/');
+    var enteredMonth = parseInt(parts[0], 10);
+    var enteredYear = parseInt(parts[1], 10);
+
+    // Get the current date
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear() % 100;  // Get last two digits of the current year
+    var currentMonth = currentDate.getMonth() + 1;  // Months are zero-based
+
+    // Check if the entered date is in the future
+    if (enteredYear < currentYear || (enteredYear === currentYear && enteredMonth < currentMonth)) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function isValidCVV(cvv) {
+    // Implement CVV validation logic based on your requirements
+    // For simplicity, let's assume the CVV should be a numeric value with a length of 3
+    return /^\d{3}$/.test(cvv);
+}
+
+function isValidNameOnCard(nameOnCard) {
+    // Implement name on card validation logic based on your requirements
+    // For simplicity, let's assume the name should contain only letters and spaces
+    return /^[a-zA-Z\s]+$/.test(nameOnCard);
+}
+
+function resetErrors() {
+    // Reset error messages
+    var errorElements = document.getElementsByClassName('error');
+    for (var i = 0; i < errorElements.length; i++) {
+        errorElements[i].innerHTML = '';
+    }
+}
+
+function displayError(elementId, errorMessage) {
+    // Display error message near the input field
+    document.getElementById(elementId).innerHTML = errorMessage;
+}
+</script>
+
+<script>
+function formatCardNumber(input) {
+    // Remove any non-digit characters
+    var cardNumber = input.value.replace(/\D/g, '');
+
+    // Add space every four digits
+    cardNumber = cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ');
+
+    // Update the input value
+    input.value = cardNumber;
+}
 </script>
 {% endblock %}

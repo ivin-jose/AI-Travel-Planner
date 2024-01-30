@@ -1257,69 +1257,98 @@ def tour_package_saved_dlt(package_id):
 # user package booking payament 
 @app.route('/sepwrite.com/tour-packages-booking-payment', methods=['POST', 'GET'])
 def tour_package_booking_payment():
-    return render_template('tour_package_payment.html')
+    price = 0.0
+    package_name = "Not Available"
+    if request.method == 'POST':
+        if request.method == 'POST':
+            provider = request.form.get('pro_id')
+            num_people = request.form.get('days')
+            package_id = request.form.get('package_id')
+            name = request.form.get('username')
+            user_identity_document = request.form.get('user_identity_document')
+            phone = request.form.get('phone')
+            price = request.form.get('price')
+            package_name = request.form.get('package_name')
+
+            session['booking_form_provider'] = provider
+            session['booking_form_num_people'] = num_people
+            session['booking_form_package_id'] = package_id
+            session['booking_form_name'] = name
+            session['booking_form_user_identity_document'] = user_identity_document
+            session['booking_form_phone'] = phone
+
+    return render_template('tour_package_payment.html', package_price=price, package_name=package_name)
 
 # user_tour_package_booking
 @app.route('/sepwrite.com/tour-packages-booking', methods=['POST', 'GET'])
 def user_tour_package_booking():
     session['todate'] = ""
     session['todate'] = package_date
-    if request.method == 'POST':
-        view = 0
-        package_status = 2
-        package_status_view = 1
-        provider = request.form.get('pro_id')
-        num_people = request.form.get('days')
-        package_id = request.form.get('package_id')
-        name = request.form.get('username')
-        user_identity_document = request.form.get('user_identity_document')
-        phone = request.form.get('phone')
+    view = 0
+    package_status = 2
+    package_status_view = 1
+    provider = session['booking_form_provider']
+    num_people = session['booking_form_num_people']
+    package_id = session['booking_form_package_id']
+    name = session['booking_form_name']
+    user_identity_document = session['booking_form_user_identity_document']
+    phone = session['booking_form_phone']
+    date = today_date
 
-        cursor = mysql.connection.cursor()
-        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view))
+    cursor = mysql.connection.cursor()
+    query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view, date))
+    mysql.connection.commit()
+
+    # Get the generated Package Id
+    booking_id = cursor.lastrowid
+
+    # Adding travel lead
+    insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
+    mysql.connection.commit()
+
+
+    travalers = []
+
+    for i in range(1, int(num_people) + 1):
+        person_name = request.form.get(f'personname{i}')
+        person_id_document = request.form.get(f'person_id_{i}')
+        travalers.append((person_name, person_id_document))
+    try:
+        # Assuming you have established a database connection and obtained a cursor object
+        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
+        
+        for person_name, person_id_document in travalers:
+            cursor.execute(insert_query, (booking_id, person_name, person_id_document))
+
+        # Commit the changes to the database
         mysql.connection.commit()
+        flash = "Request Submitted..!"
 
-        # Get the generated Package Id
-        booking_id = cursor.lastrowid
+    except Exception as e:
+        # Handle any exceptions that may occur during the database operations
+        # You should add appropriate error handling and logging here
+        print("An error occurred:", e)
+    except Exception as e:
+        mysql.connection.rollback()
+        return f"Error: {str(e)}"
+    query = """SELECT pb.*, tp.tourname, tp.from_date
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.user_id = %s
+            ORDER BY pb.booked_id DESC;
+    """
+    cursor.execute(query, (session['userid'],))
+    tour_bookings = cursor.fetchall()
+    cursor.close();
 
-        # Adding travel lead
-        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
-        cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
-        mysql.connection.commit()
-
-        travalers = []
-
-        for i in range(1, int(num_people) + 1):
-            person_name = request.form.get(f'personname{i}')
-            person_id_document = request.form.get(f'person_id_{i}')
-            travalers.append((person_name, person_id_document))
-        try:
-            # Assuming you have established a database connection and obtained a cursor object
-            insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
-            
-            for person_name, person_id_document in travalers:
-                cursor.execute(insert_query, (booking_id, person_name, person_id_document))
-
-            # Commit the changes to the database
-            mysql.connection.commit()
-            flash = "Request Submitted..!"
-
-        except Exception as e:
-            # Handle any exceptions that may occur during the database operations
-            # You should add appropriate error handling and logging here
-            print("An error occurred:", e)
-        except Exception as e:
-            mysql.connection.rollback()
-            return f"Error: {str(e)}"
-        query = """SELECT pb.*, tp.tourname, tp.from_date
-                FROM package_bookings pb
-                INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-                WHERE pb.user_id = %s;
-        """
-        cursor.execute(query, (session['userid'],))
-        tour_bookings = cursor.fetchall()
-        cursor.close();
+    session['booking_form_provider'] = ""
+    session['booking_form_num_people'] = ""
+    session['booking_form_package_id'] = ""
+    session['booking_form_name'] = ""
+    session['booking_form_user_identity_document'] = ""
+    session['booking_form_phone'] = ""
 
     return render_template('user_bookings.html', flash = flash, tour_bookings=tour_bookings)
 
@@ -1397,7 +1426,8 @@ def user_bookings():
     query = """SELECT pb.*, tp.tourname, tp.from_date
             FROM package_bookings pb
             INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-            WHERE pb.user_id = %s;
+            WHERE pb.user_id = %s
+            ORDER BY pb.booked_id DESC;
     """
     cursor.execute(query, (session['userid'],))
     tour_bookings = cursor.fetchall()
@@ -1483,7 +1513,8 @@ def user_booking_cancel(booking_id, package_name, provider_id):
         query = """SELECT pb.*, tp.tourname, tp.from_date
             FROM package_bookings pb
             INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-            WHERE pb.user_id = %s;
+            WHERE pb.user_id = %s
+            ORDER BY pb.booked_id DESC;
         """
         cursor.execute(query, (session['userid'],))
         tour_bookings = cursor.fetchall()
