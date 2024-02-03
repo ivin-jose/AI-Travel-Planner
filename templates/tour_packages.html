@@ -14,10 +14,19 @@
     margin-left: 10px;
     border-radius: 6px;
     background: whitesmoke;
-    border-color: black;
+  }
+  #search-bar {
+    box-shadow: 0 3px 7px 0 rgba(0,0,0,.15);
+    border-radius: 30px;
+    width: 302px;
+    border: 1px solid #ddd;
+  }
+  #search-submit {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
   }
 </style>
- <section class="space-ptb">
+ <section class="space-ptb" style="padding: 25px">
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-6">
@@ -28,11 +37,11 @@
                   <div class="search">
                     <form action="{{ url_for('user_package_searching') }}" method="POST">
                       <div class="search-div">
-                          <div>
-                             <input type="text" class="form-control" placeholder="Search Tours, Packages . . . ." style="border-color: black;" name="search_value" required>
+                          <div style="width: 250px">
+                             <input type="text" class="form-control" placeholder="Search Tours, Packages . . ." name="search_value" required id="search-bar">
                           </div>
                           <div>
-                            <button type="submit" name="" ><i class="fas fa-search"></i></button>
+                            <button type="submit" name="" id="search-submit"><i class="fas fa-search"></i></button>
                           </div> 
                         </div>                     
                     </form>
@@ -40,7 +49,7 @@
                 </div>
             </div>
           </div>
-          <br>
+          <br><br>
           <div class="row">
             {% for row in tour_packages_data %}
             <div class="col-lg-4 col-md-6 mb-4 " style="height: 100vh;">

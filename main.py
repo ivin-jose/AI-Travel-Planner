@@ -180,7 +180,6 @@ def search_image():
 # Direct to home page
 @app.route('/sepwrite.com')
 def home():
-    session['todate'] = ""
     session['todate'] = package_date
     if 'userid' in session:
         notification = "Root"

@@ -1,285 +1,383 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <style type="text/css">
-  .image-search {
-    width: 100%;
-    height: 70vh;
+  /*///////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////*/
+
+/* /////////////////////////////
+
+  1. Basic Styles
+  2. Navbar
+  3. Buttons
+  4. Hero
+  5. Marketing
+  6. Testimonials
+  7. Pricing
+  8. Call to Action
+  9. Footer
+  10. Media Queries
+
+   //////////////////////////*/
+
+
+/* ==============================================
+   2. Navbar 
+===============================================*/
+body{
+ background: radial-gradient(#025656, transparent);
+}
+#t-form-btn {
+   color: rgb(18 156 160)
+}
+
+#p-form-btn {
+  color: white;
+}
+.p-form {
+    display: none;
+ }
+
+ .bgholder {
+  background-image: url('{{ url_for("static", filename="/images/backgrounds/0d8.png") }}') !important;
+ }
+
+ #main-search {
+  background-image: url('{{ url_for("static", filename="/images/backgrounds/08.png") }}');
+ }
+
+.custom-navbar {
+  background-color: #ffffff!important;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.09);
+  height: 70px;
+  max-height: 70px;
+}
+
+.navbar-toggler {
+  font-size: 38px;
+  background-color: transparent;
+}
+
+.navbar-toggler:focus {
+  text-decoration: none;
+  outline: none;
+}
+
+.navbar-toggler-icon {
+  color: #ffffff;
+}
+
+.navbar-collapse {
+  background-color: #ffffff;
+}
+
+.nav-custom-link {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .05em;
+  margin-top: 5px;
+}
+
+.navbar a {
+  color: #53627C !important;
+}
+
+.nav-right {
+  float: right;
+}
+
+/* ==============================================
+   3. Buttons
+===============================================*/
+
+.btn1 {
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 3px!important;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.05), 0 1px 2px 0 rgba(0,0,0,.08);
+}
+
+.btn1:hover {
+  text-decoration: none;
+}
+
+.btn-regular1 {
+  background-color: #0095f7;
+  color: #ffffff;
+  padding: 10px 25px;
+  width: fit-content;
+  letter-spacing: .1em;
+  margin-top: 25px;
+  display: inline-block;
+}
+
+.btn-regular1:hover {
+  background-color: #0191f0;
+  color: #ffffff;
+}
+
+
+/* ==============================================
+   4. Hero
+===============================================*/
+.align-hero{
+      display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+#hero {
+  
+}
+
+#hero h1 {
+  font-size: 50px;
+  font-weight: 700;
+}
+
+#hero p {
+font-size: 16px;
+    font-weight: 300;
+    /* color: blue; */
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+#hero span {
+  font-weight: 700;
+    color: #0095f7;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+
+
+}
+
+/* ==============================================
+   9. Media Queries
+===============================================*/
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) { 
+
+
+
+@media (max-width: 768px) { 
+  #hero h1 {
+    font-size: 34px!important;
+    margin-bottom: 20px;
+  }
+  #hero p {
+    font-size: 20px!important;
+  }
+}
+
+
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  .hero-content {
+    margin-top: 100px;
+  }
+}
+
+.container {
+    width: 300px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-  }
-  .image-search-contents {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      width: 100%;
-  }
+}
 
-  .img-submit {
-    background: #1abc9c;
-    border: 0;
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
     padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+#form-style{
+  background: #e4e4e4;
+    padding: 2vh;
     border-radius: 10px;
-    margin: 20px;
-    color: white;
-  }
-  @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
-@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
-
-@keyframes roll {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0;
-    transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
-    box-shadow: none;
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(0deg) scale(1);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-  }
 }
-
-.wrapper {
-      display: flex;
-    align-items: center;
-}
-
-.wrapper:active #img-result {
-  margin-top: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.wrapper #img-result {
-  cursor: pointer;
-  margin: 0;
-  position: relative;
-  background: #1abc9c;
-  background-size: cover;
-  background-position: center;
-  display: block;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-  color: rgba(0, 0, 0, 0);
-  transition: box-shadow 0.3s, margin 0.3s, background-image 1.5s;
-}
-
-.wrapper #img-result.no-image:before {
-  font-family: "FontAwesome";
-  content: "\f030";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  color: #fff;
-  font-size: 48px;
-  opacity: 0.8;
-  transform: translate(-50%, -50%);
-  text-shadow: 0 0px 5px rgba(0, 0, 0, 0.4);
-}
-
-.wrapper button {
-  margin-top: 20px;
-  display: block;
-  font-family: "Open Sans Condensed", sans-serif;
-  background: #1abc9c;
-  width: 100%;
-  border: none;
-  color: #fff;
-  padding: 10px;
-  letter-spacing: 1.3px;
-  font-size: 1.05em;
-  border-radius: 5px;
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
-  outline: 0;
-  transition: box-shadow 0.3s, margin-top 0.3s, padding 0.3s;
-}
-
-.wrapper button:active {
-  box-shadow: none;
-  margin-top: 24px;
-  padding: 8px;
-}
-
-.show-button {
-  background: #264974;
-  border: none;
-  color: #fff;
-  padding: 10px 20px;
-  float: right;
-  display: none;
-}
-
-.upload-result {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  overflow-y: auto;
-}
-
-.upload-result__content {
-  word-break: break-all;
-  font-family: "Source Code Pro";
-  overflow-wrap: break-word;
-}
-
 </style>
 
-<body>
-  <!--=================================
-        Search -->
-        <div id="search">
-          <button type="button" class="close">×</button>
-          <form>
-            <input type="search" value="" placeholder="type keyword(s) here" />
-            <button type="submit" class="btn btn-primary">Search</button>
-          </form>
-        </div>
-        <!--=================================
-        Search -->
-
-        <!--=================================
-        banner -->
-        <section class="banner-bg-splash h-100vh bg-holder " data-jarallax='{"speed": 0.6}' data-jarallax-video="https://www.youtube.com/watch?v=35npVaFGHMY">
-          <div class="container h-100">
-            <div class="row justify-content-center align-items-center h-100">
-              <div class="col-md-10 text-center align-self-center position-relative">
-                <h1 class="text-white mb-3">I love Traveling</h1>
-                <span class="text-white ">We are here to solve all your travel problems</span>
-                <div class="row justify-content-center">
-                    <div class="col-md-9">
-                        <div class="search mt-4">
-                          <a class="btn btn-primary" href="#">Search </a>
-                          <input type="text" class="form-control border-0" placeholder="Search for Travel">
-                        </div>
-                    </div>
+<!-- MAIN SEARCH -->
+<section class="banner-bg-splash h-100vh bg-holder " data-jarallax='{"speed": 0.6}' data-jarallax-video="https://www.youtube.com/watch?v=35npVaFGHMY" id="main-search">
+  <div class="container h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-md-10 text-center align-self-center position-relative">
+        <h1 class="text-white mb-3">I love Traveling</h1>
+        <span class="text-white ">We are here to solve all your travel problems</span>
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="search mt-4">
+                  <a class="btn btn-primary" href="#">Search </a>
+                  <input type="text" class="form-control border-0" placeholder="Search for Travel">
                 </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- END OF HOME SEARCH -->
+
+
+<!-- PACKAGE/TIMETABLE -->
+<section class="space-ptb bg-holder bgholder" id="bgholder">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="section-title">
+          <div class="sub-title"><img  class="img-fluid" src="images/title-icon.png" alt="#"><span>A smiling agent for you</span></div>
+          <h2 class="title mb-0"> The Smiling <strong>Agent For Travel</strong></h2>
+        </div>
+
+      </div>
+      <div class="col-lg-6 align-self-end">
+        <nav class="nav-tab">
+          <div class="nav nav-tabs justify-content-lg-end" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link" id="t-form-btn">Customized Travel plan </a>
+            <a class="nav-item nav-link" id="p-form-btn" >Find Packages </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- timetable -->
+    <div class="row">
+      <div class="col-12">
+        <!-- H E R O -->
+        <div id="hero">
+          <div class="container">
+            <div class="row">
+            <div class="t-form col-md-12 align-hero content-box hero-content">
+                <br><span>Customize your own Travels</span>
+              <form class="home-search">
+                <div class="row g-0 mt-4">
+                  <div class="">
+                    <div class="destination-find-area">
+                      <div>
+                          <input type="text" id="name" name="destination" required class="form-control" placeholder="Destination">
+                        </div>
+                        <div>
+                          <input type="date" class="form-control" placeholder="Depart Date" >
+                        </div>
+                        <div>
+                          <input type="number" id="days" name="days" min="1" required class="form-control" placeholder="No of Days">
+                        </div>
+                        <div>
+                          <input type="submit" class="btn btn-primary" value="Create  Shedule">
+                        </div> 
+                      </div>   
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+                <!-- form -->
               </div>
+              <div class="p-form col-md-12 align-hero content-box hero-content">
+                <br><span>Find a Package for you</span>
+              <form class="home-search">
+                <div class="row g-0 mt-4">
+                  <div class="">
+                    <div class="destination-find-area">
+                      <div class="select-border select-fast">
+                        <select class="form-control basic-select">
+                          <option value="1" selected="selected">Destination</option>
+                          <option value="3">Italy</option>
+                          <option value="4">Germany</option>
+                          <option value="2">France</option>
+                          <option value="4">India</option>
+                          <option value="5">Bresil</option>
+                          <option value="6">Australia</option>
+                        </select>
+                      </div>
+                      <div class="form-location datetimepickers">
+                        <div class="input-group date " id="datetimepicker-01" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input border-right-0" placeholder="Depart Date" data-target="#datetimepicker-01">
+                          <div class="input-group-append" data-target="#datetimepicker-01" data-toggle="datetimepicker">
+                            <div class="input-group-text h-100"><i class="far fa-calendar-alt"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="select-border select-secon">
+                        <select class="form-control basic-select">
+                          <option value="1" selected="selected">Travel Type</option>
+                          <option value="3">Adventure Travel</option>
+                          <option value="4">Luxury Travel</option>
+                          <option value="2">Family Travel</option>
+                          <option value="4">Solo Travel</option>
+                          <option value="5">Family Travel</option>
+                          <option value="6">Travel With Friends</option>
+                        </select>
+                      </div>
+                      <div class="form-btn-are">
+                        <input class="btn btn-primary" type="submit" value="Find The Package" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
-        </section>
-        <!--=================================
-        banner -->
-</body>
-
-
-<!-- ?????????????????????///////////////////////////////////////////////////// -->
-<div class="container image-search">
-  <div>
-    <h2>Find Places with an image</h2>
-  </div>
-  <div>
-
-    <div class="wrapper">
-      <button class="no-image" id="img-result">Upload Image</button>
-      <!-- Attach the file input form here -->
-      <form id="image_upload_form" action="{{ url_for('search_image') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" id="fileInput" style="display: none;" required>
-        <input type="submit" value="Search" class="img-submit">
-      </form>
-    </div>
-
-    <button class="show-button">Show server request</button>
-    <div class="upload-result">
-      <button class="hide-button">Close</button>
-      <pre class="upload-result__content">
-      </pre>
-    </div>
-
-  </div>
-  {% if img %}
-  <div class="image-search-contents">
-    <div>
-      <img src="{{ img }}" alt="Uploaded Image" width="150" height="150" style=" border-radius: 15px;
-">
-    </div>
-    <div class="container" style="text-align: justify;">
-      {% if place_name %}
-        <h4>{{ place_name }}</h4>
-      {% else %}
-        <h4>Not Found</h4>
-      {% endif %}
-
-      {% if image_loaction_address %}
-        <h6>{{ image_loaction_address }}</h6>
-      {% else %}
-        <h6>Not Found</h6>
-      {% endif %}
-
-      {% if image_lat_lon %}
-        <p>Lat - lon : {{ image_lat_lon }}</p>
-      {% else %}
-        <p>Not Found</p>
-      {% endif %}
-      {% if related_searches %}
-      <h1>Related Searches:</h1>
-        <ul>
-            {% for search in related_searches %}
-            <li>{{ search }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>n se</p>
-        {% endif %}
-    </div>
-  </div>
-  {% endif %}
-</div>
-
-    <div id="loader" style="display: none;"><img src="./static/images/preloader.gif" width="200" height="100"></div>
-    {{ msg }}
-    <br><br>
-    <div id="image_search_results">
-        <!-- <h1>Related Searches:</h1> -->
-        <ul>
-            {% for search in related_searches %}
-            <li>{{ search }}</li>
-            {% endfor %}
-        </ul>
-
-        <!-- <h1>Images:</h1> -->
-        {% for image in images %}
-        <div>
-            <img src="{{ image.src }}" alt="Image">
-            <p>{{ image.label }}</p>
+            </div>
+          </div>
         </div>
-        {% endfor %}
+      </div>
     </div>
-
-
-
-    <div id="loader" style="display: none;">
-      <img src="./static/images/preloader.gif" width="100" height="100">
-    </div>
-
-{% if flash %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
-    <strong></strong> {{ flash }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
-      <span aria-hidden="true">&times;</span>
-    </button>
   </div>
-{% endif %}
+</section>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var uploadButton = document.getElementById('img-result');
-  var fileInput = document.getElementById('fileInput');
+<!-- END OF PACKAGE/TIMETABLE FORMS -->
 
-  // Trigger file input click event when "Upload Image" button is clicked
-  uploadButton.addEventListener('click', function() {
-    fileInput.click();
-  });
-});
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".p-form").hide();
+    $("#p-form-btn").click(function(){
+      $(".p-form").show();
+      $(".t-form").hide();
+      $("#p-form-btn").css("color", "rgb(18 156 160)");
+      $("#t-form-btn").css("color", "white");
+    });
 
+    $("#t-form-btn").click(function(){
+      $(".t-form").show();
+      $(".p-form").hide();
+      $("#t-form-btn").css("color", "rgb(18 156 160)");
+      $("#p-form-btn").css("color", "white");
+    });
+  })
 </script>
-{% endblock %}
+{% endblock%}

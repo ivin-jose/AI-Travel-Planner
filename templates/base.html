@@ -36,6 +36,7 @@
 
 	  <!-- Internal CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}" />
 
     <!-- Internal js -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
@@ -88,6 +89,73 @@
   }
 }
 
+.chatbot-closebtn-div{
+    padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+#chatbotlogo{
+    object-fit: fill;
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    right: 30px;
+    bottom: 100px;
+}
+#chatbotlogo:hover{
+    transition: all 1s;
+    transform: scale(1.1);
+}
+.chatbox-main {
+    z-index: 1000;
+    display: none;
+    background: #cbffbe;
+    width: 370px;
+    padding: 10px;
+    border-radius: 10px;
+    position: fixed;
+    right: 40px;
+    bottom: 50px;
+}
+
+.chatbox {
+    background-image: url(./chatbotbg.jpg);
+    background-size: cover;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow-y: scroll;
+    max-height: 300px;
+    max-width: 350px;
+    height: 300px;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.user {
+    background-color: #d9edff;
+    text-align: right;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+.bot {
+    width: fit-content;
+    background-color: #dff0d8;
+    text-align: left;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+#userInput {
+    width: 350px;
+    padding: 10px;
+    font-size: 16px;
+}
 </style>
 <div id="preloader">
   <div class="spinner"></div>
@@ -359,6 +427,24 @@ footer-->
 <!--=================================
 footer-->
 
+
+<!-- CHATBOT  -->
+<!-- ================================ -->
+    <img src="{{ url_for('static', filename='/images/chatbot/chatbot_logo.jpg')}}" id="chatbotlogo">
+<div class="chatbox-main">
+    <div class="chatbot-closebtn-div">
+        <img src="./static/images/closebtn.png"/ id="chatbotclose" width="20" height="20">
+    </div>
+    <div class="chatbox" id="chatbox">
+        <div class="message bot">How can i help you😊</div>
+    </div>
+
+        <input type="text" id="userInput" name="message" placeholder="Type your message...">
+
+</div>
+<!-- =================================== -->
+<!-- /chatbot -->
+
 <!--=================================
 Back To Top-->
 <div id="back-to-top" class="back-to-top">
@@ -394,6 +480,58 @@ Back To Top-->
         var preloader = document.getElementById("preloader");
         preloader.style.display = "none";
     });
+</script>
+
+
+<!-- Chat bot JS-->
+<script>
+    $(document).ready(function() {
+        $("#userInput").keypress(function(e) {
+            if (e.which === 13) {
+                var userInput = $("#userInput").val();
+                if (userInput !== "") {
+                    appendMessage(userInput, "user");
+                    sendUserInput(userInput);
+                    $("#userInput").val("");
+                }
+            }
+        });
+    });
+
+    function appendMessage(message, type) {
+        var messageHtml = '<div class="message ' + type + '">' + message + "</div>";
+        $("#chatbox").append(messageHtml);
+        $(".chatbox").scrollTop($(".chatbox")[0].scrollHeight);
+    }
+
+    function sendUserInput(userInput) {
+        $.ajax({
+            url: "/chat",
+            type: "post",
+            data: { message: userInput },
+            success: function(data) {
+                appendMessage(data, "bot");
+            },
+            error: function(error) {
+                console.log("Error:", error);
+            },
+        });
+    }
+
+    // chat bot showing and hding when logo clicked
+
+    $("#chatbotlogo").click(function() {
+        $("#chatbotlogo").hide();
+        $(".chatbox-main").show();
+    })
+    $("#chatbotclose").click(function() {
+        $("#chatbotlogo").show();
+        $(".chatbox-main").hide();
+    })
+     $(".chatbox-main").blur(function() {
+        $("#chatbotlogo").show();
+        $(".chatbox-main").hide();
+    })
 </script>
 
 
