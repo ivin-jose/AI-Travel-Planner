@@ -47,6 +47,10 @@ body{
   background-image: url('{{ url_for("static", filename="/images/backgrounds/08.png") }}');
  }
 
+ #showmore {
+  display: none;
+ }
+
 .custom-navbar {
   background-color: #ffffff!important;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,.09);
@@ -241,8 +245,10 @@ button:hover {
         <div class="row justify-content-center">
             <div class="col-md-9">
                 <div class="search mt-4">
-                  <a class="btn btn-primary" href="#">Search </a>
-                  <input type="text" class="form-control border-0" placeholder="Search for Travel">
+                  <form action="{{ url_for('home') }}" id="home-search-form" method="POST">
+                    <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
+                    <input class="btn btn-primary" type="submit" value="Search">
+                  </form>
                 </div>
             </div>
         </div>
@@ -251,6 +257,15 @@ button:hover {
   </div>
 </section>
 <!-- END OF HOME SEARCH -->
+
+<section class="search-result" style="background-color: white; width: 100%; height: 20vh;">
+      <div  id="result-container">
+        
+      </div>
+      <div style="width: 200px; height: 50px;" id="showmore">
+         <a href="#" id="showmore-link">show more</a>
+      </div> 
+</section>
 
 
 <!-- PACKAGE/TIMETABLE -->
@@ -360,7 +375,51 @@ button:hover {
   </div>
 </section>
 
-<!-- END OF PACKAGE/TIMETABLE FORMS -->
+
+<!-- AJAX CALLINGN FOR SEARCH RESULT -->
+<script>
+$(document).ready(function() {
+  // Attach an event handler to the form submission
+  $("#home-search-form").submit(function(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Get the form data
+    var formData = {
+      'search_text': $('#search_text').val()
+    };
+
+    // Send an AJAX request
+    $.ajax({
+      type: 'POST',
+      url: '{{ url_for("home") }}',
+      data: formData,
+      dataType: 'json',
+      success: function(data) {
+        // Update the content on success
+        $('#result-container').text(data.result);
+
+        // Check if the response is not empty
+        if (data.result.trim() !== '') {
+          // Show the "show more" button
+          $('#showmore').show();
+          // Extract search_element from formData
+          var search_element = formData.search_text;
+
+          // Set the href dynamically with the search_element
+          $('#showmore-link').attr('href', '{{ url_for("user_package_searching_onhome", search_value="") }}' + search_element);
+
+        } else {
+          // Hide the "show more" button
+          $('#showmore').hide();
+        }
+      }
+    });
+  });
+});
+</script>
+<!-- END OF AJAX CALLING -->
+
 
 <script type="text/javascript">
   $(document).ready(function(){

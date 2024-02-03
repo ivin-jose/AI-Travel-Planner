@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import Flask, render_template, request, redirect, session, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 from datetime import datetime
 import mysql.connector
@@ -178,20 +178,31 @@ def search_image():
                              images=images)
 
 # Direct to home page
-@app.route('/sepwrite.com')
+@app.route('/sepwrite.com', methods=['POST', 'GET'])
 def home():
     session['todate'] = package_date
     if 'userid' in session:
+        main_s_result = ""
+        search_element = "c"
+        if request.method == 'POST':
+            search_element = request.form.get("search_text")
+            if search_element == 'ivin':
+                main_s_result = {'name':ivin}
+                return ({'result': main_s_result})
+            else:
+                main_s_result = search_element
+                return ({'result': main_s_result})
+
         notification = "Root"
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
         values = (str(session['userid']),)
         cursor.execute(query, values)
         booking_notifications = cursor.fetchall()
-        return render_template('index.html', booking_notifications=booking_notifications, notification=notification)
+        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, main_s_result=main_s_result)
     else:
         return render_template('index.html')
-
+    
 # user booking Details on notification bar
 
 @app.route('/sepwrite.com/tour-packages-booking-details-noti/<booking_id>', methods=['POST', 'GET'])
@@ -1413,6 +1424,33 @@ def user_package_searching():
         # Close the cursor and database connection if necessary
         cursor.close()
         rating_true = True
+    return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
+
+# 3searching the package
+@app.route('/sepwrite.com/packages/searching-on-home/<search_value>', methods=['POST', 'GET'])
+def user_package_searching_onhome(search_value):
+    # SQL query to select Tour Packages with a search condition
+    query = """ 
+       SELECT tp.*, pi.image_path,
+    COALESCE((SELECT AVG(ratings) FROM package_reviews pr WHERE pr.package_id = tp.package_id), 0) AS average_rating
+    FROM tour_packages tp
+    LEFT JOIN (
+        SELECT package_id, MIN(image_path) AS image_path
+        FROM package_images
+        GROUP BY package_id
+    ) pi ON tp.package_id = pi.package_id
+    WHERE tp.tourname LIKE %s OR tp.country LIKE %s OR tp.territory LIKE %s OR tp.price LIKE %s OR tp.description LIKE %s;
+    """
+
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query, ('%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%', '%' + search_value + '%'))
+
+    # Fetch the result
+    tour_packages_data = cursor.fetchall()
+    # Close the cursor and database connection if necessary
+    cursor.close()
+    rating_true = True
     return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
 
 # User Bookings 
