@@ -200,8 +200,10 @@ def home():
         cursor.execute(query, values)
         booking_notifications = cursor.fetchall()
 
+        # Packages
+
         query = """ SELECT tp.*, pi.image_path,
-       COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
+            COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
             FROM tour_packages tp
             LEFT JOIN (
                 SELECT package_id, MIN(image_path) AS image_path
@@ -217,7 +219,27 @@ def home():
         cursor.execute(query)
         tour_packages_data = cursor.fetchall()
 
-        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data)
+        cursor = mysql.connection.cursor()
+        query = '''SELECT blog.blogid, blog.date, blog.heading, blog.content, users.profile_pic, users.username, CONCAT_WS(', ',
+            CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
+            CASE WHEN blog.business = 1 THEN 'business trips' ELSE NULL END,
+            CASE WHEN blog.solo = 1 THEN 'solo trip' ELSE NULL END,
+            CASE WHEN blog.cruise = 1 THEN 'cruise' ELSE NULL END,
+            CASE WHEN blog.honeymoon = 1 THEN 'honeymoon' ELSE NULL END,
+            CASE WHEN blog.nature = 1 THEN 'nature' ELSE NULL END,
+            CASE WHEN blog.vacation = 1 THEN 'vacation' ELSE NULL END
+        ) AS categories,
+        blog_images.image
+        FROM 
+        blog
+        JOIN users ON blog.userid = users.user_id
+        LEFT JOIN blog_images ON blog.blogid = blog_images.blog_id  -- Add this LEFT JOIN
+        ORDER BY RAND() LIMIT 3'''
+
+        cursor.execute(query)
+        blog_result = cursor.fetchall()
+
+        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data, blog_result=blog_result)
     else:
         return render_template('index.html')
     
