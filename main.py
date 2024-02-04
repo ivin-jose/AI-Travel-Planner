@@ -1395,6 +1395,7 @@ def saved_packages():
 
         # User package searching 
 
+
 @app.route('/sepwrite.com/packages/searching', methods=['POST', 'GET'])
 def user_package_searching():
     if request.method == 'POST':
@@ -1425,6 +1426,53 @@ def user_package_searching():
         cursor.close()
         rating_true = True
     return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
+
+@app.route('/sepwrite.com/packages/package-searching-home-form', methods=['POST', 'GET'])
+def package_search_on_home_form():
+    if request.method == 'POST':
+        destination = request.form.get('destination_p')
+        depart_date = request.form.get('departDate_p')
+        days = request.form.get('days_p')
+
+        # Use the correct format for 'depart_date'
+        user_date = datetime.strptime(depart_date, "%Y-%m-%d")
+        
+        # 'user_date' is already in the correct format, so no need to convert it again
+        db_date_format = user_date.strftime("%Y-%m-%d")
+
+        # Rest of your code
+
+        query = """ 
+           SELECT tp.*, pi.image_path,
+        COALESCE((SELECT AVG(ratings) FROM package_reviews pr WHERE pr.package_id = tp.package_id), 0) AS average_rating
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        WHERE (tp.tourname LIKE %s OR tp.country LIKE %s OR tp.territory LIKE %s OR tp.description LIKE %s)
+        AND (tp.num_days <= %s OR tp.from_date >= %s);
+        """
+
+        # Execute the query and retrieve the data
+        cursor = mysql.connection.cursor()
+        cursor.execute(query, (
+            '%' + destination + '%', '%' + destination + '%', '%' + destination + '%', '%' + destination + '%',
+            days, db_date_format))
+
+        # Fetch the result
+        tour_packages_data = cursor.fetchall()
+        # Close the cursor and database connection if necessary
+        cursor.close()
+        rating_true = True
+    return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
+
+
+
+
+
+
 
 # 3searching the package
 @app.route('/sepwrite.com/packages/searching-on-home/<search_value>', methods=['POST', 'GET'])
