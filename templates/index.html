@@ -351,9 +351,72 @@ button:hover {
                       </div>
                     </div>
                   </div>
-              </form>
-            </div>
-          </div>
+              </form><br><br>
+
+                <div class="row">
+                  {% for row in tour_packages_data %}
+                  <div class="col-lg-4 col-md-6 mb-4 " style="height: 100vh;">
+                    <div class="listing-item" style="height: 485px">
+                      <div class="listing-image bg-overlay-half-bottom" style="max-height: 200px;">
+                        <img class="img-fluid" src="{{url_for('static', filename=row[10])}}" alt="{{row[10]}}" style="width: 100%; height: 250px;">
+                        <!-- <div class="listing-favourite">
+                          <i class="fa-regular fa-heart"></i>
+                        </div> -->
+                      </div>
+                      <div class="listing-details" style="padding: 8px 8px ">
+                        <div class="listing-title d-flex justify-content-between">
+                          
+                          {% if row[4] <= (session['todate']) %}
+                          <h5 class="mb-0">{{ row[2] }} </h5> <span style="color: red;">(Booking finished..!)</span>
+                          
+                          {% else %}
+                          <h5 class="mb-0"><a href="{{ url_for('tour_package_details', package_id=row[0]) }}" class="title mb-0">{{ row[2] }}</a></h5>
+                          {% endif %}
+
+                          <div class="country-flags">
+                            <!-- <img class="img-fluid shadow-sm" src="images/country-flags/01.jpg" alt="#"> -->
+                          </div>
+                        </div>
+                        <a href="#" class="listing-loaction"> <i class="fa fa-location-dot"></i>{{row[8]}}, {{row[9]}}</a>
+                        <div class="listing-rating d-flex justify-content-between">
+                          <div class="d-flex">
+                            <div class="date me-3">
+                              <i class="fa-regular fa-calendar-days me-2"></i><span>{{ row[4] }}</span>
+                            </div>
+                            <div class="rating">
+                              <i class="fa-solid fa-star me-1 text-yellow"></i><span>
+                                {% if row[11] %}
+                                    {% if rating_true == True %}
+                                      {{ row[11]|round(1) }}
+                                    {% else %}
+                                      {{row[11]|int/5}}</span>
+                                    {% endif %}
+                                {% else %}
+                                    No ratings
+                                {% endif %}
+                            </div>
+                          </div>
+                          <div class="price">
+                            <span class="text-decoration-line-through">{{ row[6]|int - 200 }}</span>{{ row[6] }}
+                          </div>
+                        </div>
+                        <div class="listing-info" style="padding: 5px 0;">
+                          
+                          <p class="mb-0" style="text-transform: capitalize; height: 10vh; overflow: hidden;">{{row[7]}}</p>
+                        </div>
+                        {% if row[4] <= session['todate'] %}
+                          <p class="btn btn-link">See Details</a>
+                        {% else %}
+                          <a href="{{ url_for('tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              </div>
+             </div>
             </div>
           </div>
         </div>
@@ -362,6 +425,102 @@ button:hover {
   </div>
 </section>
 
+
+                  <!--=================================
+        Blog -->
+        <section class="space-ptb" style="background-color: white;">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-lg-6">
+                <div class="section-title mb-5 text-center">
+                  <div class="sub-title justify-content-center"><img  class="img-fluid" src="images/title-icon.png" alt=""><span>Our blog</span></div>
+                  <h2 class="title">Read what we <strong>say in our blog</strong></h2>
+                  <p>Focus is having the unwavering attention to complete what you set out to do. There are a million distractions in every facet of our lives.</p>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="blog">
+                  <div class="blog-img">
+                    <img  class="img-fluid rounded" src="images/blog/01.jpg" alt="">
+                  </div>
+                  <div class="blog-body d-flex align-items-center">
+                    <div class="time-card me-3">
+                      <img class="img-fluid rounded me-2" src="images/on-time.svg" alt="">
+                      <!--  <i class="fa-regular fa-calendar-days me-2"></i>on-time -->
+                      <span>Feb 1, 2022 By</span>
+                    </div>
+                    <div class="user d-flex align-items-center me-3">
+                      <div class="user-img me-2"><img  class="img-fluid" src="images/avatar/01.jpg" alt=""></div>
+                      <span>Harry Russell</span>
+                    </div>
+                    <div class="comment d-flex align-items-center">
+                      <i class="fa-regular fa-comment me-2"></i>
+                      25
+                    </div>
+                  </div>
+                  <a href="blog-single.html">Exclusive holidays for the single traveler.</a>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="blog">
+                  <div class="blog-img">
+                    <img class="img-fluid rounded" src="images/blog/02.jpg" alt="">
+                  </div>
+                  <div class="blog-body d-flex align-items-center">
+                    <div class="time-card me-3">
+                      <img class="img-fluid rounded me-2" src="images/on-time.svg" alt="">
+                      <span>May 4, 2021 By</span>
+                    </div>
+                    <div class="user d-flex align-items-center me-3">
+                      <div class="user-img me-2"><img  class="img-fluid" src="images/avatar/06.jpg" alt=""></div>
+                      <span>Maria Fields</span>
+                    </div>
+                    <div class="comment d-flex align-items-center">
+                      <i class="fa-regular fa-comment me-2"></i>
+                      28
+                    </div>
+                  </div>
+                  <a href="blog-single.html">We’re National, the sunshine airline. Watch us shine.</a>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="blog">
+                  <div class="blog-img">
+                    <img  class="img-fluid rounded" src="images/blog/03.jpg" alt="">
+                  </div>
+                  <div class="blog-body d-flex align-items-center">
+                    <div class="time-card me-3">
+                      <img class="img-fluid rounded me-2" src="images/on-time.svg" alt="">
+                      <span>Dec 3, 2020 By</span>
+                    </div>
+                    <div class="user d-flex align-items-center me-3">
+                      <div class="user-img me-2"><img  class="img-fluid" src="images/avatar/10.jpg" alt=""></div>
+                      <span>Ora Bryan</span>
+                    </div>
+                    <div class="comment d-flex align-items-center">
+                      <i class="fa-regular fa-comment me-2"></i>
+                      57
+                    </div>
+                  </div>
+                  <a href="blog-single.html">You are now free to move about the country.</a>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4 mt-md-5">
+              <div class="col-12">
+                <hr>
+                <ul class="list-unstyled text-center d-md-flex align-items-center justify-content-center pt-3 mt-md-5 mb-0">
+                  <li class="mt-md-0 mx-0 mx-md-4">We have articles on a range of topics</li>
+                  <li class="mx-0 mx-md-4 mt-3 mt-md-0"><a href="blog-standard.html" class="btn btn-primary">View all blogs</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!--=================================
+        Blog -->
 
 <!-- AJAX CALLINGN FOR SEARCH RESULT -->
 <script>

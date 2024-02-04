@@ -199,7 +199,25 @@ def home():
         values = (str(session['userid']),)
         cursor.execute(query, values)
         booking_notifications = cursor.fetchall()
-        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, main_s_result=main_s_result)
+
+        query = """ SELECT tp.*, pi.image_path,
+       COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
+            FROM tour_packages tp
+            LEFT JOIN (
+                SELECT package_id, MIN(image_path) AS image_path
+                FROM package_images
+                GROUP BY package_id
+            ) pi ON tp.package_id = pi.package_id
+            LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+            WHERE tp.package_id = tp.package_id
+            GROUP BY tp.package_id
+            ORDER BY RAND()
+            LIMIT 6;
+        """
+        cursor.execute(query)
+        tour_packages_data = cursor.fetchall()
+
+        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data)
     else:
         return render_template('index.html')
     
@@ -1041,8 +1059,7 @@ def tour_packages():
         LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
         WHERE tp.package_id = tp.package_id
         GROUP BY tp.package_id;
-
-                """
+        """
         # Execute the query and retrieve the data
         cursor = mysql.connection.cursor()
         cursor.execute(query)
