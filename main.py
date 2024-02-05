@@ -56,7 +56,6 @@ today_date = current_date.strftime("%d-%b-%Y")
 # 2024-01-26
 package_date = current_date.strftime("%Y-%m-%d")
 
-
 #API KEYS
 
 API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
@@ -86,6 +85,7 @@ def page_not_found(e):
 
 @app.route('/search_image', methods=['POST', 'GET'])
 def search_image():
+    session['todate'] = package_date
     msg = ""
     msg2 = ''
     image_to_search = './static/upload_images/place.jpg'
@@ -181,67 +181,70 @@ def search_image():
 @app.route('/sepwrite.com', methods=['POST', 'GET'])
 def home():
     session['todate'] = package_date
-    if 'userid' in session:
-        main_s_result = ""
-        search_element = "c"
-        if request.method == 'POST':
-            search_element = request.form.get("search_text")
-            if search_element == 'ivin':
-                main_s_result = {'name':ivin}
-                return ({'result': main_s_result})
-            else:
-                main_s_result = search_element
-                return ({'result': main_s_result})
+    main_s_result = ""
+    search_element = ""
+    notification = ""
+    booking_notifications = ""
+    if request.method == 'POST':
+        search_element = request.form.get("search_text")
+        if search_element == 'ivin':
+            main_s_result = {'name':ivin}
+            return ({'result': main_s_result})
+        else:
+            main_s_result = search_element
+            return ({'result': main_s_result})
 
+    if 'userid' in session:
         notification = "Root"
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
         values = (str(session['userid']),)
         cursor.execute(query, values)
         booking_notifications = cursor.fetchall()
-
-        # Packages
-
-        query = """ SELECT tp.*, pi.image_path,
-            COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
-            FROM tour_packages tp
-            LEFT JOIN (
-                SELECT package_id, MIN(image_path) AS image_path
-                FROM package_images
-                GROUP BY package_id
-            ) pi ON tp.package_id = pi.package_id
-            LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
-            WHERE tp.package_id = tp.package_id
-            GROUP BY tp.package_id
-            ORDER BY RAND()
-            LIMIT 6;
-        """
-        cursor.execute(query)
-        tour_packages_data = cursor.fetchall()
-
-        cursor = mysql.connection.cursor()
-        query = '''SELECT blog.blogid, blog.date, blog.heading, blog.content, users.profile_pic, users.username, CONCAT_WS(', ',
-            CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
-            CASE WHEN blog.business = 1 THEN 'business trips' ELSE NULL END,
-            CASE WHEN blog.solo = 1 THEN 'solo trip' ELSE NULL END,
-            CASE WHEN blog.cruise = 1 THEN 'cruise' ELSE NULL END,
-            CASE WHEN blog.honeymoon = 1 THEN 'honeymoon' ELSE NULL END,
-            CASE WHEN blog.nature = 1 THEN 'nature' ELSE NULL END,
-            CASE WHEN blog.vacation = 1 THEN 'vacation' ELSE NULL END
-        ) AS categories,
-        blog_images.image
-        FROM 
-        blog
-        JOIN users ON blog.userid = users.user_id
-        LEFT JOIN blog_images ON blog.blogid = blog_images.blog_id  -- Add this LEFT JOIN
-        ORDER BY RAND() LIMIT 3'''
-
-        cursor.execute(query)
-        blog_result = cursor.fetchall()
-
-        return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data, blog_result=blog_result)
     else:
-        return render_template('index.html')
+        notification = "login to get notifcations"
+
+    # Packages
+    cursor = mysql.connection.cursor()
+    query = """ SELECT tp.*, pi.image_path,
+        COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
+        FROM tour_packages tp
+        LEFT JOIN (
+            SELECT package_id, MIN(image_path) AS image_path
+            FROM package_images
+            GROUP BY package_id
+        ) pi ON tp.package_id = pi.package_id
+        LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+        WHERE tp.package_id = tp.package_id
+        GROUP BY tp.package_id
+        ORDER BY RAND()
+        LIMIT 6;
+    """
+    cursor.execute(query)
+    tour_packages_data = cursor.fetchall()
+
+    #blogs in home
+    query1 = '''SELECT blog.blogid, blog.date, blog.heading, blog.content, users.profile_pic, users.username, CONCAT_WS(', ',
+        CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
+        CASE WHEN blog.business = 1 THEN 'business trips' ELSE NULL END,
+        CASE WHEN blog.solo = 1 THEN 'solo trip' ELSE NULL END,
+        CASE WHEN blog.cruise = 1 THEN 'cruise' ELSE NULL END,
+        CASE WHEN blog.honeymoon = 1 THEN 'honeymoon' ELSE NULL END,
+        CASE WHEN blog.nature = 1 THEN 'nature' ELSE NULL END,
+        CASE WHEN blog.vacation = 1 THEN 'vacation' ELSE NULL END
+    ) AS categories,
+    blog_images.image
+    FROM 
+    blog
+    JOIN users ON blog.userid = users.user_id
+    LEFT JOIN blog_images ON blog.blogid = blog_images.blog_id  -- Add this LEFT JOIN
+    ORDER BY RAND() LIMIT 3'''
+
+    cursor.execute(query1)
+    blog_result = cursor.fetchall()
+
+    return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data, blog_result=blog_result)
+
     
 # user booking Details on notification bar
 
@@ -1406,6 +1409,7 @@ def user_tour_package_booking():
 
 @app.route('/sepwrite.com/user-saved-tour-packages')
 def saved_packages():
+    session['todate'] = package_date
     flash = None
     if 'username' in session:
         # SQL query to select Tour Packages
@@ -1438,6 +1442,7 @@ def saved_packages():
 @app.route('/sepwrite.com/packages/searching', methods=['POST', 'GET'])
 def user_package_searching():
     if request.method == 'POST':
+        session['todate'] = package_date
         search_value = request.form.get('search_value')
         # SQL query to select Tour Packages
         search_value = request.form.get('search_value')
@@ -1469,6 +1474,7 @@ def user_package_searching():
 @app.route('/sepwrite.com/packages/package-searching-home-form', methods=['POST', 'GET'])
 def package_search_on_home_form():
     if request.method == 'POST':
+        session['todate'] = package_date
         destination = request.form.get('destination_p')
         depart_date = request.form.get('departDate_p')
         days = request.form.get('days_p')
@@ -1516,6 +1522,7 @@ def package_search_on_home_form():
 # 3searching the package
 @app.route('/sepwrite.com/packages/searching-on-home/<search_value>', methods=['POST', 'GET'])
 def user_package_searching_onhome(search_value):
+    session['todate'] = package_date
     # SQL query to select Tour Packages with a search condition
     query = """ 
        SELECT tp.*, pi.image_path,

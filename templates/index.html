@@ -235,6 +235,63 @@ button:hover {
 }
 </style>
 
+
+<!-- POP UPS  -->
+<style type="text/css">
+.botpopup {
+  margin: 0 auto;
+  position: fixed;
+  right: 200;
+  bottom: 100;
+  text-align: center;
+  z-index: 4000;
+}
+.botpopup:after {
+  content: "";
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 1px 14px rgba(0,0,0,.2);
+}
+.botpopup:before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  transform: rotate(45deg);
+  box-shadow: 0 1px 14px rgba(0,0,0,.2);
+  background: #fff;
+  position: absolute;
+  z-index: 4000;
+}
+.botpopup.arrow-top:before {
+    left: calc(95%);
+    top: 40px;
+}
+.botpopup.arrow-right:before {
+  top: calc(50% - 10px);
+  right: -8px;
+}
+.botpopup.arrow-bottom:before {
+  left: calc(50% - 10px);
+  bottom: -8px;
+}
+.botpopup.arrow-left:before {
+  top: calc(50% - 10px);
+  left: -8px;
+}
+.botpopup-wrapper {
+  width: 100%;
+  padding: 32px;
+  border-radius: 4px;
+  background: #fff;
+  position: relative;
+  z-index: 4000;  
+}
+</style>
+<!-- END OF POP UPS -->
 <!-- MAIN SEARCH -->
 <section class="banner-bg-splash h-100vh bg-holder " data-jarallax='{"speed": 0.6}' data-jarallax-video="https://www.youtube.com/watch?v=35npVaFGHMY" id="main-search">
   <div class="container h-100">
@@ -479,6 +536,15 @@ button:hover {
         <!--=================================
         Blog -->
 
+<!-- POP UP -->
+<div class="botpopup arrow-top" id="botpopup">
+  <div class="botpopup-wrapper">
+    <p>Popup/modal example</p>
+   <div>
+</div>
+<div class="botpopupbackground"></div>
+<!-- END OF POP -->
+
 <!-- AJAX CALLINGN FOR SEARCH RESULT -->
 <script>
 $(document).ready(function() {
@@ -614,4 +680,22 @@ $(document).ready(function() {
   });
 });
 </script>
+
+<!-- POP UP -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+  var botpopup = document.getElementById('botpopup');
+  var botpopupbackground = document.querySelector('.botpopupbackground');
+
+  // Show the botpopup when the page loads
+  botpopup.style.display = 'block';
+
+  // Automatically hide the botpopup after 5 seconds
+  setTimeout(function() {
+    botpopup.style.display = 'none';
+    botpopupbackground.classList.add('blur');
+  }, 3000);
+});
+</script>
+<!-- END POP UP -->
 {% endblock%}
