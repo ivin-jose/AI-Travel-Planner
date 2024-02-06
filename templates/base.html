@@ -157,6 +157,12 @@
     padding: 10px;
     font-size: 16px;
 }
+#lenspreviewImage {
+  position: fixed;
+  left: 30px;
+  top: 180px;
+  z-index: 4000;
+}
 </style>
 <div id="preloader">
   <div class="spinner"></div>
@@ -428,12 +434,14 @@ footer-->
 <!--=================================
 footer-->
 
-<img id="previewImage" src="{{ url_for('static', filename='/images/chatbot/g-lens.png')}}" style="cursor: pointer;" width="50" height="50">
+<!-- LENS FORM -->
+<img id="lenspreviewImage" src="{{ url_for('static', filename='/images/chatbot/g-lens.png')}}" style="cursor: pointer;" width="50" height="50">
 
 <form id="image_upload_form" action="{{ url_for('search_image') }}" method="POST" enctype="multipart/form-data" style="display: none;">
     <input type="file" name="image" id="imageInput" style="display: none;" accept="image">
     <input type="submit" value="Search">
 </form>
+<!-- END OF LENS FORM -->
 
 <!-- CHATBOT  -->
 <!-- ================================ -->
@@ -545,14 +553,13 @@ Back To Top-->
 <script>
 $(document).ready(function() {
     // Show file input when image is clicked
-    $('#previewImage').click(function() {
+    $('#lenspreviewImage').click(function() {
         $('#imageInput').click();
     });
 
     // Change image source and submit form when a file is selected
     $('#imageInput').change(function() {
         readURL(this);
-        $('#image_upload_form').submit();
     });
 
     function readURL(input) {
@@ -560,13 +567,16 @@ $(document).ready(function() {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                $('#previewImage').attr('src', e.target.result);
+                $('#lenspreviewImage').attr('src', e.target.result);
+                $('#image_upload_form').submit(); // Assuming you have a form with id "image_upload_form"
+                $('#lens-preloader').show();
             };
 
             reader.readAsDataURL(input.files[0]);
         }
     }
 });
+
 </script>
 
 

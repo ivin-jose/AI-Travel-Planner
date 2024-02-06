@@ -247,15 +247,25 @@ button:hover {
   text-align: center;
   z-index: 4000;
 }
-.botpopup:after {
+.lenspopup {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  margin: 0 auto;
+  position: fixed;
+  left: 120px;
+  top: 170px;
+  text-align: center;
+  z-index: 4000;
+}
+    
+.lenspopup:before {
   content: "";
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  position: absolute;
-  top: 0;
-  left: 0;
+  width: 20px;
+  height: 20px;
+  transform: rotate(45deg);
   box-shadow: 0 1px 14px rgba(0,0,0,.2);
+  background: #fff;
+  position: absolute;
+  z-index: 4000;
 }
 .botpopup:before {
   content: "";
@@ -267,13 +277,26 @@ button:hover {
   position: absolute;
   z-index: 4000;
 }
+.lenspopup.arrow-top:before {
+    right: calc(96%);
+    top: 20px;
+}
 .botpopup.arrow-top:before {
     left: calc(95%);
     top: 40px;
 }
+.lenspopup.arrow-right:before {
+  top: calc(50% - 10px);
+  right: -8px;
+}
 .botpopup.arrow-right:before {
   top: calc(50% - 10px);
   right: -8px;
+}
+
+.lenspopup.arrow-bottom:before {
+  left: calc(50% - 10px);
+  bottom: -8px;
 }
 .botpopup.arrow-bottom:before {
   left: calc(50% - 10px);
@@ -282,6 +305,14 @@ button:hover {
 .botpopup.arrow-left:before {
   top: calc(50% - 10px);
   left: -8px;
+}
+.lenspopup-wrapper {
+  width: 100%;
+  padding: 32px;
+  border-radius: 4px;
+  background: #fff;
+  position: relative;
+  z-index: 4000;  
 }
 .botpopup-wrapper {
   width: 100%;
@@ -308,10 +339,21 @@ button:hover {
 </style>
 <!-- END OF POP UPS -->
 
-<!-- POP UP -->
+<!--CHAT BOT POP UP -->
 <div class="botpopup arrow-top" id="botpopup">
   <div class="botpopup-wrapper">
     <p style="color: black; font-size: 19px;">Let's chat with our bot 😊</p>
+    <div>
+    </div>
+  </div>
+</div>
+<div class="botpopupbackground"></div>
+<!-- END OF POP -->
+
+<!--GOOGLE LENS POP UP -->
+<div class="lenspopup arrow-top" id="lenspopup">
+  <div class="lenspopup-wrapper">
+    <p style="color: black; font-size: 19px;">Search with an image 😊</p>
     <div>
     </div>
   </div>
@@ -709,10 +751,30 @@ document.addEventListener('DOMContentLoaded', function() {
     botpopup.style.display = 'none';
     body.classList.add('blur');
     botpopupbackground.classList.add('blur');
-  }, 4000);
+  }, 5000);
 });
 </script>
 
+<!--LENS POP UP -->
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+  var lenspopup = document.getElementById('lenspopup');
+  var botpopupbackground = document.querySelector('.botpopupbackground');
+  var body = document.querySelector('body');
+
+  // Show the lenspopup when the page loads
+  lenspopup.style.display = 'block';
+
+  // Automatically hide the lenspopup after 5 seconds
+  setTimeout(function() {
+    lenspopup.style.display = 'none';
+    body.classList.add('blur');
+    botpopupbackground.classList.add('blur');
+  }, 5000);
+});
+</script>
+
+<!-- BLUR THE BODY PART -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Get the blur overlay element
@@ -721,7 +783,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add the 'blur-active' class after a delay of 5 seconds
         setTimeout(function() {
             blurOverlay.classList.add('blur-active');
-        }, 4000);
+        }, 5000);
     });
 </script>
 
