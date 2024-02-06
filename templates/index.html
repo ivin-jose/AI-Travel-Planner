@@ -239,10 +239,11 @@ button:hover {
 <!-- POP UPS  -->
 <style type="text/css">
 .botpopup {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   margin: 0 auto;
   position: fixed;
-  right: 200;
-  bottom: 100;
+  right: 100px;
+  bottom: 80px;
   text-align: center;
   z-index: 4000;
 }
@@ -290,8 +291,34 @@ button:hover {
   position: relative;
   z-index: 4000;  
 }
+
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px); /* Initial blur value */
+    transition: backdrop-filter 1s ease; /* Transition for smooth effect */
+}
+
+.blur-active {
+    backdrop-filter: blur(0px); /* Blur value when the class is active */
+}
 </style>
 <!-- END OF POP UPS -->
+
+<!-- POP UP -->
+<div class="botpopup arrow-top" id="botpopup">
+  <div class="botpopup-wrapper">
+    <p style="color: black; font-size: 19px;">Let's chat with our bot 😊</p>
+    <div>
+    </div>
+  </div>
+</div>
+<div class="botpopupbackground"></div>
+<!-- END OF POP -->
+
 <!-- MAIN SEARCH -->
 <section class="banner-bg-splash h-100vh bg-holder " data-jarallax='{"speed": 0.6}' data-jarallax-video="https://www.youtube.com/watch?v=35npVaFGHMY" id="main-search">
   <div class="container h-100">
@@ -300,36 +327,34 @@ button:hover {
         <h1 class="text-white mb-3">I love Traveling</h1>
         <span class="text-white ">We are here to solve all your travel problems</span>
         <div class="row justify-content-center">
-            <div class="col-md-9">
-                <div class="search mt-4">
-                  <form action="{{ url_for('home') }}" id="home-search-form" method="POST">
-                    <div>
-                      <div>
-                        <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
-                      </div>
-                      <div>
-                        <input class="btn btn-primary" type="submit" value="Search">
-                      </div>
-                    </div>
-                  </form>
+          <div class="col-md-9">
+            <div class="search mt-4">
+              <form action="{{ url_for('home') }}" id="home-search-form" method="POST">
+                <div>
+                  <div>
+                    <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
+                  </div>
+                  <div>
+                    <input class="btn btn-primary" type="submit" value="Search">
+                  </div>
                 </div>
+              </form>
             </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="blur-overlay" id="blur-overlay"></div>
 </section>
 <!-- END OF HOME SEARCH -->
 
 <section class="search-result" style="background-color: white; width: 100%; height: 20vh;">
-      <div  id="result-container">
-        
-      </div>
-      <div style="width: 200px; height: 50px;" id="showmore">
-         <a href="#" id="showmore-link">show more</a>
-      </div> 
+  <div id="result-container"></div>
+  <div style="width: 200px; height: 50px;" id="showmore">
+    <a href="#" id="showmore-link">show more</a>
+  </div>
 </section>
-
 
 <!-- PACKAGE/TIMETABLE -->
 <section class="space-ptb bg-holder bgholder" id="bgholder">
@@ -340,7 +365,6 @@ button:hover {
           <div class="sub-title"><img  class="img-fluid" src="images/title-icon.png" alt="#"><span>A smiling agent for you</span></div>
           <h2 class="title mb-0"> The Smiling <strong>Agent For Travel</strong></h2>
         </div>
-
       </div>
       <div class="col-lg-6 align-self-end">
         <nav class="nav-tab">
@@ -351,7 +375,7 @@ button:hover {
         </nav>
       </div>
     </div>
-
+    
     <!-- timetable -->
     <div class="row">
       <div class="col-12">
@@ -359,7 +383,7 @@ button:hover {
         <div id="hero">
           <div class="container">
             <div class="row">
-            <div class="t-form col-md-12 align-hero content-box hero-content">
+              <div class="t-form col-md-12 align-hero content-box hero-content">
                 <br><span>Customize your own Travels</span>
                 <form class="home-search" id="scheduleForm">
                   <div class="row g-0 mt-4">
@@ -384,8 +408,6 @@ button:hover {
                     </div>
                   </div>
                 </form>
-            </div>
-                <!-- form -->
               </div>
               <div class="p-form col-md-12 align-hero content-box hero-content">
                 <br><span>Find a Package for you</span>
@@ -409,8 +431,7 @@ button:hover {
                     </div>
                   </div>
               </form><br><br>
-
-                <div class="row">
+              <div class="row">
                   {% for row in tour_packages_data %}
                   <div class="col-lg-4 col-md-6 mb-4 " style="height: 100vh;">
                     <div class="listing-item" style="height: 485px">
@@ -462,7 +483,7 @@ button:hover {
                           <p class="mb-0" style="text-transform: capitalize; height: 10vh; overflow: hidden;">{{row[7]}}</p>
                         </div>
                         {% if row[4] <= session['todate'] %}
-                          <p class="btn btn-link">See Details</a>
+                          <p class="btn btn-link">See Details</p>
                         {% else %}
                           <a href="{{ url_for('tour_package_details', package_id=row[0]) }}" class="btn btn-link">See Details</a>
                         {% endif %}
@@ -472,78 +493,70 @@ button:hover {
                   {% endfor %}
                 </div>
               </div>
+            </div>
               </div>
-             </div>
             </div>
           </div>
         </div>
       </div>
+</section>
+<!-- END OF PACKAGE/TIMETABLE -->
+
+  <!--=================================
+Blog -->
+<section class="space-ptb" style="background-color: white;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="section-title mb-5 text-center">
+          <div class="sub-title justify-content-center"><img  class="img-fluid" src="images/title-icon.png" alt=""><span>Our blog</span></div>
+          <h2 class="title">Read what we <strong>say in our blog</strong></h2>
+          <p>Focus is having the unwavering attention to complete what you set out to do. There are a million distractions in every facet of our lives.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      {% for row in blog_result%}
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+        <div class="blog">
+          <div class="blog-img">
+            <img  class="img-fluid rounded" src="{{ row[7] }}" alt="" style="width: 100%; height: 200px; object-fit: fill;">
+          </div>
+          <div class="blog-body d-flex align-items-center">
+            <div class="time-card me-3">
+              <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="">
+              <!--  <i class="fa-regular fa-calendar-days me-2"></i>on-time -->
+              <span>{{ row[1] }}</span>
+            </div>
+            <div class="user d-flex align-items-center me-3">
+              <div class="user-img me-2"></div>
+              <span>{{row[5]}}</span>
+            </div>
+            <div class="comment d-flex align-items-center">
+              
+            </div>
+          </div>
+          <a href="{{ url_for('blog_single', blog_id = row[0] )}}" style="text-transform: capitalize;">{{ row[2] }}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="row mt-4 mt-md-5">
+      <div class="col-12">
+        <hr>
+        <ul class="list-unstyled text-center d-md-flex align-items-center justify-content-center pt-3 mt-md-5 mb-0">
+          <li class="mt-md-0 mx-0 mx-md-4">We have articles on a range of topics</li>
+          <li class="mx-0 mx-md-4 mt-3 mt-md-0"><a href="{{ url_for('blog_home') }}" class="btn btn-primary">View all blogs</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
+<!--=================================
+Blog -->
 
 
-                  <!--=================================
-        Blog -->
-        <section class="space-ptb" style="background-color: white;">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-lg-6">
-                <div class="section-title mb-5 text-center">
-                  <div class="sub-title justify-content-center"><img  class="img-fluid" src="images/title-icon.png" alt=""><span>Our blog</span></div>
-                  <h2 class="title">Read what we <strong>say in our blog</strong></h2>
-                  <p>Focus is having the unwavering attention to complete what you set out to do. There are a million distractions in every facet of our lives.</p>
-                </div>
-              </div>
-            </div>
-            <div class="row justify-content-center">
-              {% for row in blog_result%}
-              <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                <div class="blog">
-                  <div class="blog-img">
-                    <img  class="img-fluid rounded" src="{{ row[7] }}" alt="" style="width: 100%; height: 200px; object-fit: fill;">
-                  </div>
-                  <div class="blog-body d-flex align-items-center">
-                    <div class="time-card me-3">
-                      <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="">
-                      <!--  <i class="fa-regular fa-calendar-days me-2"></i>on-time -->
-                      <span>{{ row[1] }}</span>
-                    </div>
-                    <div class="user d-flex align-items-center me-3">
-                      <div class="user-img me-2"></div>
-                      <span>{{row[5]}}</span>
-                    </div>
-                    <div class="comment d-flex align-items-center">
-                      
-                    </div>
-                  </div>
-                  <a href="{{ url_for('blog_single', blog_id = row[0] )}}" style="text-transform: capitalize;">{{ row[2] }}</a>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="row mt-4 mt-md-5">
-              <div class="col-12">
-                <hr>
-                <ul class="list-unstyled text-center d-md-flex align-items-center justify-content-center pt-3 mt-md-5 mb-0">
-                  <li class="mt-md-0 mx-0 mx-md-4">We have articles on a range of topics</li>
-                  <li class="mx-0 mx-md-4 mt-3 mt-md-0"><a href="{{ url_for('blog_home') }}" class="btn btn-primary">View all blogs</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!--=================================
-        Blog -->
 
-<!-- POP UP -->
-<div class="botpopup arrow-top" id="botpopup">
-  <div class="botpopup-wrapper">
-    <p>Popup/modal example</p>
-   <div>
-</div>
-<div class="botpopupbackground"></div>
-<!-- END OF POP -->
 
 <!-- AJAX CALLINGN FOR SEARCH RESULT -->
 <script>
@@ -683,9 +696,10 @@ $(document).ready(function() {
 
 <!-- POP UP -->
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   var botpopup = document.getElementById('botpopup');
   var botpopupbackground = document.querySelector('.botpopupbackground');
+  var body = document.querySelector('body');
 
   // Show the botpopup when the page loads
   botpopup.style.display = 'block';
@@ -693,9 +707,23 @@ $(document).ready(function() {
   // Automatically hide the botpopup after 5 seconds
   setTimeout(function() {
     botpopup.style.display = 'none';
+    body.classList.add('blur');
     botpopupbackground.classList.add('blur');
-  }, 3000);
+  }, 4000);
 });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the blur overlay element
+        var blurOverlay = document.getElementById('blur-overlay');
+
+        // Add the 'blur-active' class after a delay of 5 seconds
+        setTimeout(function() {
+            blurOverlay.classList.add('blur-active');
+        }, 4000);
+    });
+</script>
+
 <!-- END POP UP -->
 {% endblock%}

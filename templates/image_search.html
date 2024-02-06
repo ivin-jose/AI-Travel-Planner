@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+fuck you😀😀
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="./static/js/main.js"></script>
+<html>
+<head>
+    <title>Fetch details upload image</title>
+</head>
+
+<style type="text/css">
+	.main-img {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		align-items: center;
+		margin-bottom: 60px;
+	}
+</style>
+<body>
+        <h6>Related Searches:</h6>
+        <ul>
+            {% for search in related_searches %}
+            <li>{{ search }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+<div class="container row main-img">
+	<div class="col-lg-6 col-md-6" style="display: flex;
+    flex-direction: row-reverse;">
+		<div><img src="{{ img }}" alt="Uploaded Image" width="300" height="300" style="object-fit: fill; border-radius: 10px"></div>
+	</div>
+	<div class="col-lg-6 col-md-6 sub-img">
+		<div><h4>{{ place_name }}</h4></div>
+		<div><h4>{{ image_loaction_address }}</h4></div>
+		<div><p>{{ image_lat_lon }}</p></div>
+		<div><p>{{ msg2 }}</p></div>
+	</div>
+</div>
+
+<center><h4>Related to {{ place_name }} </h4></center><br><br>
+<div class="container">
+	<div class="row">
+		{% for image in images %}
+		<div class="col-lg-3 col-md-3">
+			 <p>{{ image.label }}</p>
+			<img src="{{ image.src }}" alt="" height="360" width="640" style="    width: 100%;
+				    height: 70%;
+				    object-fit: contain;">
+		</div>
+		{% endfor %}
+	</div>
+	 
+	 	 
+	 
+</div>
+</body>
+</html>
+
+
+
+{% endblock %}

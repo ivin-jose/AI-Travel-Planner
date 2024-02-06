@@ -95,6 +95,7 @@
     justify-content: flex-end;
 }
 #chatbotlogo{
+  z-index: 3000;
     object-fit: fill;
     width: 50px;
     height: 50px;
@@ -107,7 +108,7 @@
     transform: scale(1.1);
 }
 .chatbox-main {
-    z-index: 1000;
+    z-index: 3000;
     display: none;
     background: #cbffbe;
     width: 370px;
@@ -427,10 +428,16 @@ footer-->
 <!--=================================
 footer-->
 
+<img id="previewImage" src="{{ url_for('static', filename='/images/chatbot/g-lens.png')}}" style="cursor: pointer;" width="50" height="50">
+
+<form id="image_upload_form" action="{{ url_for('search_image') }}" method="POST" enctype="multipart/form-data" style="display: none;">
+    <input type="file" name="image" id="imageInput" style="display: none;" accept="image">
+    <input type="submit" value="Search">
+</form>
 
 <!-- CHATBOT  -->
 <!-- ================================ -->
-    <img src="{{ url_for('static', filename='/images/chatbot/chatbot_logo.jpg')}}" id="chatbotlogo">
+<img src="{{ url_for('static', filename='/images/chatbot/bot.png')}}" id="chatbotlogo">
 <div class="chatbox-main">
     <div class="chatbot-closebtn-div">
         <img src="./static/images/closebtn.png"/ id="chatbotclose" width="20" height="20">
@@ -438,9 +445,7 @@ footer-->
     <div class="chatbox" id="chatbox">
         <div class="message bot">How can i help you😊</div>
     </div>
-
-        <input type="text" id="userInput" name="message" placeholder="Type your message...">
-
+      <input type="text" id="userInput" name="message" placeholder="Type your message...">
 </div>
 <!-- =================================== -->
 <!-- /chatbot -->
@@ -533,5 +538,36 @@ Back To Top-->
         $(".chatbox-main").hide();
     })
 </script>
+
+<!-- END OF CHATBOT -->
+
+<!-- IMAGE LENS -->
+<script>
+$(document).ready(function() {
+    // Show file input when image is clicked
+    $('#previewImage').click(function() {
+        $('#imageInput').click();
+    });
+
+    // Change image source and submit form when a file is selected
+    $('#imageInput').change(function() {
+        readURL(this);
+        $('#image_upload_form').submit();
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#previewImage').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+});
+</script>
+
 
 

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash, jsonify
+import requests
 from flask_mysqldb import MySQL
 from datetime import datetime
 import mysql.connector
@@ -83,9 +84,9 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('errors/505.html')
 
+
 @app.route('/search_image', methods=['POST', 'GET'])
 def search_image():
-    session['todate'] = package_date
     msg = ""
     msg2 = ''
     image_to_search = './static/upload_images/place.jpg'
@@ -131,25 +132,21 @@ def search_image():
                     data = response.json()
                     related_searches = []
                     images = []
-                    msg2 = "still"
 
                     if response.status_code == 200:
-                        msg2 = "200"
                         related_searches = []
                         images = []
 
                         if "related_searches" in data:
-                            msg2 = "Relatedser"
                             related_searches = data["related_searches"]
 
                         if "images" in data:
-                            msg2 = "rimg"
                             images = data["images"]
 
                     else:
-                        msg2 = "Request failed with status code:", response.status_code
-                except:
-                    msg2 = "Related images not accesed"
+                        return "Request failed with status code:", response.status_code
+                except Exception as e:
+                    msg2 = f"Related images not accessed. Error: {str(e)}"
 
                 try:
                     address = name_place
@@ -163,19 +160,13 @@ def search_image():
                 msg2 = "Something error in fetching datas!"
     except:
         msg = "Image uploading failed!!"
-
-
-    notification = "Root"
-    cursor = mysql.connection.cursor()
-    query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
-    values = (str(session['userid']),)
-    cursor.execute(query, values)
-    booking_notifications = cursor.fetchall()
-    return render_template('index.html', msg=msg, img=image_to_search, msg2=msg2,booking_notifications=booking_notifications, notification=notification,
+    return render_template('image_search.html', msg=msg, img=image_to_search, msg2=msg2,
                              image_loaction_address=image_loaction_address,
                              image_lat_lon = image_lat_lon,
                              place_name = name_place, related_searches=related_searches,
                              images=images)
+
+
 
 # Direct to home page
 @app.route('/sepwrite.com', methods=['POST', 'GET'])
