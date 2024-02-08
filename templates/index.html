@@ -44,7 +44,7 @@ body{
  }
 
  #main-search {
-  background-image: url('{{ url_for("static", filename="/images/backgrounds/08.png") }}');
+  background-image: url('{{ url_for("static", filename="/images/backgrounds/bg3.jpg") }}');
  }
 
  .search-result {
@@ -324,13 +324,15 @@ button:hover {
 }
 
 .blur-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(5px); /* Initial blur value */
-    transition: backdrop-filter 1s ease; /* Transition for smooth effect */
+  pointer-events: none;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* Initial blur value */
+  transition: backdrop-filter 1s ease; /* Transition for smooth effect */
 }
 
 .blur-active {
@@ -371,7 +373,7 @@ button:hover {
         <div class="row justify-content-center">
           <div class="col-md-9">
             <div class="search mt-4">
-              <form action="{{ url_for('home') }}" id="home-search-form" method="POST">
+              <form action="{{ url_for('search_city') }}" id="home-search-form" method="POST">
                 <div>
                   <div>
                     <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
@@ -427,7 +429,7 @@ button:hover {
             <div class="row">
               <div class="t-form col-md-12 align-hero content-box hero-content">
                 <br><span>Customize your own Travels</span>
-                <form class="home-search" id="scheduleForm">
+                <form class="home-search" id="scheduleForm" method="POST" action="{{ url_for('plantrip') }}">
                   <div class="row g-0 mt-4">
                     <div class="">
                       <div class="destination-find-area">
@@ -437,6 +439,7 @@ button:hover {
                         </div>
                         <div>
                           <input type="date" id="departDate" name="departDate" class="form-control" placeholder="Depart Date">
+                          <input type="date" id="endDate" name="endDate" class="form-control" placeholder="end Date" hidden>
                           <span class="error-message" id="departDateError"></span>
                         </div>
                         <div>
@@ -616,7 +619,7 @@ $(document).ready(function() {
     // Send an AJAX request
     $.ajax({
       type: 'POST',
-      url: '{{ url_for("home") }}',
+      url: '{{ url_for("search_city") }}',
       data: formData,
       dataType: 'json',
       success: function(data) {
@@ -664,7 +667,6 @@ $(document).ready(function() {
   })
 </script>
 
-<!-- END AJAX CALLING -->
 
 <!-- VALIDATION OF TIME TABLE -->
 <script type="text/javascript">
@@ -788,4 +790,18 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- END POP UP -->
+
+<!-- AUTO END DATING IN TOUR PLANING FORM -->
+<script>
+  document.getElementById('days').addEventListener('input', function() {
+    var departDate = document.getElementById('departDate').value;
+    var days = parseInt(this.value);
+
+    if (departDate && !isNaN(days)) {
+      var endDate = new Date(departDate);
+      endDate.setDate(endDate.getDate() + days);
+      document.getElementById('endDate').valueAsDate = endDate;
+    }
+  });
+</script>
 {% endblock%}

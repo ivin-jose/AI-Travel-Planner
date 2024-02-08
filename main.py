@@ -59,9 +59,7 @@ package_date = current_date.strftime("%Y-%m-%d")
 
 #API KEYS
 
-API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
-API_KEY_OFFICIEL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
-API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
+
 
 # Asian Landmark Searching y images
 
@@ -84,7 +82,136 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('errors/505.html')
 
+# CHAT BOT
+@app.route("/chat2", methods=['GET', 'POST'])
+def chat2():
+    data = ""
+    ins = 0
+    response = ""
+    dta = ""
+    msg = ""
+    if request.method == 'POST':
+        # Process the POST request
+        message = request.form.get('msg')
 
+        url = "https://chatgpt4-ai-chatbot.p.rapidapi.com/ask"
+
+        payload = { "query": message }
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": API_KEY_OFFICIAL,
+            "X-RapidAPI-Host": "chatgpt4-ai-chatbot.p.rapidapi.com"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        print(response)
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            ins = 1
+            data = response.json()
+            print(data)
+
+            if 'response' in data:
+                ins = 2
+                data = data['response']
+                return render_template('index-03.html', dta = data, rp = response, ins=ins, msg = message)
+
+    return render_template('index-03.html', dta = data, rp = response, ins=ins)
+
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+    data = ""
+    if request.method == 'POST':
+        # Process the POST request
+        message = request.form.get('message')
+
+        url = "https://chatgpt4-ai-chatbot.p.rapidapi.com/ask"
+
+        payload = { "query": message }
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": API_KEY_OFFICIAL,
+            "X-RapidAPI-Host": "chatgpt4-ai-chatbot.p.rapidapi.com"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        print(response)
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            data = response.json()
+            print(data)
+
+            if 'response' in data:
+                data = data['response']
+                return jsonify({"response": data})
+
+        return jsonify({"error": "No chatbot response found."})
+
+    return render_template('chatbotui.html', dta = data)
+
+# END CHATBOT
+
+#TIME TABLE
+
+@app.route('/sepwrite.com/plantrip', methods=['POST', 'GET'])
+def plantrip():
+    tripplann_msg = ''
+    plan = ''
+    trip_plan_related_searches = ''
+    trip_plan_related_images = ''
+    if request.method == 'POST':
+        start_date = request.form.get('departDate')
+        end_date = request.form.get('endDate')
+        days = request.form.get('days')
+        location = request.form.get('destination')
+        var = start_date 
+        try:
+            url = "https://ai-trip-planner.p.rapidapi.com/"
+
+            querystring = {"days": days, "destination": location}
+
+            headers = {
+            "X-RapidAPI-Key": API_KEY_IVIBCA,
+            "X-RapidAPI-Host": "ai-trip-planner.p.rapidapi.com"
+            }
+
+            response = requests.get(url, headers=headers, params=querystring)
+            data = response.json()
+            plan = data.get('plan', [])  # Get the 'plan' list from the response JSON
+            try:
+                url = "https://image-search-api2.p.rapidapi.com/image-search"
+                querystring = {"q": location, "imgc":"hd"}
+                headers = {
+                "X-RapidAPI-Key": API_KEY,
+                "X-RapidAPI-Host": "image-search-api2.p.rapidapi.com"
+                }
+                response = requests.get(url, headers=headers, params=querystring)
+                data = response.json()
+                related_searches = []
+                images = []
+
+                if response.status_code == 200:
+                    related_searches = []
+                    images = []
+                    if "related_searches" in data:
+                        trip_plan_related_searches = data["related_searches"]
+
+                    if "images" in data:
+                        trip_plan_related_images = data["images"]
+                else:
+                    return "Request failed with status code:", response.status_code
+            except:
+                msg2 = "Related images not accesed"
+        except:
+            tripplann_msg = "Not getting"
+                    
+    return render_template('tour_time_table_view.html', plan = plan, no_days = days,
+                         msg3 = tripplann_msg, location = location, var=var,
+                         trip_plan_related_searches=trip_plan_related_searches,
+                         trip_plan_related_images=trip_plan_related_images)
+
+#END TIME TABLE
+# IMAGE SEARCH
 @app.route('/search_image', methods=['POST', 'GET'])
 def search_image():
     msg = ""
@@ -166,7 +293,76 @@ def search_image():
                              place_name = name_place, related_searches=related_searches,
                              images=images)
 
+# HOME MAIN SEARCH
 
+@app.route('/search_city', methods=['POST', 'GET'])
+def search_city():
+    city_to_search = ''
+    city_state_country = ''
+    search_related_images = ''
+    search_related_searches = ''
+    try:
+        if request.method == 'POST':
+            city_to_search = request.form.get('search_text')
+            url = "https://travel-advisor.p.rapidapi.com/locations/v2/auto-complete"
+            querystring = {
+                "query": city_to_search,
+                "lang": "en_US",
+                "units": "km"
+            }
+            headers = {
+                "X-RapidAPI-Key": API_KEY,
+                "X-RapidAPI-Host": "travel-advisor.p.rapidapi.com"
+            }
+            response = requests.get(url, headers=headers, params=querystring)
+            data = response.json()
+            state_country_info = ''
+            if 'data' in data and 'Typeahead_autocomplete' in data['data']:
+                results = data['data']['Typeahead_autocomplete']['results']
+                printed_locations = set()
+                for result in results:
+                    if result.get('__typename') == 'Typeahead_LocationItem':
+                        state_country_info = result['detailsV2']['names']['longOnlyHierarchyTypeaheadV2']
+                        if state_country_info not in printed_locations:
+                            city_state_country = state_country_info
+                            printed_locations.add(state_country_info)
+                        else:
+                            city_state_country = ('Invalid response format')
+                        break
+            else:
+                city_state_country = ('No data available for the city')
+            try:
+                url = "https://image-search-api2.p.rapidapi.com/image-search"
+                querystring = {"q": city_to_search, "imgc": "hd"}
+                headers = {
+                    "X-RapidAPI-Key": API_KEY,
+                    "X-RapidAPI-Host": "image-search-api2.p.rapidapi.com"
+                }
+                response = requests.get(url, headers=headers, params=querystring)
+                data = response.json()
+                related_searches = []
+                images = []
+                if response.status_code == 200:
+                    related_searches = []
+                    images = []
+                    if "related_searches" in data:
+                        search_related_searches = data["related_searches"]
+                    if "images" in data:
+                        search_related_images = data["images"]
+                else:
+                    return "Request failed with status code:", response.status_code
+            except:
+                msg2 = "Related images not accesed"
+    except Exception as e:
+        city_state_country = ('Error occurred while fetching data:', str(e))
+    return jsonify({
+        "city": city_to_search,
+        "city_state_country": city_state_country,
+        "search_related_images": search_related_images,
+        "search_related_searches": search_related_searches
+    })
+
+    # END OF HOME MAIN SEARCH
 
 # Direct to home page
 @app.route('/sepwrite.com', methods=['POST', 'GET'])

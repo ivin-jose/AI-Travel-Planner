@@ -15,15 +15,21 @@
 		align-items: center;
 		margin-bottom: 60px;
 	}
+	#related_search_a {
+
+	}
 </style>
 <body>
-        <h6>Related Searches:</h6>
-        <ul>
-            {% for search in related_searches %}
-            <li>{{ search }}</li>
+        
+        <div class="row container">
+        	<h6>Related Searches:</h6>
+        	{% for search in related_searches %}
+        	<div class="col-lg-2">
+            <a id="related_search_a" class="searchLink" href="#"  data-label="{{ search }}">{{ search }}</a>
+            </div>
             {% endfor %}
-        </ul>
-    </div>
+    	</div>
+    	<br><br>
 
 <div class="container row main-img">
 	<div class="col-lg-6 col-md-6" style="display: flex;
@@ -38,25 +44,38 @@
 	</div>
 </div>
 
-<center><h4>Related to {{ place_name }} </h4></center><br><br>
+<center><h4>More About {{ place_name }} </h4></center><br><br>
 <div class="container">
 	<div class="row">
 		{% for image in images %}
 		<div class="col-lg-3 col-md-3">
-			 <p>{{ image.label }}</p>
+			 <a class="searchLink" href="#"  data-label="{{ image.label }}">{{ image.label }}</a>
 			<img src="{{ image.src }}" alt="" height="360" width="640" style="    width: 100%;
 				    height: 70%;
 				    object-fit: contain;">
 		</div>
 		{% endfor %}
 	</div>
-	 
-	 	 
-	 
 </div>
 </body>
 </html>
 
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    var searchLinks = document.getElementsByClassName('searchLink');
+    for (var i = 0; i < searchLinks.length; i++) {
+        searchLinks[i].addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
 
+            var searchValue = this.getAttribute('data-label'); // Get the value from data-label attribute
+            var googleSearchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(searchValue);
+
+            // Redirect to Google search
+            window.location.href = googleSearchUrl;
+        });
+    }
+});
+
+</script>
 
 {% endblock %}
