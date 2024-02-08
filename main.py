@@ -59,7 +59,10 @@ package_date = current_date.strftime("%Y-%m-%d")
 
 #API KEYS
 
-
+API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
+API_KEY_OFFICIAL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
+API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
+GPT_API_KEY = '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'
 
 # Asian Landmark Searching y images
 
@@ -355,6 +358,13 @@ def search_city():
                 msg2 = "Related images not accesed"
     except Exception as e:
         city_state_country = ('Error occurred while fetching data:', str(e))
+    print("Data to be returned:", {
+        "city": city_to_search,
+        "city_state_country": city_state_country,
+        "search_related_images": search_related_images,
+        "search_related_searches": search_related_searches
+    })
+    
     return jsonify({
         "city": city_to_search,
         "city_state_country": city_state_country,

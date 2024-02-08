@@ -44,7 +44,7 @@ body{
  }
 
  #main-search {
-  background-image: url('{{ url_for("static", filename="/images/backgrounds/bg3.jpg") }}');
+  background-image: url('{{ url_for("static", filename="/images/backgrounds/bg4.jpeg") }}');
  }
 
  .search-result {
@@ -338,9 +338,27 @@ button:hover {
 .blur-active {
     backdrop-filter: blur(0px); /* Blur value when the class is active */
 }
+#cityStateCountry {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    font-size: 25px;
+    padding: 20px;
+    text-transform: capitalize;
+}
+#city {
+  font-size: 30px;
+    text-transform: capitalize;
+    color: black;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 </style>
 <!-- END OF POP UPS -->
-
+<html>
+<body>
 <!--CHAT BOT POP UP -->
 <div class="botpopup arrow-top" id="botpopup">
   <div class="botpopup-wrapper">
@@ -393,8 +411,14 @@ button:hover {
 </section>
 <!-- END OF HOME SEARCH -->
 
-<section class="search-result" style="background-color: white; width: 100%; height: 20vh;">
+<section class="search-result" style="background-color: white; width: 100%; padding: 30px;">
   <div id="result-container"></div>
+  <!-- These are just placeholders, adjust according to your layout -->
+<div id="city"></div>
+<div id="cityStateCountry"></div>
+<div id="relatedImages" class="row"></div>
+<div id="relatedImageslabel" class="row"></div>
+
   <div style="width: 200px; height: 50px;" id="showmore">
     <a href="#" id="showmore-link">show more</a>
   </div>
@@ -599,53 +623,91 @@ Blog -->
 </section>
 <!--=================================
 Blog -->
-
+</body>
+</html>
 
 
 
 <!-- AJAX CALLINGN FOR SEARCH RESULT -->
+<!-- AJAX CALLING FOR SEARCH RESULT -->
 <script>
-$(document).ready(function() {
-  // Attach an event handler to the form submission
-  $("#home-search-form").submit(function(event) {
-    // Prevent the default form submission
-    event.preventDefault();
+  $(document).ready(function() {
+    // Attach an event handler to the form submission
+    $("#home-search-form").submit(function(event) {
+      // Prevent the default form submission
+      event.preventDefault();
 
-    // Get the form data
-    var formData = {
-      'search_text': $('#search_text').val()
-    };
+      // Get the form data
+      var formData = {
+        'search_text': $('#search_text').val()
+      };
 
-    // Send an AJAX request
-    $.ajax({
-      type: 'POST',
-      url: '{{ url_for("search_city") }}',
-      data: formData,
-      dataType: 'json',
-      success: function(data) {
-        // Update the content on success
-        $('#result-container').text(data.result);
+      // Send an AJAX request
+      $.ajax({
+        type: 'POST',
+        url: '{{ url_for("search_city") }}',
+        data: formData,
+        dataType: 'json',
+        success: function(data) {
+          $('html, body').animate({
+              scrollTop: $('#city').offset().top
+          }, 1000);
+          $(".search-result").show();
 
-        // Check if the response is not empty
-        if (data.result.trim() !== '') {
-          // Show the "show more" button
-          $('.search-result').show();
-          // Extract search_element from formData
-          var search_element = formData.search_text;
+          $('#city').text(data.city);
+          $('#cityStateCountry').text(data.city_state_country);
 
-          // Set the href dynamically with the search_element
-          $('#showmore-link').attr('href', '{{ url_for("user_package_searching_onhome", search_value="") }}' + search_element);
-
-        } else {
-          // Hide the "show more" button
-          $('.search-result').hide();
+          // Display related images
+          if (data.search_related_images && data.search_related_images.length > 0) {
+              var imagesContainer = $('#relatedImages');
+              var maxImages = 4; // Maximum number of images to display
+              for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
+                  var image = data.search_related_images[i];
+                  var imageHtml = '<div class="col-lg-3 col-md-3">' +
+                                      '<img src="' + image.src + '" alt="' + image.label + '"style="width: 100%; height: 70%; object-fit: contain;">' +
+                                  '</div>';
+                  imagesContainer.append(imageHtml);
+              }
+          }
+          // Display related image captions
+          if (data.search_related_images && data.search_related_images.length > 0) {
+              var imagesContainer = $('#relatedImageslabel');
+              var maxImages = 4; // Maximum number of images to display
+              for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
+                  var image = data.search_related_images[i];
+                  var imageHtml = '<div class="col-lg-3 col-md-3">' +
+                                      '<a class="searchLink" href="#" data-label="' + image.label + '">' + image.label + '</a>'
+                                  '</div>';
+                  imagesContainer.append(imageHtml);
+              }
+          }
+        },
+        error: function(error) {
+          console.log("Error:", error);
         }
-      }
+      });
     });
   });
-});
 </script>
 <!-- END OF AJAX CALLING -->
+
+<!-- JavaScript -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchLinks = document.getElementsByClassName('searchLink');
+        for (var i = 0; i < searchLinks.length; i++) {
+            searchLinks[i].addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+
+                var searchValue = this.getAttribute('data-label'); // Get the value from data-label attribute
+                var googleSearchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(searchValue);
+
+                // Redirect to Google search
+                window.location.href = googleSearchUrl;
+            });
+        }
+    });
+</script>
 
 
 <script type="text/javascript">
@@ -772,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lenspopup.style.display = 'none';
     body.classList.add('blur');
     botpopupbackground.classList.add('blur');
-  }, 5000);
+  }, 4000);
 });
 </script>
 
@@ -781,11 +843,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('DOMContentLoaded', function() {
         // Get the blur overlay element
         var blurOverlay = document.getElementById('blur-overlay');
+        $('html, body').css({
+                  'overflow': 'hidden',
+                  'height': '100%'
+        });
 
         // Add the 'blur-active' class after a delay of 5 seconds
         setTimeout(function() {
             blurOverlay.classList.add('blur-active');
-        }, 5000);
+               $('html, body').css({
+                  'overflow': 'auto',
+                  'height': 'auto'
+              });
+        }, 4000);
     });
 </script>
 
