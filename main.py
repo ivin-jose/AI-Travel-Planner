@@ -438,7 +438,10 @@ def home():
 
     return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data, blog_result=blog_result)
 
-    
+@app.route('/sepwrite.com/tour-planner')
+def tour_planner():
+    return render_template('tour_planner.html')
+
 # user booking Details on notification bar
 
 @app.route('/sepwrite.com/tour-packages-booking-details-noti/<booking_id>', methods=['POST', 'GET'])
@@ -1936,17 +1939,7 @@ def review_deleting(review_id, package_id):
     return redirect(url_for('tour_package_details', package_id=package_id))
 
 
-# About us page
 
-@app.route('/sepwrite.com/about-us')
-def aboutus():
-    return render_template('aboutus.html')
-
-# Contact us page
-
-@app.route('/sepwrite.com/contact-us')
-def usercontactus():
-    return render_template('contactus.html')
       
 #---------------------------------------------------------
 #---------------------------------------------------------

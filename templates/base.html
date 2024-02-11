@@ -215,25 +215,8 @@
                 <a class="nav-link" href="{{ url_for('home') }}" role="button" >Home</i></a>
               </li>
 
-              <li class="nav-item dropdown {% if 'j'  in request.url_rule.endpoint %}active{% endif %}">
-               <a class="nav-link" href="portfolio-5-masonry.html" onclick="redirectToHomePage(event)">AI planner</a>
-
-<script>
-  function redirectToHomePage(event) {
-    event.preventDefault(); // Prevent the default behavior of following the link
-    
-    // Redirect to the home page
-    window.location.href = "{{ url_for('home') }}";
-
-    // Wait for the home page to load and then scroll to the section with id 'bgholder'
-    window.onload = function() {
-      var section = document.getElementById('bgholder');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    };
-  }
-</script>
+              <li class="nav-item dropdown {% if 'tour_planner'  in request.url_rule.endpoint %}active{% endif %}">
+               <a class="nav-link" href="{{ url_for('tour_planner') }}">AI planner</a>
 
               </li>
 
@@ -243,13 +226,6 @@
 
               <li class="nav-item dropdown {% if 'blog_home'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('blog_home') }}" role="button" >Blog</i></a>
-              </li>
-
-              <li class="nav-item dropdown {% if 'usercontactus'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="{{ url_for('usercontactus') }}">Contact Us</i></a>
-              </li>
-              <li class="nav-item dropdown {% if 'aboutus'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="{{ url_for('aboutus') }}">About Us</i></a>
               </li>
               <li class="nav-item dropdown">
                 <!-- inner -->
@@ -464,6 +440,24 @@ footer-->
 <!-- END OF LENS FORM -->
 
 <!-- CHATBOT  -->
+<style type="text/css">
+  #chatpreloader {
+    display: none;
+  }
+  #chatpreloader img {
+        width: 110px;
+    height: 25px;
+    /* margin: 0; */
+    object-fit: cover;
+    border-radius: 25px
+  }
+  .message_preloader {
+    display: block;
+    position: absolute;
+    left: 10px;
+    bottom: 70px;
+  }
+</style>
 <!-- ================================ -->
 <img src="{{ url_for('static', filename='/images/chatbot/bot.png')}}" id="chatbotlogo">
 <div class="chatbox-main">
@@ -472,6 +466,7 @@ footer-->
     </div>
     <div class="chatbox" id="chatbox">
         <div class="message bot">How can i help you😊</div>
+        <div class="message_preloader bo" id="chatpreloader"><img src="{{url_for('static', filename='images/preloader/chat_loader.gif')}}"></div>
     </div>
       <input type="text" id="userInput" name="message" placeholder="Type your message...">
 </div>
@@ -515,7 +510,6 @@ Back To Top-->
     });
 </script>
 
-
 <!-- Chat bot JS-->
 <script>
     $(document).ready(function() {
@@ -526,6 +520,7 @@ Back To Top-->
                     appendMessage(userInput, "user");
                     sendUserInput(userInput);
                     $("#userInput").val("");
+                    $("#chatpreloader").show();
                 }
             }
         });
@@ -537,18 +532,20 @@ Back To Top-->
         $(".chatbox").scrollTop($(".chatbox")[0].scrollHeight);
     }
     function sendUserInput(userInput) {
+        // Show the preloader
         $.ajax({
             url: "/chat",
             type: "post",
             data: { message: userInput },
             success: function(data) {
-                if (data.status && data.result) {
-                    appendMessage(data.result, "bot");
-                } else {
-                    // Handle error or unexpected response
-                    appendMessage("Error: Unexpected response from the server", "bot");
-                    console.log("Unexpected response:", data);
-                }
+              $("#chatpreloader").hide();
+              if (data.status && data.result) {
+                  appendMessage(data.result, "bot");
+              } else {
+                  // Handle error or unexpected response
+                  appendMessage("Error: Unexpected response from the server", "bot");
+                  console.log("Unexpected response:", data);
+              }
             },
             error: function(error) {
                 appendMessage("Error: " + error.responseJSON.message, "bot");

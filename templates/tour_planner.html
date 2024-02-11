@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style type="text/css">
+	body {
+		background: radial-gradient(#039797, transparent);
+	}
+	.t-form {
+		height: 78vh;
+	}
+</style>
+    <div class="row">
+      <div class="col-12">
+        <!-- H E R O -->
+        <div id="hero">
+          <div class="container">
+            <div class="row">
+              <div class="t-form col-md-12 align-hero content-box hero-content">
+              	<h2 class="title mb-0" style="color: whitesmoke;"> Let our  <strong style="color: rgb(8 62 64);">AI Module </strong> craft your personalized travel itinerary! </h2>
+                <br><span>Customize your own Travels</span>
+                <form class="home-search" id="scheduleForm" method="POST" action="{{ url_for('plantrip') }}">
+                  <div class="row g-0 mt-4">
+                    <div class="">
+                      <div class="destination-find-area">
+                        <div>
+                          <input type="text" id="destination" name="destination" class="form-control" placeholder="Destination">
+                          <span class="error-message" id="destinationError"></span>
+                        </div>
+                        <div>
+                          <input type="date" id="departDate" name="departDate" class="form-control" placeholder="Depart Date">
+                          <input type="date" id="endDate" name="endDate" class="form-control" placeholder="end Date" hidden>
+                          <span class="error-message" id="departDateError"></span>
+                        </div>
+                        <div>
+                          <input type="number" id="days" name="days" min="1" class="form-control" placeholder="No of Days">
+                          <span class="error-message" id="daysError"></span>
+                        </div>
+                        <div>
+                          <input type="submit" class="btn btn-primary" value="Create Schedule">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+</div>
+
+<!-- AUTO END DATING IN TOUR PLANING FORM -->
+<script>
+  document.getElementById('days').addEventListener('input', function() {
+    var departDate = document.getElementById('departDate').value;
+    var days = parseInt(this.value);
+
+    if (departDate && !isNaN(days)) {
+      var endDate = new Date(departDate);
+      endDate.setDate(endDate.getDate() + days);
+      document.getElementById('endDate').valueAsDate = endDate;
+    }
+  });
+</script>
+
+<!-- VALIDATION OF TIME TABLE -->
+<script type="text/javascript">
+  $(document).ready(function () {
+  $('#scheduleForm').submit(function (e) {
+    // Clear previous error messages
+    $('.error-message').text('');
+
+    // Validate destination
+    var destination = $('#destination').val();
+    if (destination.trim() === '') {
+      var newPlaceholder = "Destination is required*";
+      $('#destination').attr('placeholder', newPlaceholder);
+      e.preventDefault(); // Prevent form submission
+    }
+
+    // Validate depart date
+    var departDate = $('#departDate').val();
+    if (departDate.trim() === '') {
+      var newPlaceholder = "Depart Date is required*";
+      $('#departDate').attr('placeholder', newPlaceholder);
+      e.preventDefault(); // Prevent form submission
+    }
+
+    // Validate number of days
+    var days = $('#days').val();
+    if (isNaN(days) || days < 1) {
+      var newPlaceholder = "Please enter a valid number of days (minimum 1)*";
+      $('#days').attr('placeholder', newPlaceholder);
+      e.preventDefault(); // Prevent form submission
+    }
+  });
+});
+</script>
+{% endblock %}
