@@ -161,6 +161,10 @@
   top: 180px;
   z-index: 4000;
 }
+
+.active {
+  color: red;
+}
 </style>
 <div id="preloader">
   <div class="spinner"></div>
@@ -207,12 +211,30 @@
           </a>
           <div class="navbar-collapse collapse justify-content-end justify-content-lg-center">
             <ul class="nav navbar-nav">
-              <li class="nav-item dropdown {% if 'home'  in request.url_rule.endpoint %}active{% endif %}">
+              <li class="nav-item dropdown {% if '/'  in request.url_rule.endpoint %} active {% endif %}">
                 <a class="nav-link" href="{{ url_for('home') }}" role="button" >Home</i></a>
               </li>
 
               <li class="nav-item dropdown {% if 'j'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="portfolio-5-masonry.html" role="button" >Portfolio</i></a>
+               <a class="nav-link" href="portfolio-5-masonry.html" onclick="redirectToHomePage(event)">AI planner</a>
+
+<script>
+  function redirectToHomePage(event) {
+    event.preventDefault(); // Prevent the default behavior of following the link
+    
+    // Redirect to the home page
+    window.location.href = "{{ url_for('home') }}";
+
+    // Wait for the home page to load and then scroll to the section with id 'bgholder'
+    window.onload = function() {
+      var section = document.getElementById('bgholder');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+  }
+</script>
+
               </li>
 
               <li class="nav-item dropdown {% if 'tour_packages'  in request.url_rule.endpoint %}active{% endif %}">
@@ -307,7 +329,7 @@
 		                          <!--2  -->
 		                          <li class="d-flex">
 		                            <div class="cart-info">
-		                              <a href="{{ url_for('saved_packages') }}"> Saved Packages</a>
+		                              <a href="{{ url_for('saved_packages') }}" class="{% if 'aboutus'  in request.url_rule.endpoint %}active{% endif %}"> Saved Packages</a>
 		                            </div>
 		                          </li>
 		                          <!--  -->

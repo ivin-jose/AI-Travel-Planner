@@ -285,7 +285,7 @@ h1 {
 <body>
 <!-- partial:index.partial.html -->
 <script src="https://kit.fontawesome.com/fc596df623.js" crossorigin="anonymous"></script>
-
+ {% if plan %}
 <h2>Timeline For {{ no_days }} Days in <span style="text-transform: capitalize" >{{ location }}</span> </h2>
 <div class="timeline">
 	<!--first-->
@@ -309,7 +309,11 @@ h1 {
     </div>
 </div>
 {% endfor %}
+{% else %}
+<h2>Something Wrong</h2>
+{% endif %}
 
+{% if trip_plan_related_images %}
 <center><h2 style="text-transform: capitalize;">{{ location }} </h2></center><br><br>
 <div class="container">
     <div class="row">
@@ -321,6 +325,7 @@ h1 {
         {% endfor %}
     </div>
 </div>
+{% endif %}
 
 	
 </body>

@@ -397,7 +397,7 @@ button:hover {
                     <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
                   </div>
                   <div>
-                    <input class="btn btn-primary" type="submit" value="Search">
+                    <input class="btn btn-primary" type="submit" value="Search" id="home_search_btn">
                   </div>
                 </div>
               </form>
@@ -419,8 +419,15 @@ button:hover {
 <div id="relatedImages" class="row"></div>
 <div id="relatedImageslabel" class="row"></div>
 
-  <div style="width: 200px; height: 50px;" id="showmore">
-    <a href="#" id="showmore-link">show more</a>
+  <div id="home_search_preloader" style="display: flex;
+    justify-content: center;
+    height: 50vh;
+    align-items: center;">
+    <div class="">
+      <div id="preloaders">
+        <div class="spinner"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -430,8 +437,8 @@ button:hover {
     <div class="row">
       <div class="col-lg-6 mb-4 mb-lg-0">
         <div class="section-title">
-          <div class="sub-title"><img  class="img-fluid" src="images/title-icon.png" alt="#"><span>A smiling agent for you</span></div>
-          <h2 class="title mb-0"> The Smiling <strong>Agent For Travel</strong></h2>
+          <!-- <div class="sub-title"><img  class="img-fluid" src="images/title-icon.png" alt="#"><span>A smiling agent for you</span></div> -->
+          <h2 class="title mb-0" style="color: whitesmoke;"> Let our  <strong style="color: rgb(8 62 64);">AI Module </strong> craft your personalized travel itinerary! </h2>
         </div>
       </div>
       <div class="col-lg-6 align-self-end">
@@ -630,6 +637,19 @@ Blog -->
 
 <!-- AJAX CALLINGN FOR SEARCH RESULT -->
 <!-- AJAX CALLING FOR SEARCH RESULT -->
+
+<!-- AUTOMATICALY RETURN TO RESULT LOADING SECTION OF MAIN PAGE -->
+<script type="text/javascript">
+  $('#home_search_btn').click(function() {
+    $(".search-result").show();
+  // Show preloader
+    $('#home_search_preloader').show();
+    $('html, body').animate({
+      scrollTop: $('#home-search-form').offset().top
+    }, 5);
+  });
+</script>
+
 <script>
   $(document).ready(function() {
     // Attach an event handler to the form submission
@@ -650,10 +670,9 @@ Blog -->
         dataType: 'json',
         success: function(data) {
           $('html, body').animate({
-              scrollTop: $('#city').offset().top
-          }, 1000);
-          $(".search-result").show();
-
+            scrollTop: $('#home-search-form').offset().top
+          }, 5);
+          $('#home_search_preloader').hide();
           $('#city').text(data.city);
           $('#cityStateCountry').text(data.city_state_country);
 
@@ -691,6 +710,7 @@ Blog -->
 </script>
 <!-- END OF AJAX CALLING -->
 
+<!-- google search -->
 <!-- JavaScript -->
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
@@ -815,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function() {
     botpopup.style.display = 'none';
     body.classList.add('blur');
     botpopupbackground.classList.add('blur');
-  }, 5000);
+  }, 4000);
 });
 </script>
 

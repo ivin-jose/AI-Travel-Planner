@@ -314,7 +314,7 @@ def search_city():
                 "units": "km"
             }
             headers = {
-                "X-RapidAPI-Key": API_KEY,
+                "X-RapidAPI-Key": API_KEY_OFFICIAL,
                 "X-RapidAPI-Host": "travel-advisor.p.rapidapi.com"
             }
             response = requests.get(url, headers=headers, params=querystring)
@@ -358,12 +358,6 @@ def search_city():
                 msg2 = "Related images not accesed"
     except Exception as e:
         city_state_country = ('Error occurred while fetching data:', str(e))
-    print("Data to be returned:", {
-        "city": city_to_search,
-        "city_state_country": city_state_country,
-        "search_related_images": search_related_images,
-        "search_related_searches": search_related_searches
-    })
     
     return jsonify({
         "city": city_to_search,
