@@ -59,10 +59,6 @@ package_date = current_date.strftime("%Y-%m-%d")
 
 #API KEYS
 
-API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
-API_KEY_OFFICIAL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
-API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
-GPT_API_KEY = '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'
 
 # Asian Landmark Searching y images
 
@@ -128,29 +124,35 @@ def chat():
         # Process the POST request
         message = request.form.get('message')
 
-        url = "https://chatgpt4-ai-chatbot.p.rapidapi.com/ask"
+        message = ' " '+ message + ' ?" ' + "This question is not related to tourism, places, hotels, food spots, toursm activites then you only reply i'm ready to give data about tourism please ask about tourism activites"
 
-        payload = { "query": message }
+        url = "https://open-ai21.p.rapidapi.com/conversationgpt35"
+
+        payload = {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ],
+            "web_access": False,
+            "system_prompt": "",
+            "temperature": 0.9,
+            "top_k": 5,
+            "top_p": 0.9,
+            "max_tokens": 256
+        }
         headers = {
             "content-type": "application/json",
             "X-RapidAPI-Key": API_KEY_OFFICIAL,
-            "X-RapidAPI-Host": "chatgpt4-ai-chatbot.p.rapidapi.com"
+            "X-RapidAPI-Host": "open-ai21.p.rapidapi.com"
         }
 
         response = requests.post(url, json=payload, headers=headers)
-        print(response)
-        # Check if the request was successful (status code 200)
-        if response.status_code == 200:
-            data = response.json()
-            print(data)
 
-            if 'response' in data:
-                data = data['response']
-                return jsonify({"response": data})
+        print(response.json())
 
-        return jsonify({"error": "No chatbot response found."})
-
-    return render_template('chatbotui.html', dta = data)
+    return (response.json())
 
 # END CHATBOT
 

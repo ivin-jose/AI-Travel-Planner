@@ -536,20 +536,28 @@ Back To Top-->
         $("#chatbox").append(messageHtml);
         $(".chatbox").scrollTop($(".chatbox")[0].scrollHeight);
     }
-
     function sendUserInput(userInput) {
         $.ajax({
             url: "/chat",
             type: "post",
             data: { message: userInput },
             success: function(data) {
-                appendMessage(data, "bot");
+                if (data.status && data.result) {
+                    appendMessage(data.result, "bot");
+                } else {
+                    // Handle error or unexpected response
+                    appendMessage("Error: Unexpected response from the server", "bot");
+                    console.log("Unexpected response:", data);
+                }
             },
             error: function(error) {
+                appendMessage("Error: " + error.responseJSON.message, "bot");
                 console.log("Error:", error);
             },
         });
     }
+
+
 
     // chat bot showing and hding when logo clicked
 
