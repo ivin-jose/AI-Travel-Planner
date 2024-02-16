@@ -59,6 +59,10 @@ package_date = current_date.strftime("%Y-%m-%d")
 
 #API KEYS
 
+API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
+API_KEY_OFFICIAL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
+API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
+GPT_API_KEY = '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'
 
 # Asian Landmark Searching y images
 
@@ -158,7 +162,7 @@ def chat():
 
 #TIME TABLE
 
-@app.route('/sepwrite.com/plantrip', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/plantrip', methods=['POST', 'GET'])
 def plantrip():
     tripplann_msg = ''
     plan = ''
@@ -217,7 +221,7 @@ def plantrip():
 
 #END TIME TABLE
 # IMAGE SEARCH
-@app.route('/search_image', methods=['POST', 'GET'])
+@app.route('/TripOrganizer/search_image', methods=['POST', 'GET'])
 def search_image():
     msg = ""
     msg2 = ''
@@ -300,7 +304,7 @@ def search_image():
 
 # HOME MAIN SEARCH
 
-@app.route('/search_city', methods=['POST', 'GET'])
+@app.route('/TripOrganizer/search_city', methods=['POST', 'GET'])
 def search_city():
     city_to_search = ''
     city_state_country = ''
@@ -371,7 +375,7 @@ def search_city():
     # END OF HOME MAIN SEARCH
 
 # Direct to home page
-@app.route('/sepwrite.com', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com', methods=['POST', 'GET'])
 def home():
     session['todate'] = package_date
     main_s_result = ""
@@ -438,13 +442,13 @@ def home():
 
     return render_template('index.html', booking_notifications=booking_notifications, notification=notification, tour_packages_data=tour_packages_data, blog_result=blog_result)
 
-@app.route('/sepwrite.com/tour-planner')
+@app.route('/TripOrganizer.com/tour-planner')
 def tour_planner():
     return render_template('tour_planner.html')
 
 # user booking Details on notification bar
 
-@app.route('/sepwrite.com/tour-packages-booking-details-noti/<booking_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-booking-details-noti/<booking_id>', methods=['POST', 'GET'])
 def user_booking_details_not(booking_id):
     provider_details = ""
     cursor = mysql.connection.cursor()
@@ -507,7 +511,7 @@ def login():
        if len(result) > 0:
         session['userid'] = result[0][0]
         session['username'] = result[0][1]
-        return redirect('/sepwrite.com')
+        return redirect('/TripOrganizer.com')
        else:
         error_message = "Invalid username/email or password"
 
@@ -561,7 +565,7 @@ def signup():
             if len(result) > 0:
                 session['userid'] = result[0][0]
                 session['username'] = result[0][1]
-                return redirect('/sepwrite.com')
+                return redirect('/TripOrganizer.com')
 
 
             return redirect('/login')
@@ -579,7 +583,7 @@ def user_logout():
 def logout():
     session.pop('userid', None)  # Remove the user_id from the session
     session.pop('username', None)
-    return redirect('/sepwrite.com')
+    return redirect('/TripOrganizer.com')
 
 
 
@@ -1264,37 +1268,34 @@ def delete_blog_img(bid):
 
 # Company Tour packages
 
-@app.route('/sepwrite.com/tour-packages')
+@app.route('/TripOrganizer.com/tour-packages')
 def tour_packages():
     flash = None
-    if 'username' in session:
-        # SQL query to select Tour Packages
-        query = """ SELECT tp.*, pi.image_path,
-               COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
-        FROM tour_packages tp
-        LEFT JOIN (
-            SELECT package_id, MIN(image_path) AS image_path
-            FROM package_images
-            GROUP BY package_id
-        ) pi ON tp.package_id = pi.package_id
-        LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
-        WHERE tp.package_id = tp.package_id
-        GROUP BY tp.package_id;
-        """
-        # Execute the query and retrieve the data
-        cursor = mysql.connection.cursor()
-        cursor.execute(query)
-        tour_packages_data = cursor.fetchall()
+    # SQL query to select Tour Packages
+    query = """ SELECT tp.*, pi.image_path,
+           COALESCE(SUM(pr.ratings), 0) / COUNT(pr.package_id) * 5 AS average_rating_percentage
+    FROM tour_packages tp
+    LEFT JOIN (
+        SELECT package_id, MIN(image_path) AS image_path
+        FROM package_images
+        GROUP BY package_id
+    ) pi ON tp.package_id = pi.package_id
+    LEFT JOIN package_reviews pr ON tp.package_id = pr.package_id
+    WHERE tp.package_id = tp.package_id
+    GROUP BY tp.package_id;
+    """
+    # Execute the query and retrieve the data
+    cursor = mysql.connection.cursor()
+    cursor.execute(query)
+    tour_packages_data = cursor.fetchall()
 
-        # Close the cursor and database connection if necessary
-        cursor.close()
-        return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
-    else:
-        return redirect('/login')
+    # Close the cursor and database connection if necessary
+    cursor.close()
+    return render_template('tour_packages.html', tour_packages_data=tour_packages_data)
 
 
 # Tour Package Details
-@app.route('/sepwrite.com/tour-packages-details/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-details/<package_id>', methods=['POST', 'GET'])
 def tour_package_details(package_id):
     pro_id = None
     session['todate'] = package_date
@@ -1373,7 +1374,7 @@ def tour_package_details(package_id):
         return redirect('/login')
 
 # Saving packages
-@app.route('/sepwrite.com/tour-packages-saving/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-saving/<package_id>', methods=['POST', 'GET'])
 def tour_package_saving(package_id):
     session['todate'] = package_date
     query1 ="""
@@ -1467,7 +1468,7 @@ def tour_package_saving(package_id):
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, user_travaled=user_travaled)
 
 # Deleting Saving packages
-@app.route('/sepwrite.com/tour-packages-remove/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-remove/<package_id>', methods=['POST', 'GET'])
 def tour_package_saved_dlt(package_id):
     if 'username' in session:
         # SQL query to select Tour Packages
@@ -1503,7 +1504,7 @@ def tour_package_saved_dlt(package_id):
         return render_template('saved_packages.html', tour_packages_data=tour_packages_data, delt_flash=delt_flash)
 
 # user package booking payament 
-@app.route('/sepwrite.com/tour-packages-booking-payment', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-booking-payment', methods=['POST', 'GET'])
 def tour_package_booking_payment():
     price = 0.0
     package_name = "Not Available"
@@ -1528,7 +1529,7 @@ def tour_package_booking_payment():
     return render_template('tour_package_payment.html', package_price=price, package_name=package_name)
 
 # user_tour_package_booking
-@app.route('/sepwrite.com/tour-packages-booking', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-booking', methods=['POST', 'GET'])
 def user_tour_package_booking():
     session['todate'] = ""
     session['todate'] = package_date
@@ -1603,7 +1604,7 @@ def user_tour_package_booking():
 
 # User saved Tour packages
 
-@app.route('/sepwrite.com/user-saved-tour-packages')
+@app.route('/TripOrganizer.com/user-saved-tour-packages')
 def saved_packages():
     session['todate'] = package_date
     flash = None
@@ -1635,7 +1636,7 @@ def saved_packages():
         # User package searching 
 
 
-@app.route('/sepwrite.com/packages/searching', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/packages/searching', methods=['POST', 'GET'])
 def user_package_searching():
     if request.method == 'POST':
         session['todate'] = package_date
@@ -1667,7 +1668,7 @@ def user_package_searching():
         rating_true = True
     return render_template('tour_packages.html', tour_packages_data=tour_packages_data, rating_true=rating_true)
 
-@app.route('/sepwrite.com/packages/package-searching-home-form', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/packages/package-searching-home-form', methods=['POST', 'GET'])
 def package_search_on_home_form():
     if request.method == 'POST':
         session['todate'] = package_date
@@ -1716,7 +1717,7 @@ def package_search_on_home_form():
 
 
 # 3searching the package
-@app.route('/sepwrite.com/packages/searching-on-home/<search_value>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/packages/searching-on-home/<search_value>', methods=['POST', 'GET'])
 def user_package_searching_onhome(search_value):
     session['todate'] = package_date
     # SQL query to select Tour Packages with a search condition
@@ -1745,7 +1746,7 @@ def user_package_searching_onhome(search_value):
 
 # User Bookings 
 
-@app.route('/sepwrite.com/user-bookings', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/user-bookings', methods=['POST', 'GET'])
 def user_bookings():
     session['todate'] = ""
     session['todate'] = package_date
@@ -1769,7 +1770,7 @@ def user_bookings():
 
 # user booking Details
 
-@app.route('/sepwrite.com/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
 def user_booking_details(booking_id):
     provider_details = ""
     cursor = mysql.connection.cursor()
@@ -1795,7 +1796,7 @@ def user_booking_details(booking_id):
     return render_template('user_booking_details.html', booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id, provider_details=provider_details)
 
 # Canceling the tour package by user
-@app.route('/sepwrite.com/user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
 def user_booking_cancel(booking_id, package_name, provider_id):
     session['todate'] = ""
     session['todate'] = package_date
@@ -1879,7 +1880,7 @@ def user_booking_cancel(booking_id, package_name, provider_id):
     return render_template('user_bookings.html', tour_bookings=tour_bookings, flash=flash_message)
 
 # Review adding to the form
-@app.route('/sepwrite.com/package-review-adding/', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/package-review-adding/', methods=['POST', 'GET'])
 def review_adding():
     if 'username' in session:
         cursor = mysql.connection.cursor()
@@ -1928,7 +1929,7 @@ def review_adding():
 
 
 # Review adding to the form
-@app.route('/sepwrite.com/package-review-deleting/<review_id>/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/package-review-deleting/<review_id>/<package_id>', methods=['POST', 'GET'])
 def review_deleting(review_id, package_id):
     cursor = mysql.connection.cursor()
     # SQL query to delete rows from travalers_attendance table
@@ -1953,7 +1954,7 @@ def review_deleting(review_id, package_id):
 
 # Business Pro Account home page
 
-@app.route('/sepwrite.com/account.pro')
+@app.route('/TripOrganizer.com/account.pro')
 def pro_account():
     session['todate'] = package_date
     if 'prousercompany' in session:
@@ -2024,7 +2025,7 @@ def pro_account():
     return render_template('pro/section.html')
 
 # Current day tour list of users
-@app.route('/sepwrite.com/account.pro/travalers-list/<package_id>')
+@app.route('/TripOrganizer.com/account.pro/travalers-list/<package_id>')
 def travalers_list(package_id):
     cursor = mysql.connection.cursor()
     query = """ SELECT pb.user_id, pb.booked_id, pbt.travaler_id, pbt.*, pb.attendance
@@ -2039,8 +2040,101 @@ WHERE pb.package_id = %s;
     travalers_list = cursor.fetchall()
     return render_template('pro/travalers_list.html', travalers_list=travalers_list, package_id=package_id)
 
+
+# company login
+@app.route('/TripOrganizer.com/account.pro/login', methods = ['GET', 'POST'])
+def pro_login():
+    error_message = ''
+    if request.method == 'POST':
+       email_or_username = request.form.get('prologinname')
+       password = request.form.get('prologinpassword')
+
+       ''' Checking password and username or email'''
+       cursor = mysql.connection.cursor()
+       query = "SELECT pro_usersid, userid, company FROM pro_users WHERE (email = %s OR company = %s) AND password = %s"
+       values = (email_or_username, email_or_username, password)
+       cursor.execute(query, values)
+       result = cursor.fetchall()
+       
+       if len(result) > 0:
+        session['proid'] = result[0][0]
+        session['prouserid'] = result[0][1]
+        session['prousercompany'] = result[0][2]
+        return redirect('/TripOrganizer.com/account.pro')
+       else:
+        error_message = "Invalid username/email or password"
+    return render_template('pro/pro_login.html', error_message=error_message)
+
+# Company Signup
+@app.route('/TripOrganizer.com/account.pro/sign-up', methods = ['GET', 'POST'])
+def pro_signup():
+    error_message = ""
+    prousername =''
+    email = ''
+    password = ''
+    email_exist_msg = ''
+    username_exist_msg = ''
+    profile_pic = ""
+    date = today_date
+    if request.method == 'POST':
+        company = request.form.get('signupname')
+        email = request.form.get('signupemail')
+        password = request.form.get('signuppassword')
+        country = request.form.get('country')
+
+        state = request.form.get('state')
+        territory = request.form.get('territory')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        bio = request.form.get('bio')
+        pin = request.form.get('pin')
+
+        '''Adding user data to MySQL db'''
+
+        cursor = mysql.connection.cursor()
+        checking_email_unique = "SELECT * FROM pro_users WHERE email = %s"
+        values = (email,)
+        cursor.execute(checking_email_unique, values)
+        result = cursor.fetchall()
+
+        cursor = mysql.connection.cursor()
+        checking_username_unique = "SELECT * FROM pro_users WHERE company = %s"
+        values1 = (company,)
+        cursor.execute(checking_username_unique, values1)
+        result1 = cursor.fetchall()
+
+        if len(result) > 0:
+            email_exist_msg = "Email Already Taken"
+        elif len(result1) > 0:
+            username_exist_msg = "User Name Already In Use"
+        else:
+            # Insert new user data into the 'users' table
+            insert_query = "INSERT INTO pro_users (company, email, country, state, territory, pin, phone, password, address, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            values = (company, email, country, state, territory, pin, phone, password, address, date)
+            cursor.execute(insert_query, values)
+            mysql.connection.commit()
+
+            cursor = mysql.connection.cursor()
+            query = "SELECT pro_usersid, company FROM pro_users WHERE (email = %s OR company = %s) AND password = %s"
+            values = (email, company, password)
+            cursor.execute(query, values)
+            result = cursor.fetchall()
+            if len(result) > 0:
+                session['userid'] = result[0][0]
+                session['company'] = result[0][1]
+                return redirect('/TripOrganizer.com/account.pro')
+
+    return render_template('pro/pro_signup.html',email_exist_msg=email_exist_msg, username_exist_msg=username_exist_msg, email=email, company=company,
+                            country=country,
+                            state = state,
+                            territory = territory,
+                            address = address,
+                            phone = phone,
+                            bio = bio)
+
+
 # Travaler attendance
-@app.route('/sepwrite.com/account.pro/travaler-attendance/<travaler_id>/<user_id>/<booking_id>/<package_id>')
+@app.route('/TripOrganizer.com/account.pro/travaler-attendance/<travaler_id>/<user_id>/<booking_id>/<package_id>')
 def travaler_attendance(travaler_id, user_id, booking_id, package_id):
     cursor = mysql.connection.cursor()
 
@@ -2073,7 +2167,7 @@ def travaler_attendance(travaler_id, user_id, booking_id, package_id):
     return render_template('pro/travalers_list.html', travalers_list=travalers_list,package_id=package_id)
 
 # REmmove travelr form list of travalers
-@app.route('/sepwrite.com/account.pro/travaler-attendance-remove/<travaler_id>/<user_id>/<booking_id>/<package_id>')
+@app.route('/TripOrganizer.com/account.pro/travaler-attendance-remove/<travaler_id>/<user_id>/<booking_id>/<package_id>')
 def travaler_attendance_remove(travaler_id, user_id, booking_id, package_id):
     cursor = mysql.connection.cursor()
 
@@ -2111,7 +2205,7 @@ def travaler_attendance_remove(travaler_id, user_id, booking_id, package_id):
 
 
 # New notification mark as read
-@app.route('/sepwrite.com/account.pro/mark-us-read/<booking_id>')
+@app.route('/TripOrganizer.com/account.pro/mark-us-read/<booking_id>')
 def booking_mark_as_read(booking_id):
     cursor = mysql.connection.cursor()
     query = "UPDATE package_bookings SET viewed = 1 WHERE package_provider_id = %s AND booked_id = %s"
@@ -2120,7 +2214,7 @@ def booking_mark_as_read(booking_id):
     return redirect(url_for('pro_account'))
 
 # Company Logout Page
-@app.route('/sepwrite.com/account.pro/logout-section')
+@app.route('/TripOrganizer.com/account.pro/logout-section')
 def pro_logout_section():
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
@@ -2138,18 +2232,18 @@ def pro_logout_section():
         return redirect('pro.login')
     
 # Company Logout 
-@app.route('/sepwrite.com/account.pro/logout')
+@app.route('/TripOrganizer.com/account.pro/logout')
 def pro_logout():
     if 'prousercompany' in session:
         session.pop('prousercompany', None)  # Remove the user_id from the session
         session.pop('proid', None)
-        return redirect('/sepwrite.com/account.pro')
+        return redirect('/TripOrganizer.com/account.pro')
     else:
         return redirect('pro.login')
 
 # Company Tour packages
 
-@app.route('/sepwrite.com/account.pro/tour-packages')
+@app.route('/TripOrganizer.com/account.pro/tour-packages')
 def pro_tour_packages():
     if 'prousercompany' in session:
         # SQL query to select Tour Packages
@@ -2179,7 +2273,7 @@ def pro_tour_packages():
 
 # password changing page
 
-@app.route('/sepwrite.com/account.pro/password-changing', methods=['GET', 'POST'])
+@app.route('/TripOrganizer.com/account.pro/password-changing', methods=['GET', 'POST'])
 def pro_password_change():
     if 'prousercompany' in session:
        cursor = mysql.connection.cursor()
@@ -2197,7 +2291,7 @@ def pro_password_change():
 
 # password changing action page
 
-@app.route('/sepwrite.com/account.pro/password-changing_form', methods=['GET', 'POST'])
+@app.route('/TripOrganizer.com/account.pro/password-changing_form', methods=['GET', 'POST'])
 def pro_password_change2():
     if 'prousercompany' in session:
         ans = ''
@@ -2241,35 +2335,11 @@ def pro_password_change2():
     else:
         return redirect('pro.login')
 
-# company login
 
-@app.route('/sepwrite.com/account.pro/login', methods = ['GET', 'POST'])
-def pro_login():
-    error_message = ''
-    if request.method == 'POST':
-       email_or_username = request.form.get('prologinname')
-       password = request.form.get('prologinpassword')
-
-       ''' Checking password and username or email'''
-       cursor = mysql.connection.cursor()
-       query = "SELECT pro_usersid, userid, company FROM pro_users WHERE (email = %s OR company = %s) AND password = %s"
-       values = (email_or_username, email_or_username, password)
-       cursor.execute(query, values)
-       result = cursor.fetchall()
-       
-       if len(result) > 0:
-        session['proid'] = result[0][0]
-        session['prouserid'] = result[0][1]
-        session['prousercompany'] = result[0][2]
-        return redirect('/sepwrite.com/account.pro')
-       else:
-        error_message = "Invalid username/email or password"
-
-    return render_template('pro/pro_login.html', error_message=error_message)
 
 # Notifications 
 
-@app.route('/sepwrite.com/account.pro/notifcations')
+@app.route('/TripOrganizer.com/account.pro/notifcations')
 def pro_notifications():
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
@@ -2324,7 +2394,7 @@ def pro_notifications():
 
 # Pro Settings
 
-@app.route('/sepwrite.com/account.pro/company-settings', methods=['GET', 'POST'])
+@app.route('/TripOrganizer.com/account.pro/company-settings', methods=['GET', 'POST'])
 def pro_settings():
     flash = None
     if 'prousercompany' in session:
@@ -2390,11 +2460,11 @@ def pro_settings():
 
         return render_template('pro/pro_settings.html', data=result, email_error=email_error, flash=flash, noti_count=noti_result, noti_count1=result2)
     else:
-        return redirect('/sepwrite.com/account.pro/login')  # Use the redirect function here
+        return redirect('/TripOrganizer.com/account.pro/login')  # Use the redirect function here
 
 # Adding Packages images to database
 
-@app.route('/sepwrite.com/account.pro/tour-packages/add-form', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/tour-packages/add-form', methods=['POST', 'GET'])
 def adding_tourpackages():
     cursor = mysql.connection.cursor()
     if request.method == 'POST':      
@@ -2466,7 +2536,7 @@ def adding_tourpackages():
             mysql.connection.commit()
             cursor.close()
             flash = "New Package Added"
-            return redirect('/sepwrite.com/account.pro/tour-packages', flash=flash)
+            return redirect('/TripOrganizer.com/account.pro/tour-packages', flash=flash)
         except:
             var = "nothing"
             return render_template('pro/tour-packages-adding-form.html')
@@ -2474,7 +2544,7 @@ def adding_tourpackages():
 
 #EDITING AND UPDATING TOURPACKAGES BY TOUR OPERATOR
 
-@app.route('/sepwrite.com/account.pro/tour-packages/edit-form', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/tour-packages/edit-form', methods=['POST', 'GET'])
 def pro_editing_tourpackages():
     cursor = mysql.connection.cursor()
     if request.method == 'POST':
@@ -2500,21 +2570,21 @@ def pro_editing_tourpackages():
             print("Error:", str(e))
             mysql.connection.rollback()
             flash = "Error updating tour package"
-            return redirect('/sepwrite.com/account.pro/tour-packages')
+            return redirect('/TripOrganizer.com/account.pro/tour-packages')
 
         # Retrieve day program data based on the number of days
         day_programs = [request.form.get(f'day_program_{i}') for i in range(1, int(num_days) + 1)]
 
 
         '''Here Updating images to db'''
-    return redirect('/sepwrite.com/account.pro/tour-packages')
+    return redirect('/TripOrganizer.com/account.pro/tour-packages')
 
 
     return render_template('pro/tour-packages-adding-form.html')
 
 
 ## Tour Edit Package Details
-@app.route('/sepwrite.com/account.pro/pro-tour-packages-edit/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/pro-tour-packages-edit/<package_id>', methods=['POST', 'GET'])
 def pro_tour_package_edit(package_id):
     if 'prousercompany' in session:
         # SELECTING TOUR PACKAGE
@@ -2554,7 +2624,7 @@ def pro_tour_package_edit(package_id):
 
 
 # Tour Package Details
-@app.route('/sepwrite.com/account.pro/pro-tour-packages-details/<package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/pro-tour-packages-details/<package_id>', methods=['POST', 'GET'])
 def pro_tour_package_details(package_id):
     if 'prousercompany' in session:
         # SELECTING TOUR PACKAGE
@@ -2609,7 +2679,7 @@ def pro_tour_package_details(package_id):
 
 
 # Remove Tour Packages Details
-@app.route('/sepwrite.com/account.pro/remove-package/<package_id>')
+@app.route('/TripOrganizer.com/account.pro/remove-package/<package_id>')
 def remove_package(package_id):
     cursor = mysql.connection.cursor()
     try:
@@ -2694,8 +2764,9 @@ def remove_package(package_id):
 
 
 # View Package Order Details
-@app.route('/sepwrite.com/account.pro/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/tour-packages-booking-details/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_details(booking_id):
+    session['todate'] = package_date
     cursor = mysql.connection.cursor()
     query = """SELECT tour_packages.*, package_bookings.package_status
             FROM tour_packages
@@ -2713,7 +2784,7 @@ def pro_tour_booking_details(booking_id):
 
 
 # Accepting Package Booking request
-@app.route('/sepwrite.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_accept(booking_id):
     cursor = mysql.connection.cursor()
     try:
@@ -2740,7 +2811,7 @@ def pro_tour_booking_accept(booking_id):
     return render_template('pro/booking_details.html', flash=flash, booking_details=booking_details, booking_persons=booking_persons, bookingid=booking_id)
 
 # Reject Package Order Request
-@app.route('/sepwrite.com/account.pro/package-rejecting/<booking_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/package-rejecting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_reject(booking_id):
     cursor = mysql.connection.cursor()
     try:
@@ -2769,7 +2840,7 @@ def pro_tour_booking_reject(booking_id):
 
 #View all Bookings 
 
-@app.route('/sepwrite.com/account.pro/bookings')
+@app.route('/TripOrganizer.com/account.pro/bookings')
 def bookings():
     cursor = mysql.connection.cursor()
     query = """SELECT pb.*, tp.tourname
@@ -2809,7 +2880,7 @@ def bookings():
 
 # Provider account and datas deletion
 
-@app.route('/sepwrite.com/account.pro/provider_deletion')
+@app.route('/TripOrganizer.com/account.pro/provider_deletion')
 def provider_deletion():
     # Create a cursor
     cursor = conn.cursor()
@@ -2843,18 +2914,18 @@ def provider_deletion():
     if 'prousercompany' in session:
         session.pop('prousercompany', None)  # Remove the user_id from the session
         session.pop('proid', None)
-        return redirect('/sepwrite.com/account.pro')
+        return redirect('/TripOrganizer.com/account.pro')
     else:
         return redirect('pro.login')
     return redirect('pro.login')
 
 # Provider contact us page
 
-@app.route('/sepwrite.com/account.pro/contact-us')
+@app.route('/TripOrganizer.com/account.pro/contact-us')
 def contactus():
     return render_template('pro/contactus.html')
 
-@app.route('/sepwrite.com/account.pro/provider-search', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/account.pro/provider-search', methods=['POST', 'GET'])
 def provider_searching():
     if 'prousercompany' in session:
         if request.method == 'POST':
@@ -2997,7 +3068,7 @@ def admin_logout():
 
 ''' Facts Page '''
 
-@app.route('/sepwriteadmins.com/admin_facts', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/admin_facts', methods=['GET', 'POST'])
 def admin_facts():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM facts"
@@ -3006,7 +3077,7 @@ def admin_facts():
     return render_template('admin/admin_facts.html', facts=facts)
 
 # Adding new facts
-@app.route('/sepwriteadmins.com/add_facts', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/add_facts', methods=['GET', 'POST'])
 def add_facts():
     if request.method == 'POST':
         facts = request.form.get('facts')
@@ -3027,7 +3098,7 @@ def add_facts():
 
 #Deletion of facts
 
-@app.route('/sepwriteadmins.com/delete_fact/<int:fid>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_fact/<int:fid>', methods=['GET', 'POST'])
 def delete_fact(fid):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM facts WHERE facts_id = %s"
@@ -3046,7 +3117,7 @@ def delete_fact(fid):
 
 # ________________________________________________________#
 
-@app.route('/sepwriteadmins.com/users_admin')
+@app.route('/TripOrganizeradmins.com/users_admin')
 def users_admin():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM users"
@@ -3055,7 +3126,7 @@ def users_admin():
     return render_template('admin/admin_users.html', users=users)
 
 # Searching of user
-@app.route('/sepwriteadmins.com/users_admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/users_admin', methods=['POST', 'GET'])
 def search_user():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3066,7 +3137,7 @@ def search_user():
         return render_template('admin/admin_users.html', users=users)
 #Deletion of user
 
-@app.route('/sepwriteadmins.com/delete_user/<int:userid>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_user/<int:userid>', methods=['GET', 'POST'])
 def delete_user(userid):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM users WHERE user_id = %s"
@@ -3085,7 +3156,7 @@ def delete_user(userid):
 
 
 # Provider details
-@app.route('/sepwriteadmins.com/admin-providers')
+@app.route('/TripOrganizeradmins.com/admin-providers')
 def admin_providers():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM pro_users"
@@ -3095,11 +3166,11 @@ def admin_providers():
 
 #Deletion of user
 
-@app.route('/sepwriteadmins.com/delete_pro_user/<int:prouserid>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_pro_user/<int:prouserid>', methods=['GET', 'POST'])
 def delete_pro_user(prouserid):
     cursor = mysql.connection.cursor()
-    delete_query = "DELETE FROM pro_users WHERE proid = %s"
-    delete_val = (userid,)
+    delete_query = "DELETE FROM pro_users WHERE pro_usersid = %s"
+    delete_val = (prouserid,)
     cursor.execute(delete_query, delete_val)
     mysql.connection.commit()
     status_message = "Provider Deleted!!"
@@ -3114,7 +3185,7 @@ def delete_pro_user(prouserid):
 
 
 # Searching of user
-@app.route('/sepwriteadmins.com/pro_users_admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/pro_users_admin', methods=['POST', 'GET'])
 def search_pro_user():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3128,7 +3199,7 @@ def search_pro_user():
 # ________________________________________________________#
 
 #blogs
-@app.route('/sepwriteadmins.com/admin-blogs')
+@app.route('/TripOrganizeradmins.com/admin-blogs')
 def blogs_admin():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM blog"
@@ -3137,7 +3208,7 @@ def blogs_admin():
     return render_template('admin/admin_blog.html', blogs=blogs)
 
 # Deletion of blog
-@app.route('/sepwriteadmins.com/delete_blog/<int:blog_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_blog/<int:blog_id>', methods=['GET', 'POST'])
 def admin_delete_blog(blog_id):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM blog WHERE blogid = %s"
@@ -3155,7 +3226,7 @@ def admin_delete_blog(blog_id):
     return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
 
 # Searching for blogs
-@app.route('/sepwriteadmins.com/blogs_admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/blogs_admin', methods=['POST', 'GET'])
 def search_admin_blog():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3166,7 +3237,7 @@ def search_admin_blog():
         return render_template('admin/admin_blog.html', blogs=blogs)
 
 # details of blogs
-@app.route('/sepwriteadmins.com/blog-details/<int:blog_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/blog-details/<int:blog_id>', methods=['GET', 'POST'])
 def admin_blog_details(blog_id):
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM blog_comment WHERE blogid = %s"
@@ -3181,7 +3252,7 @@ def admin_blog_details(blog_id):
     return render_template('admin/blog_details.html', blog_images=blog_images, blog_comments=blog_comments, blog_id=blog_id)
    
 # Deletion of blog images
-@app.route('/sepwriteadmins.com/delete_blog_images/<int:image_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_blog_images/<int:image_id>', methods=['GET', 'POST'])
 def admin_delete_blog_images(image_id):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM blog_images WHERE blog_image_id = %s"
@@ -3200,7 +3271,7 @@ def admin_delete_blog_images(image_id):
     return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
 
 # Deletion of blog comment
-@app.route('/sepwriteadmins.com/delete_blog_comment/<int:comment_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_blog_comment/<int:comment_id>', methods=['GET', 'POST'])
 def admin_delete_blog_comment(comment_id):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM blog_comment WHERE commentid = %s"
@@ -3217,7 +3288,7 @@ def admin_delete_blog_comment(comment_id):
     return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
 
 
-@app.route('/sepwriteadmins.com/search-blogs-comments-admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/search-blogs-comments-admin', methods=['POST', 'GET'])
 def search_admin_blog_comment():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3231,7 +3302,7 @@ def search_admin_blog_comment():
 # ________________________________________________________#
 
 #Packages
-@app.route('/sepwriteadmins.com/packages_admin')
+@app.route('/TripOrganizeradmins.com/packages_admin')
 def packages_admin():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM tour_packages"
@@ -3240,7 +3311,7 @@ def packages_admin():
     return render_template('admin/admin_packages.html',packages=packages)
 
 # Details of Packages
-@app.route('/sepwriteadmins.com/packages-details/<int:package_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/packages-details/<int:package_id>', methods=['GET', 'POST'])
 def admin_package_details(package_id):
     # SELECTING TOUR PACKAGE
     query1 = """SELECT tp.*, pi.image_path
@@ -3284,7 +3355,7 @@ def admin_package_details(package_id):
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, package_reviews=package_reviews, package_id=package_id)
  
 # Search packages
-@app.route('/sepwriteadmins.com/packages_admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/packages_admin', methods=['POST', 'GET'])
 def search_admin_packages():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3295,7 +3366,7 @@ def search_admin_packages():
         return render_template('admin/admin_packages.html', packages=packages)
 
 # Deletion of package image
-@app.route('/sepwriteadmins.com/delete_package_image/<int:image_id>/<int:package_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_package_image/<int:image_id>/<int:package_id>', methods=['GET', 'POST'])
 def admin_delete_package_image(image_id, package_id):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM package_images WHERE package_image_id = %s"
@@ -3307,7 +3378,7 @@ def admin_delete_package_image(image_id, package_id):
     return redirect(url_for('admin_package_details', package_id=package_id))
 
 # Deletion of package review
-@app.route('/sepwriteadmins.com/delete_package_review/<int:review_id>/<int:package_id>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_package_review/<int:review_id>/<int:package_id>', methods=['GET', 'POST'])
 def admin_delete_package_review(review_id, package_id):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM package_review WHERE review_id = %s"
@@ -3318,7 +3389,7 @@ def admin_delete_package_review(review_id, package_id):
 
     return redirect(url_for('admin_package_details', package_id=package_id))
 
-@app.route('/sepwriteadmins.com/search-package-review-admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/search-package-review-admin', methods=['POST', 'GET'])
 def search_admin_package_review():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
@@ -3329,7 +3400,7 @@ def search_admin_package_review():
         package_reviews = cursor.fetchall()
         return render_template('admin/admin_packages_details.html', package_reviews=package_reviews,package_id=package_id)
 
-@app.route('/sepwriteadmins.com/remove-package-admin/<int:package_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/remove-package-admin/<int:package_id>', methods=['POST', 'GET'])
 def admin_remove_package(package_id):
     cursor = mysql.connection.cursor()
     query = """
@@ -3392,7 +3463,7 @@ def admin_remove_package(package_id):
 
 # ________________________________________________________#
 
-@app.route('/sepwriteadmins.com/bookings_admin')
+@app.route('/TripOrganizeradmins.com/bookings_admin')
 def bookings_admin():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM package_bookings"
@@ -3400,7 +3471,7 @@ def bookings_admin():
     bookings = cursor.fetchall()
     return render_template('admin/admin_bookings.html', bookings=bookings)
 
-@app.route('/sepwriteadmins.com/bookings_admin-details/<int:booking_id>/<int:package_id>')
+@app.route('/TripOrganizeradmins.com/bookings_admin-details/<int:booking_id>/<int:package_id>')
 def admin_booking_details(booking_id, package_id):
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM package_booked_travalers WHERE booking_id = %s"
@@ -3442,7 +3513,7 @@ def admin_booking_details(booking_id, package_id):
 
     
 # Canceling the tour package by user
-@app.route('/sepwrite.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizer.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
 def admin_booking_cancel(booking_id, package_name, provider_id):
     pro_view = "0"
     try:
@@ -3528,7 +3599,7 @@ def admin_booking_cancel(booking_id, package_name, provider_id):
 
 
 # Search bookings
-@app.route('/sepwriteadmins.com/bookings_admin', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/bookings_admin', methods=['POST', 'GET'])
 def search_admin_bookings():
     if request.method == 'POST':
         search_value = request.form.get('search_value')

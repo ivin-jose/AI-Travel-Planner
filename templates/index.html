@@ -322,7 +322,10 @@ button:hover {
   position: relative;
   z-index: 4000;  
 }
-
+</style>
+{% if session['userid'] %}
+{% else %}
+<style>
 .blur-overlay {
   pointer-events: none;
   z-index: 1;
@@ -338,6 +341,10 @@ button:hover {
 .blur-active {
     backdrop-filter: blur(0px); /* Blur value when the class is active */
 }
+</style>
+{% endif %}
+
+<style>
 #cityStateCountry {
     display: flex;
     flex-direction: row;
@@ -360,6 +367,8 @@ button:hover {
 <html>
 <body>
 <!--CHAT BOT POP UP -->
+{% if session['userid'] %}
+{% else %}
 <div class="botpopup arrow-top" id="botpopup">
   <div class="botpopup-wrapper">
     <p style="color: black; font-size: 19px;">Let's chat with our bot 😊</p>
@@ -380,7 +389,7 @@ button:hover {
 </div>
 <div class="botpopupbackground"></div>
 <!-- END OF POP -->
-
+{% endif %}
 <!-- MAIN SEARCH -->
 <section class="banner-bg-splash h-100vh bg-holder " data-jarallax='{"speed": 0.6}' data-jarallax-video="https://www.youtube.com/watch?v=35npVaFGHMY" id="main-search">
   <div class="container h-100">
@@ -858,6 +867,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+{% if session['userid'] %}
+{% else %}
 <!-- BLUR THE BODY PART -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -878,7 +889,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 4000);
     });
 </script>
-
+{% endif %}
 <!-- END POP UP -->
 
 <!-- AUTO END DATING IN TOUR PLANING FORM -->

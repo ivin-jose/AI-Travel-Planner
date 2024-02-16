@@ -63,21 +63,22 @@
 							</table>
                       </div>
                           <div>
-                            {% for row in booking_details %}
-                            {% if row[10] == 0 %}
-                              <a href="{{ url_for('pro_tour_booking_accept', booking_id=bookingid) }}" class="btn btn-primary d-grid">Accept Booking</a>
-                              <!-- <a href="" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: grey !important;">Reject Booking</a> -->
-                            {% endif %}
-                            {% if row[10] == 1 %}
-                              <!-- <p href="" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: grey !important; color: lightgrey; cursor: none;"  >Accept Booking</p> -->
-                              <a href="{{ url_for('pro_tour_booking_reject', booking_id=bookingid) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
-                            {% endif %}
-                            {% if row[10] == 2 %}
-                              <a href="{{ url_for('pro_tour_booking_accept', booking_id=bookingid) }}" class="btn btn-primary d-grid">Accept Booking</a>
-                              <a href="{{ url_for('pro_tour_booking_reject', booking_id=bookingid) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
-                            {% endif %}
-                            	
-                              {% endfor %}
+{% for row in booking_details %}
+    {% if row[4] >= session['todate'] %}
+        {% if row[10] == 0 %}
+            <a href="{{ url_for('pro_tour_booking_accept', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid">Accept Booking</a>
+        {% elif row[10] == 1 %}
+            <a href="{{ url_for('pro_tour_booking_reject', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
+        {% elif row[10] == 2 %}
+            <a href="{{ url_for('pro_tour_booking_accept', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid">Accept Booking</a>
+            <a href="{{ url_for('pro_tour_booking_reject', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
+        {% endif %}
+    {% els %}
+        <br>
+        <center><h3>Date Expired..!</h3></center>
+    {% endif %}
+{% endfor %}
+
                           </div>
                         </div>
                       </div>

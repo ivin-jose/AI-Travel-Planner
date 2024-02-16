@@ -180,10 +180,10 @@
                 <div class="d-lg-flex align-items-center text-center">
                   <div class="topbar-left mb-2 mb-lg-0">
                     <div class="topbar-call d-inline-flex">
-                      <a href="mailto:info@example.com"><img src="images/phone.svg" alt="#"> Call Services  +126-632-2345</a>
+                      <a href="mailto:info@example.com">Call Services +91 6235474440</a>
                     </div>
                     <div class="me-auto d-inline-flex">
-                      <a href="tel:1-800-555-1234"><i class="fa-solid fa-location-dot me-2"></i>220E Front St. Burlington NC 27215</a>
+                      <a href="tel:1-800-555-1234"><i class="fa-solid fa-location-dot me-2"></i>Calicut, Kerala India673573</a>
                     </div>
                   </div>
                   <div class="topbar-right ms-auto justify-content-center">
@@ -207,7 +207,7 @@
         <div class="container main-header position-relative">
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"><i class="fas fa-align-left"></i></button>
           <a class="navbar-brand" href="index.html">
-            <img class="img-fluid" src="images/logo.png" alt="logo">
+            <img class="img-fluid" src="{{ url_for('static', filename='images/client-logo/main_logo.jpe')}}" alt="logo">
           </a>
           <div class="navbar-collapse collapse justify-content-end justify-content-lg-center">
             <ul class="nav navbar-nav">
@@ -216,7 +216,7 @@
               </li>
 
               <li class="nav-item dropdown {% if 'tour_planner'  in request.url_rule.endpoint %}active{% endif %}">
-               <a class="nav-link" href="{{ url_for('tour_planner') }}">AI planner</a>
+               <a class="nav-link" href="{{ url_for('tour_planner') }}">AI Planner</a>
 
               </li>
 
@@ -397,8 +397,8 @@ footer-->
             <div class="footer-contact-info">
               <ul class="list-unstyled mb-0">
                 <li><img class="img-fluid" src="{{ url_for('static', filename='images/address.png') }}" alt="#"><span class="address">17504 Carlton Cuevas Rd, Gulfport, MS, 39503</span></li>
-                <li><img class="img-fluid" src="{{ url_for('static', filename='images/phone.png') }}" alt="#"><span class="phone">+(704) 279-1249</span></li>
-                <li><img class="img-fluid" src="{{ url_for('static', filename='images/email.png') }}" alt="#"><span class="email">letstalk@Ciyatrip.com</span></li>
+                <li><img class="img-fluid" src="{{ url_for('static', filename='images/phone.png') }}" alt="#"><span class="phone">+(91) 6235474440</span></li>
+                <li><img class="img-fluid" src="{{ url_for('static', filename='images/email.png') }}" alt="#"><span class="email">TripOrganizer@yahoo.com</span></li>
               </ul>
             </div>
           </div>
@@ -421,7 +421,7 @@ footer-->
           </div>
         </div>
         <div class="col-12 col-md-6 text-center text-md-end mt-2 mt-md-0">
-          <p class="mb-0"> &copy; Copyright <span id="copyright"> <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script></span> <a href="index.html"> Ciyatrip </a> All Rights Reserved</p>
+          <p class="mb-0"> &copy; Copyright <span id="copyright"> <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script></span> <a href="index.html"> TripOrganizer </a> All Rights Reserved</p>
         </div>
       </div>
     </div>

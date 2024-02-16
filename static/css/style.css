@@ -4618,7 +4618,8 @@ input[type="radio"]:radio {
       .header .navbar .navbar-nav .nav-item:last-child {
         margin-right: 0; }
     .header .navbar .navbar-nav .nav-link {
-      color: #102636;
+      
+      color: grey;
       font-family: "Montserrat", sans-serif;
       font-size: 16px;
       display: -webkit-box;

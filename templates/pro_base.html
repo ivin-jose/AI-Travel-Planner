@@ -180,8 +180,8 @@
                 <a class="nav-link" href="{{ url_for('pro_settings') }}">Profile</i></a>
               </li>
 
-              <li class="nav-item dropdown {% if 'contactus'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="{{ url_for('contactus') }}" role="button" >Contact US</i></a>
+              <li class="nav-item dropdown {% if 'pro_notifications'  in request.url_rule.endpoint %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('pro_notifications')}}" role="button" >Notifications</i></a>
               </li>
              <!-- <a href="sign-up.html" class="btn btn-primary menu-btn ms-4 d-none d-xl-block">Sign In</a> -->
             </div>
