@@ -66,12 +66,12 @@
 {% for row in booking_details %}
     {% if row[4] >= session['todate'] %}
         {% if row[10] == 0 %}
-            <a href="{{ url_for('pro_tour_booking_accept', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid">Accept Booking</a>
+            <a href="{{ url_for('pro_tour_booking_accept', booking_id=bookingid) }}" class="btn btn-primary d-grid">Accept Booking</a>
         {% elif row[10] == 1 %}
-            <a href="{{ url_for('pro_tour_booking_reject', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
+            <a href="{{ url_for('pro_tour_booking_reject', booking_id=bookingid) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
         {% elif row[10] == 2 %}
-            <a href="{{ url_for('pro_tour_booking_accept', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid">Accept Booking</a>
-            <a href="{{ url_for('pro_tour_booking_reject', booking_id=row[bookingid_column_index]) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
+            <a href="{{ url_for('pro_tour_booking_accept', booking_id=bookingid) }}" class="btn btn-primary d-grid">Accept Booking</a>
+            <a href="{{ url_for('pro_tour_booking_reject', booking_id=bookingid) }}" class="btn btn-primary d-grid" style="margin-top: 20px; background-color: red !important;">Reject Booking</a>
         {% endif %}
     {% else %}
         <br>
