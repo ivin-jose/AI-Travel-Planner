@@ -395,7 +395,7 @@ button:hover {
   <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
       <div class="col-md-10 text-center align-self-center position-relative">
-        <h1 class="text-white mb-3">I love Traveling</h1>
+        <h1 class="text-white mb-3">TRIP ORGANIZER</h1>
         <span class="text-white ">We are here to solve all your travel problems</span>
         <div class="row justify-content-center">
           <div class="col-md-9">
@@ -427,6 +427,9 @@ button:hover {
 <div id="cityStateCountry"></div>
 <div id="relatedImages" class="row"></div>
 <div id="relatedImageslabel" class="row"></div>
+<center>
+<div id="searchpackagelink"></div>
+</center>
 
   <div id="home_search_preloader" style="display: flex;
     justify-content: center;
@@ -684,6 +687,13 @@ Blog -->
           $('#home_search_preloader').hide();
           $('#city').text(data.city);
           $('#cityStateCountry').text(data.city_state_country);
+
+          var packagelink = $('#searchpackagelink');
+         var packageHtml = '<div class="col-lg-3 col-md-3">' +
+                  '<a href="{{ url_for("user_package_searching_onhome", search_value="'+ data.city +'") }}">Some Packages</a>' +
+                  '</div>';
+
+          packagelink.append(packageHtml);
 
           // Display related images
           if (data.search_related_images && data.search_related_images.length > 0) {

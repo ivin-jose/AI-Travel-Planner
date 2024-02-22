@@ -34,7 +34,7 @@
 <div class="container row main-img">
 	<div class="col-lg-6 col-md-6" style="display: flex;
     flex-direction: row-reverse;">
-		<div><img src="{{ img }}" alt="Uploaded Image" width="300" height="300" style="object-fit: fill; border-radius: 10px"></div>
+		<div><img src="{{ url_for('static', filename='upload_images/place.jpg') }}" alt="{{ img }}" width="300" height="300" style="object-fit: fill; border-radius: 10px"></div>
 	</div>
 	<div class="col-lg-6 col-md-6 sub-img">
 		<div><h4>{{ place_name }}</h4></div>

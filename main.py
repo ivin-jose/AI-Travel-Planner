@@ -313,6 +313,14 @@ def search_city():
     try:
         if request.method == 'POST':
             city_to_search = request.form.get('search_text')
+
+            cursor = mysql.connection.cursor()
+            query = "SELECT * FROM tour_packages WHERE tourname LIKE %s OR country LIKE %s OR territory LIKE %s ORDER BY RAND() LIMIT 4;"
+            search_param = '%' + city_to_search + '%';  # Adding wildcards to search for partial matches
+            cursor.execute(query, (search_param, search_param, search_param))
+            related_tours = cursor.fetchall()
+
+
             url = "https://travel-advisor.p.rapidapi.com/locations/v2/auto-complete"
             querystring = {
                 "query": city_to_search,
@@ -369,7 +377,8 @@ def search_city():
         "city": city_to_search,
         "city_state_country": city_state_country,
         "search_related_images": search_related_images,
-        "search_related_searches": search_related_searches
+        "search_related_searches": search_related_searches,
+        "related_tours" : related_tours
     })
 
     # END OF HOME MAIN SEARCH
@@ -485,7 +494,7 @@ def user_booking_details_not(booking_id):
 
 
 # if home 
-@app.route('/user.settings')
+@app.route('/TripOrganizer.com/user.settings')
 def user_settings():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM users WHERE user_id = %s"
@@ -494,7 +503,7 @@ def user_settings():
     result = cursor.fetchall()
     return render_template('user_settings.html', data = result)
 
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/TripOrganizer.com/login', methods = ['GET', 'POST'])
 def login():
     error_message = ''
     if request.method == 'POST':
@@ -517,7 +526,7 @@ def login():
 
     return render_template('login.html', error_message=error_message)
 
-@app.route('/signup', methods = ['GET', 'POST'])
+@app.route('/TripOrganizer.com/signup', methods = ['GET', 'POST'])
 def signup():
     username =''
     email = ''
@@ -568,14 +577,14 @@ def signup():
                 return redirect('/TripOrganizer.com')
 
 
-            return redirect('/login')
+            return redirect('TripOrganizer.com/login')
 
     return render_template('signup.html', email_exist_msg=email_exist_msg, username=username, email=email,
                          password=password, username_exist_msg=username_exist_msg)
 
 ''' User Session logout '''
 
-@app.route('/user-logout')
+@app.route('/TripOrganizer.com/user-logout')
 def user_logout():
     return render_template('user_delete.html')
 
@@ -588,7 +597,7 @@ def logout():
 
 
 ''' User Profile '''
-@app.route('/userprofile', methods = ['GET', 'POST'])
+@app.route('/TripOrganizer/userprofile', methods = ['GET', 'POST'])
 def userprofile():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM users WHERE user_id = %s"
@@ -1371,7 +1380,7 @@ def tour_package_details(package_id):
         return render_template('tour_package_details.html', tour_packages_data=tour_packages_data, user_attendance=user_attendance, user_travaled=user_travaled,
             tour_packages_day=tour_packages_day, tour_packages_image=tour_packages_image, pro_user_details=pro_user_details, package_reviews=package_reviews, average_rating=average_rating)
     else:
-        return redirect('/login')
+        return redirect('/TripOrganizer.com/login')
 
 # Saving packages
 @app.route('/TripOrganizer.com/tour-packages-saving/<package_id>', methods=['POST', 'GET'])
@@ -1631,7 +1640,7 @@ def saved_packages():
         cursor.close()
         return render_template('saved_packages.html', tour_packages_data=tour_packages_data)
     else:
-        return redirect('/login')
+        return redirect('/TripOrganizer.com/login')
 
         # User package searching 
 
@@ -2044,6 +2053,7 @@ WHERE pb.package_id = %s;
 # company login
 @app.route('/TripOrganizer.com/account.pro/login', methods = ['GET', 'POST'])
 def pro_login():
+    session['today_date'] = today_date
     error_message = ''
     if request.method == 'POST':
        email_or_username = request.form.get('prologinname')
@@ -2075,6 +2085,14 @@ def pro_signup():
     email_exist_msg = ''
     username_exist_msg = ''
     profile_pic = ""
+    company = ''
+    country = ''
+    state = ''
+    territory = ''
+    address = ''
+    phone = ''
+    bio = ''
+    pin = ''
     date = today_date
     if request.method == 'POST':
         company = request.form.get('signupname')
@@ -2813,6 +2831,7 @@ def pro_tour_booking_accept(booking_id):
 # Reject Package Order Request
 @app.route('/TripOrganizer.com/account.pro/package-rejecting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_reject(booking_id):
+    session['todate'] = package_date
     cursor = mysql.connection.cursor()
     try:
         query = "UPDATE package_bookings SET package_status = 0, package_status_view = 0 WHERE booked_id = %s;"
@@ -2842,6 +2861,10 @@ def pro_tour_booking_reject(booking_id):
 
 @app.route('/TripOrganizer.com/account.pro/bookings')
 def bookings():
+    session['todate'] = package_date
+    # Assuming session['today_date'] is a string in the format '12-AUG-2021'
+    today_date_str = today_date
+    session['today_date'] = datetime.strptime(today_date_str, '%d-%b-%Y')
     cursor = mysql.connection.cursor()
     query = """SELECT pb.*, tp.tourname
         FROM package_bookings pb
@@ -2956,7 +2979,7 @@ def provider_searching():
 ''' CHECK THE ADMIN LOGIN SESSION '''
 
 
-@app.route('/admin_dashboard', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com', methods=['GET', 'POST'])
 def admin_dashboard():
     if 'admin_name' in session and 'adminid' in session:
         cursor = mysql.connection.cursor()
@@ -2965,12 +2988,12 @@ def admin_dashboard():
         admins = cursor.fetchall()
         return render_template('admin/dashboard.html', admins = admins)
     else:
-        return redirect('admin')
+        return redirect('/TripOrganizeradmins.com/admin')
 
 
 ''' Admin Login and session creation '''
 
-@app.route('/admin', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/admin', methods=['GET', 'POST'])
 def admin():
     error_message = ''
 
@@ -3003,7 +3026,7 @@ def admin():
 
 ''' Add admin name and passwords to db '''
 
-@app.route('/add_admin', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/add_admin', methods=['GET', 'POST'])
 def add_admin():
  if request.method == 'POST':
     adminname = request.form.get('admin_name')
@@ -3040,7 +3063,7 @@ def add_admin():
 
 ''' Delete admins '''
 
-@app.route('/delete_admin/<int:aid>', methods=['GET', 'POST'])
+@app.route('/TripOrganizeradmins.com/delete_admin/<int:aid>', methods=['GET', 'POST'])
 def delete_admin(aid):
     cursor = mysql.connection.cursor()
     delete_query = "DELETE FROM admin WHERE adminid = %s"
@@ -3058,7 +3081,7 @@ def delete_admin(aid):
 
 ''' Session Logout Admins '''
 
-@app.route('/admin_logout')
+@app.route('/TripOrganizeradmins.com/admin_logout')
 def admin_logout():
    session['adminid'] = None
    session['admin_name'] = None
@@ -3068,7 +3091,7 @@ def admin_logout():
 
 ''' Facts Page '''
 
-@app.route('/TripOrganizeradmins.com/admin_facts', methods=['GET', 'POST'])
+@app.route('/TripOrganizer.com.com/admin_facts', methods=['GET', 'POST'])
 def admin_facts():
     cursor = mysql.connection.cursor()
     query = "SELECT * FROM facts"
@@ -3513,7 +3536,7 @@ def admin_booking_details(booking_id, package_id):
 
     
 # Canceling the tour package by user
-@app.route('/TripOrganizer.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
+@app.route('/TripOrganizeradmins.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
 def admin_booking_cancel(booking_id, package_name, provider_id):
     pro_view = "0"
     try:

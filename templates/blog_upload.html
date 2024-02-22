@@ -156,7 +156,7 @@ form input[type="file"] {
         <ul class="nav">
           <li class="nav-item"><a class="nav-link px-2 active" href="{{ url_for('userprofile') }}"><i class="fa fa-fw fa-bar-chart mr-1"></i><span>{{ session['username']}}</span></a></li>
           <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('blog_home') }}" target="__blank"><i class="fa fa-fw fa-th mr-1"></i><span>Blogs</span></a></li>
-          <li class="nav-item"><a class="nav-link px-2" href="https://www.bootdey.com/snippets/view/bs4-edit-profile-page" target="__blank"><i class="fa fa-fw fa-cog mr-1"></i><span>Settings</span></a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="{{ url_for('user_settings') }}" target="__blank"><i class="fa fa-fw fa-cog mr-1"></i><span>Settings</span></a></li>
         </ul>
       </div>
     </div>

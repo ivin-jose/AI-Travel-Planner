@@ -45,7 +45,7 @@
   								  	{% for row in all %}
   									    <tr>
   									      <td>{{row[0]}}</td>
-  									      <td>{{row[7]}}</td>
+  									      <td>{{row[10]}}</td>
   									      <td>{% if row[5] == 1 %}
   									      	Accepted
   									      	{% endif %}
@@ -81,7 +81,7 @@
 							  	{% for row in accepted %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[7]}}</td>
+								      <td>{{row[10]}}</td>
 								      <td>Granted</td>
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
 								      <td><a href="{{ url_for('pro_tour_booking_reject', booking_id=row[0]) }}">Reject</a></td>
@@ -109,7 +109,7 @@
 							  	{% for row in rejected %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[7]}}</td>
+								      <td>{{row[10]}}</td>
 								      <td>Rejected</td>
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
 								      <td><a href="{{ url_for('pro_tour_booking_accept', booking_id=row[0]) }}">Accept</a></td>
@@ -137,11 +137,14 @@
 							  	{% for row in pending %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[7]}}</td>
+								      <td>{{row[10]}}</td>
 								      <td>Pending</td>
+								      
+								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}"></a></td>
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
 								      <td><a href="{{ url_for('pro_tour_booking_accept', booking_id=row[0]) }}">Accept</a></td>
 								      <td><a href="{{ url_for('pro_tour_booking_reject', booking_id=row[0]) }}">Reject</a></td>
+								      
 								    </tr>
 							    {% endfor %}
 							  </tbody>

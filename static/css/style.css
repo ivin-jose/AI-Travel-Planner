@@ -4649,7 +4649,7 @@ input[type="radio"]:radio {
       border-radius: 6px; }
 
 .header.sign-header .navbar-brand img {
-  width: 210px; }
+  width: 120px; }
 
 .add-listing {
   display: -webkit-box;
@@ -5027,7 +5027,7 @@ input[type="radio"]:radio {
     padding: 20px 0;
     display: inline-block; }
     .header.header-transparent-2 .navbar-brand img {
-      height: 70px; }
+      height: 120px; }
 
 .header.header-3 .topbar {
   padding: 0 65px; }
@@ -5129,7 +5129,7 @@ input[type="radio"]:radio {
   .header.sign-header {
     background-color: #3dd1d5 !important; }
     .header.sign-header .navbar-brand img {
-      width: 210px; } }
+      width: 120px; } }
 
 @media (max-width: 991px) {
   .header .navbar-collapse {
@@ -6319,8 +6319,7 @@ blockquote {
 /*Banner bg*/
 .banner-bg-splash h1 {
   font-size: 84px;
-  -webkit-text-stroke: 1px #ffffff;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.5); }
+ -webkit-text-fill-color: black; }
 
 .banner-bg-splash .search {
   position: relative; }
