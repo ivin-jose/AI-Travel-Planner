@@ -403,7 +403,7 @@ button:hover {
               <form action="{{ url_for('search_city') }}" id="home-search-form" method="POST">
                 <div>
                   <div>
-                    <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text">
+                    <input type="text" class="form-control border-0" placeholder="Search for Travel" name="search_text" id="search_text" required>
                   </div>
                   <div>
                     <input class="btn btn-primary" type="submit" value="Search" id="home_search_btn">
@@ -653,80 +653,90 @@ Blog -->
 <!-- AUTOMATICALY RETURN TO RESULT LOADING SECTION OF MAIN PAGE -->
 <script type="text/javascript">
   $('#home_search_btn').click(function() {
-    $(".search-result").show();
-  // Show preloader
-    $('#home_search_preloader').show();
-    $('html, body').animate({
-      scrollTop: $('#home-search-form').offset().top
-    }, 5);
-  });
+    var searchText = $('#search_text').val().trim();
+    if (searchText === '') {
+        // Handle case when search text is empty
+    } else {
+        $(".search-result").show();
+        // Show preloader
+        $('#home_search_preloader').show();
+        $('html, body').animate({
+            scrollTop: $('#home-search-form').offset().top
+        }, 5);
+    }
+});
 </script>
 
 <script>
   $(document).ready(function() {
     // Attach an event handler to the form submission
     $("#home-search-form").submit(function(event) {
-      // Prevent the default form submission
-      event.preventDefault();
+        // Prevent the default form submission
+        event.preventDefault();
 
-      // Get the form data
-      var formData = {
-        'search_text': $('#search_text').val()
-      };
+        // Get the search text value
+        var searchText = $('#search_text').val();
 
-      // Send an AJAX request
-      $.ajax({
-        type: 'POST',
-        url: '{{ url_for("search_city") }}',
-        data: formData,
-        dataType: 'json',
-        success: function(data) {
-          $('html, body').animate({
-            scrollTop: $('#home-search-form').offset().top
-          }, 5);
-          $('#home_search_preloader').hide();
-          $('#city').text(data.city);
-          $('#cityStateCountry').text(data.city_state_country);
+        // If search text is not empty, proceed with AJAX request
+        if (searchText.trim() !== '') { // Check if search text is not empty or only whitespace
+            var formData = {
+                'search_text': searchText
+            };
 
-          var packagelink = $('#searchpackagelink');
-         var packageHtml = '<div class="col-lg-3 col-md-3">' +
-                  '<a href="{{ url_for("user_package_searching_onhome", search_value="'+ data.city +'") }}">Some Packages</a>' +
-                  '</div>';
+            $.ajax({
+                type: 'POST',
+                url: '{{ url_for("search_city") }}',
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    $('html, body').animate({
+                        scrollTop: $('#home-search-form').offset().top
+                    }, 5);
+                    $('#home_search_preloader').hide();
+                    $('#city').text(data.city);
+                    $('#cityStateCountry').text(data.city_state_country);
 
-          packagelink.append(packageHtml);
+                    var packagelink = $('#searchpackagelink');
+                    var packageHtml = '<div class="col-lg-3 col-md-3">' +
+                        '<a href="{{ url_for("user_package_searching_onhome", search_value="'+ data.city +'") }}">Some Packages</a>' +
+                        '</div>';
 
-          // Display related images
-          if (data.search_related_images && data.search_related_images.length > 0) {
-              var imagesContainer = $('#relatedImages');
-              var maxImages = 4; // Maximum number of images to display
-              for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
-                  var image = data.search_related_images[i];
-                  var imageHtml = '<div class="col-lg-3 col-md-3">' +
-                                      '<img src="' + image.src + '" alt="' + image.label + '"style="width: 100%; height: 70%; object-fit: contain;">' +
-                                  '</div>';
-                  imagesContainer.append(imageHtml);
-              }
-          }
-          // Display related image captions
-          if (data.search_related_images && data.search_related_images.length > 0) {
-              var imagesContainer = $('#relatedImageslabel');
-              var maxImages = 4; // Maximum number of images to display
-              for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
-                  var image = data.search_related_images[i];
-                  var imageHtml = '<div class="col-lg-3 col-md-3">' +
-                                      '<a class="searchLink" href="#" data-label="' + image.label + '">' + image.label + '</a>'
-                                  '</div>';
-                  imagesContainer.append(imageHtml);
-              }
-          }
-        },
-        error: function(error) {
-          console.log("Error:", error);
+                    packagelink.append(packageHtml);
+
+                    // Display related images
+                    if (data.search_related_images && data.search_related_images.length > 0) {
+                        var imagesContainer = $('#relatedImages');
+                        var maxImages = 4; // Maximum number of images to display
+                        for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
+                            var image = data.search_related_images[i];
+                            var imageHtml = '<div class="col-lg-3 col-md-3">' +
+                                '<img src="' + image.src + '" alt="' + image.label + '"style="width: 100%; height: 70%; object-fit: contain;">' +
+                                '</div>';
+                            imagesContainer.append(imageHtml);
+                        }
+                    }
+                    // Display related image captions
+                    if (data.search_related_images && data.search_related_images.length > 0) {
+                        var imagesContainer = $('#relatedImageslabel');
+                        var maxImages = 4; // Maximum number of images to display
+                        for (var i = 0; i < Math.min(data.search_related_images.length, maxImages); i++) {
+                            var image = data.search_related_images[i];
+                            var imageHtml = '<div class="col-lg-3 col-md-3">' +
+                                '<a class="searchLink" href="#" data-label="' + image.label + '">' + image.label + '</a>' +
+                                '</div>';
+                            imagesContainer.append(imageHtml);
+                        }
+                    }
+                },
+                error: function(error) {
+                    console.log("Error:", error);
+                }
+            });
         }
-      });
     });
-  });
+});
 </script>
+
 <!-- END OF AJAX CALLING -->
 
 <!-- google search -->

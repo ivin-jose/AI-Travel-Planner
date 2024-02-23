@@ -1517,25 +1517,32 @@ def tour_package_saved_dlt(package_id):
 def tour_package_booking_payment():
     price = 0.0
     package_name = "Not Available"
-    if request.method == 'POST':
-        if request.method == 'POST':
-            provider = request.form.get('pro_id')
-            num_people = request.form.get('days')
-            package_id = request.form.get('package_id')
-            name = request.form.get('username')
-            user_identity_document = request.form.get('user_identity_document')
-            phone = request.form.get('phone')
-            price = request.form.get('price')
-            package_name = request.form.get('package_name')
+    if request.method == 'POST':        
+        provider = request.form.get('pro_id')
+        num_people = request.form.get('days')
+        package_id = request.form.get('package_id')
+        name = request.form.get('username')
+        user_identity_document = request.form.get('user_identity_document')
+        phone = request.form.get('phone')
+        price = request.form.get('price')
+        package_name = request.form.get('package_name')
 
-            session['booking_form_provider'] = provider
-            session['booking_form_num_people'] = num_people
-            session['booking_form_package_id'] = package_id
-            session['booking_form_name'] = name
-            session['booking_form_user_identity_document'] = user_identity_document
-            session['booking_form_phone'] = phone
+        persons = []  # List to store person details
+        for i in range(1, int(num_people) + 1):
+            person_name = request.form.get(f'personname{i}')
+            person_id = request.form.get(f'person_id_{i}')
+            if person_name and person_id:  # Check if both name and ID are provided
+                persons.append({'name': person_name, 'id': person_id})
 
-    return render_template('tour_package_payment.html', package_price=price, package_name=package_name)
+        session['persons'] = persons
+        session['booking_form_provider'] = provider
+        session['booking_form_num_people'] = num_people
+        session['booking_form_package_id'] = package_id
+        session['booking_form_name'] = name
+        session['booking_form_user_identity_document'] = user_identity_document
+        session['booking_form_phone'] = phone
+
+    return render_template('tour_package_payment.html', package_price=price, package_name=package_name, persons=persons)
 
 # user_tour_package_booking
 @app.route('/TripOrganizer.com/tour-packages-booking', methods=['POST', 'GET'])
@@ -1551,7 +1558,9 @@ def user_tour_package_booking():
     name = session['booking_form_name']
     user_identity_document = session['booking_form_user_identity_document']
     phone = session['booking_form_phone']
+    travalers = session['persons']
     date = today_date
+    flash = ""
 
     cursor = mysql.connection.cursor()
     query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
@@ -1566,38 +1575,42 @@ def user_tour_package_booking():
     cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
     mysql.connection.commit()
 
+    for person in travalers:
+        person_name = person.get('name')
+        person_id_document = person.get('id')
 
-    travalers = []
-
-    for i in range(1, int(num_people) + 1):
-        person_name = request.form.get(f'personname{i}')
-        person_id_document = request.form.get(f'person_id_{i}')
-        travalers.append((person_name, person_id_document))
-    try:
-        # Assuming you have established a database connection and obtained a cursor object
-        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document) VALUES (%s, %s, %s)"
+        try:
+            # Assuming you have established a database connection and obtained a cursor object
+            insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
         
-        for person_name, person_id_document in travalers:
-            cursor.execute(insert_query, (booking_id, person_name, person_id_document))
+            # Insert the current person's data into the database
+            cursor.execute(insert_query, (booking_id, person_name, person_id_document, phone))
+        
+            # Commit the changes to the database
+            mysql.connection.commit()
+            flash = "Request Submitted..!"
 
-        # Commit the changes to the database
-        mysql.connection.commit()
-        flash = "Request Submitted..!"
+        except Exception as e:
+            # Rollback the transaction in case of any errors
+            mysql.connection.rollback()
+            print("Error:", e)
 
-    except Exception as e:
-        # Handle any exceptions that may occur during the database operations
-        # You should add appropriate error handling and logging here
-        print("An error occurred:", e)
-    except Exception as e:
-        mysql.connection.rollback()
-        return f"Error: {str(e)}"
+
+        except Exception as e:
+            # Handle any exceptions that may occur during the database operations
+            # You should add appropriate error handling and logging here
+            flash = ("An error occurred:", e)
+        except Exception as e:
+            mysql.connection.rollback()
+            return f"Error: {str(e)}"
+            
     query = """SELECT pb.*, tp.tourname, tp.from_date
             FROM package_bookings pb
             INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
             WHERE pb.user_id = %s
             ORDER BY pb.booked_id DESC;
     """
-    cursor.execute(query, (session['userid'],))
+    cursor.execute(query, (session['userid'],)) 
     tour_bookings = cursor.fetchall()
     cursor.close();
 

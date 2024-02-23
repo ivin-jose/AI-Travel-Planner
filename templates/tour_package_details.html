@@ -271,7 +271,7 @@
                                   <input type="text" name="user_identity_document" class="form-control datetimepicker-input" placeholder="ID/PASSPORT" id="user_identity_document">
                                 </div>
                                  <label>Number of People: <span class="days-label" style="color: red;"></span></label>
-                                <input class="form-control" type="text" name="days" id="days">
+                                <input class="form-control" type="text" name="days" id="days" value="0">
 
                                 <div class="form-group" id="day-program-container"></div>
 
@@ -282,7 +282,6 @@
                                             <input type="button" class="btn btn-primary d-grid" value="Date Expired" style="color: red;">
                                       {% else %}
                                         <input type="submit" class="btn btn-primary d-grid" value="Request Booking">
-                                 
                                       {% endif %}
                                      {% endfor %}
                                     </div>
@@ -443,16 +442,35 @@
         var user_identity_document = document.getElementById('user_identity_document').value;
         var days = document.getElementById('days').value;
         
-
+        // Regular expression to match only characters
+        var lettersOnly = /^[A-Za-z\s]+$/;
         // Check if any field is empty
         if (username == "") {
             document.getElementById("message").innerHTML = "Enter name";
             return false;
         }
-        if (phone == "") {
+
+        else if (!lettersOnly.test(username)) {
+        document.getElementById("message").innerHTML = "Username must contain only letters";
+        return false;
+        }
+
+        else if (username.length < 2) {
+          document.getElementById("message").innerHTML = "Username must be at least 2 characters long";
+          return false;
+        }
+
+        else if (phone == "") {
             document.getElementById("message").innerHTML = "Enter Phone Number";
             return false;
         }
+
+        else if (isNaN(phone)) {
+        document.getElementById("message").innerHTML = "Phone number must be numeric";
+        return false;
+        
+        }
+
         else if (user_identity_document == "") {
             document.getElementById("message").innerHTML = "Enter Identity card";
             return false;
