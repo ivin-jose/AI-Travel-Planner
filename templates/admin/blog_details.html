@@ -1,5 +1,12 @@
 {% extends 'admin_base.html' %}
 {% block content %}
+<style type="text/css">
+    h3 {
+        font-family: auto;
+        text-decoration: underline;
+        padding-bottom: 10px;
+    }
+    </style>
 <div class="col-lg-10" style="margin-top: 0px; margin-left: 200px;">
 <!-- Button trigger modal -->
 
@@ -53,7 +60,7 @@
 
     {% if blog_images %}
     <h3>Blog Images</h3>
-    <table class="table">
+    <table  class="table table-striped" style="font-family: system-ui;">
       <thead>
         <tr>
           <th scope="col">comment ID</th>
@@ -95,7 +102,7 @@
 
 {% if blog_comments %}
 <h3>Blog Comments</h3>
-<table class="table">
+<table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
       <th scope="col">comment ID</th>

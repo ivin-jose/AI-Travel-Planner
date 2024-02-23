@@ -1,5 +1,12 @@
 {% extends 'admin_base.html' %}
 {% block content %}
+<style type="text/css">
+    h3 {
+        font-family: auto;
+        text-decoration: underline;
+        padding-bottom: 10px;
+    }
+</style>
 <div class="col-lg-10" style="margin-top: 0px; margin-left: 200px;">
 <!-- Button trigger modal -->
 
@@ -61,7 +68,7 @@
     </div>
 
 <h3>Travalers Details</h3>
-<table class="table">
+<table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
       <th scope="col">Travaler ID</th>
@@ -125,7 +132,7 @@
 
 {% if tour_packages_day %}
 <h3>Day Programmes</h3>
-<table class="table">
+<table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
       <th scope="col">Day ID</th>
@@ -155,7 +162,7 @@
 
 {% if tour_packages_image %}
 <h3>Package Images</h3>
-<table class="table">
+<table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
       <th scope="col">Image ID</th>
