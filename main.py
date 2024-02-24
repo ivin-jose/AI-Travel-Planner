@@ -782,8 +782,8 @@ def blog_home():
 
 # Blog Single Page
 
-@app.route('/blog_single/<int:blog_id>', methods=['POST', 'GET'])
-def blog_single(blog_id):
+@app.route('/blog_single/<int:blog_id>/<flash>', methods=['POST', 'GET'])
+def blog_single(blog_id, flash):
     cursor = mysql.connection.cursor()
     query = '''SELECT blog.blogid, blog.date, blog.heading, blog.content, users.profile_pic, users.username, CONCAT_WS(', ',
         CASE WHEN blog.adventure = 1 THEN 'adventure' ELSE NULL END,
@@ -850,10 +850,7 @@ def blog_single(blog_id):
     facts = cursor.fetchall()
 
     cursor.close()
-
-
-
-    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog, comments=comments, num_comments=num_comments, facts=facts)
+    return render_template('blog_single.html', blog_data=blog_result, latest_blog=latest_blog, related_blog=related_blog, comments=comments, num_comments=num_comments, facts=facts, flash=flash)
 
 ''' Blog Categories '''
 
@@ -964,7 +961,7 @@ def blog_upload():
             cursor = mysql.connection.cursor()
 
             for file in files:
-                path = '../static/images/blog'
+                path = '/images/blog'
                 file_path = os.path.join(path, file.filename)
                 file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['BLOG_UPLOAD_IMAGES'], file.filename))
 
@@ -998,6 +995,7 @@ def blog_upload():
 @app.route('/blog_upload_comment', methods=['GET', 'POST'])
 def blog_upload_comment():
     blog_id = request.form.get("blog_id")
+    flash = ""
     if request.method == 'POST':
         comment = request.form.get("blog_comment")
         blog_id = request.form.get("blog_id")
@@ -1012,8 +1010,26 @@ def blog_upload_comment():
             cursor.execute(query, values)
             mysql.connection.commit()
             cursor.close()
+            flash = "Comment Added.."
+    return redirect(url_for('blog_single', blog_id=blog_id, flash=flash))
 
-    return redirect(url_for('blog_single', blog_id=blog_id))
+# Blog comment deletion
+
+@app.route('/comment_deletion/<comment>/<userid>/<blogid>', methods=['GET', 'POST'])
+def comment_deletion(comment, userid, blogid):
+    try:
+        cursor = mysql.connection.cursor()
+        # Construct the DELETE query
+        delete_query = "DELETE FROM blog_comment WHERE blogid = %s AND comment = %s AND userid = %s"
+        # Execute the DELETE query with the provided parameters
+        cursor.execute(delete_query, (blogid, comment, userid))
+        mysql.connection.commit()
+        flash = "Comment Deleted"
+        return redirect(url_for('blog_single', blog_id=blogid, flash=flash))
+    except:
+        flash = "Something Wrong"
+        return redirect(url_for('blog_single', blog_id=blogid, flash=flash))
+
 
 ''' Blog Search '''
 
@@ -1021,6 +1037,7 @@ def blog_upload_comment():
 def blog_search():
     search_error = ""
     pagination = ""
+    flash = ""
     if request.method == 'POST':
         search = request.form.get("blog_search_content")
         cursor = mysql.connection.cursor()
@@ -1088,9 +1105,9 @@ def blog_search():
         cursor.execute(query)
         facts = cursor.fetchall()
 
-        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2=facts2, search_error=search_error, pagination=pagination)
+        return render_template('blog_home.html', blog_data=blog_result, latest_blog=latest_blog, facts=facts, facts2=facts2, search_error=search_error, pagination=pagination, flash=flash)
 
-    return render_template('blog_home.html', pagination=pagination)  # Render the template without search results for GET requests
+    return render_template('blog_home.html', pagination=pagination, flash=flash)  # Render the template without search results for GET requests
 
 ''' Blogs on profile page '''
 from flask_paginate import Pagination
@@ -1220,7 +1237,7 @@ def upload_updated_blogs():
             # Insert images associated with the blog
             files = request.files.getlist('images')
             for file in files:
-                path = '../static/images/blog'
+                path = '/images/blog'
                 file_path = (path + '/' + file.filename)
                 file.save(os.path.join(os.path.abspath(os.path.dirname(realpath(__file__))), app.config['BLOG_IMAGES'], file.filename))
                 
@@ -3304,23 +3321,6 @@ def admin_delete_blog_images(image_id):
     cursor.execute(query)
     blogs = cursor.fetchall()
 
-    return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
-
-# Deletion of blog comment
-@app.route('/TripOrganizeradmins.com/delete_blog_comment/<int:comment_id>', methods=['GET', 'POST'])
-def admin_delete_blog_comment(comment_id):
-    cursor = mysql.connection.cursor()
-    delete_query = "DELETE FROM blog_comment WHERE commentid = %s"
-    delete_val = (comment_id,)
-    cursor.execute(delete_query, delete_val)
-    mysql.connection.commit()
-    status_message = "Blog Comment Deleted!!"
-
-    # Fetching blog  after deletion
-    cursor = mysql.connection.cursor()
-    query = "SELECT * FROM blog"
-    cursor.execute(query)
-    blogs = cursor.fetchall()
     return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
 
 

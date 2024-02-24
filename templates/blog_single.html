@@ -11,7 +11,7 @@ Blog -->
       <div class="box-shadow blog-detail border-radius p-3 mb-5 mb-lg-0">
         <div class="blog">
           <div class="blog-img">
-            <img class="img-fluid rounded" src="{{ row[7] }}" alt="#">
+            <img class="img-fluid rounded" src="{{url_for('static', filename=row[7]) }}" alt="{{ row[7] }}">
           </div>
           <div class="blog-body d-flex flex-wrap align-items-center">
             <div class="time-card me-3 d-flex align-items-center">
@@ -19,7 +19,7 @@ Blog -->
               <span>{{ row[1] }} By</span>
             </div>
             <div class="user d-flex align-items-center me-3">
-              <div class="user-img me-2"><img class="img-fluid" src="{{ row[4] }}" alt="#"></div>
+              <div class="user-img me-2"><img class="img-fluid" src="{{url_for('static', filename=row[4]) }}" alt="#"></div>
               <span>{{ row[5] }}</span>
             </div>
             <div class="comment d-flex align-items-center">
@@ -38,22 +38,14 @@ Blog -->
           <i class="fas fa-quote-left pe-4 fa-5x text-primary"></i>
           <p class="mb-0">{% for row in facts %}{{ row[2] }} {% endfor %}</p>
         </div>
-        <nav class="navigation post-navigation mb-4 mb-sm-5">
-          <div class="nav-links">
-            <div class="nav-previous">
-              <a href="#"><span class="pagi-text"> PREV</span><span class="nav-title"> Cutting Your Losses In listing</span></a>
-            </div>
-            <div class="nav-next mt-2 mt-sm-0">
-              <a href="#"><span class="nav-title"> How To Replace A Ceiling Fan</span> <span class="pagi-text">NEXT</span></a> </div>
-            </div>
-          </nav>
+
           <h4 class="fw-600 mb-4">Related Posts</h4>
-          <div class="owl-carousel owl-nav-center" data-nav-dots="false" data-nav-arrow="false" data-items="2" data-lg-items="2" data-md-items="2" data-sm-items="1"  data-space="30" data-autoheight="true" style="    display: flex;">
+          <div class="owl-carousel owl-nav-center" data-nav-dots="false" data-nav-arrow="false" data-items="2" data-lg-items="2" data-md-items="2" data-sm-items="1"  data-space="30" data-autoheight="true" style="display: flex;">
             {% for row in related_blog %}
             <div class="item">
               <div class="blog">
                 <div class="blog-img">
-                  <img class="img-fluid rounded" src="{{ row[3] }}" alt="#" style="width: 230px; height: 200px; object-fit: cover; margin-left: 25px;">
+                  <img class="img-fluid rounded" src="{{url_for('static', filename=row[3]) }}" alt="#" style="width: 230px; height: 200px; object-fit: cover; margin-left: 25px;">
                 </div>
                 <div class="blog-body d-flex flex-wrap align-items-center">
                   <div class="time-card me-3 d-flex align-items-center">
@@ -61,11 +53,11 @@ Blog -->
                     <span>{{ row[2] }} By</span>
                   </div>
                   <div class="user d-flex align-items-center me-3">
-                    <div class="user-img me-2"><img class="img-fluid" src="{{ row[4] }}" alt="#"></div>
-                    <span>{{ row[5] }}</span>
+                    <div class="user-img me-2"><img class="img-fluid" src="{{url_for('static', filename=row[3]) }}" alt=""></div>
+                    <span>{{ row[4] }}</span>
                   </div>
                 </div>
-                <a class="title" href="{{ url_for('blog_single', blog_id=row[0]) }}">{{ row[1] }}</a>
+                <a href="{{ url_for('blog_single', blog_id=row[0], flash='123') }}">{{ row[1] }}</a>
               </div>
             </div>
             {% endfor %}
@@ -78,10 +70,23 @@ Blog -->
               <!-- comment start -->
               {% for row in comments %}
               <div class="d-sm-flex">
-                <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="{{ row[3] }}" alt="..." style="width: 50px !important; height: 80px; border-radius: 60px">
+                <img class="img-fluid avatar-lg border-radius align-self-start me-3" src="{{url_for('static', filename=row[3]) }}" alt="..." style="width: 50px !important; height: 80px; border-radius: 60px">
                 <div class="bg-white border border-radius p-3 mt-3 mt-sm-0" style="width: 90%; margin-bottom: 15px;">
-                  <h6 class="mt-0 mb-3 fw-600" style="text-transform: capitalize;">{{ row[4] }}</h6>
-                  <p>{{ row[0] }}</p>
+                  <h6 class="mt-0 mb-3 fw-600" style="text-transform: capitalize;">
+                    {{ row[4] }} {% if row[1] == session['userid'] %}
+                      {% set blog_ids = [] %}
+                      {% for row in blog_data %}
+                          {% set _ = blog_ids.append(row[0]) %}
+                      {% endfor %}
+
+                      {% set blog_ids_str = blog_ids|join(',') %}
+
+                      <a href="{{ url_for('comment_deletion', comment=row[0], userid=row[1], blogid=blog_ids_str) }}" style="color: red">
+                          <i class="fa-solid fa-trash"></i>
+                      </a>
+                    {% endif %}
+                </h6>
+                  <p style="text-transform: capitalize;">{{ row[0] }}</p>
                   <p>{{ row[2] }}</p>
                 </div>
               </div>
@@ -109,8 +114,8 @@ Blog -->
               <input href="#" class="btn btn-primary" id="blog_comment_btn" type="submit" value="Post Comment">
             </form>
           {% endfor %}
-
           </div>
+
         </div>
       </div>
       <div class="col-lg-4">
@@ -136,14 +141,14 @@ Blog -->
               {% for row in latest_blog %}
               <div class="blog blog-style-2 d-flex align-items-center mb-4">
                 <div class="blog-img me-3">
-                  <img  class="img-fluid" src="{{ row[3] }}" alt="#" style="height: 58px; width: 100%">
+                  <img  class="img-fluid" src="{{url_for('static', filename=row[3]) }}" alt="#" style="height: 58px; width: 100%">
                 </div>
                 <div class="blog-body pt-0">
                   <div class="time-card me-3 d-flex align-items-center">
                     <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
                     <span>{{ row[2] }}</span>
                   </div>
-                  <a href="{{ url_for('blog_single', blog_id=row[0]) }}">{{ row[1] }}</a>
+                  <a href="{{ url_for('blog_single', blog_id=row[0], flash='123') }}">{{ row[1] }}</a>
                 </div>
               </div>
               {% endfor %}
@@ -164,58 +169,30 @@ Blog -->
                 </ul>
             </div>
           </div>
-          <div class="widget">
-            <h5 class="widget-title fw-600"> Subscribe & Follow</h5>
-            <div class="widget-content mt-4">
-              <div class="social">
-                <ul class="list-unstyled mb-0">
-                  <li class="facebook">
-                    <a href="#"> <i class="fab fa-facebook-f me-3"></i>Facebook</a>
-                    <a class="follow ms-auto" href="#">Like </a>
-                  </li>
-                  <li class="twitter">
-                    <a href="#"> <i class="fab fa-twitter me-3"></i>twitter</a>
-                    <a class="follow ms-auto" href="#">followers </a>
-                  </li>
-                  <li class="youtube">
-                    <a href="#"> <i class="fab fa-youtube me-3"></i>youtube</a>
-                    <a class="follow ms-auto" href="#">Subscribers </a>
-                  </li>
-                  <li class="instagram">
-                    <a href="#"> <i class="fab fa-instagram me-3"></i>instagram</a>
-                    <a class="follow ms-auto" href="#">followers </a>
-                  </li>
-                  <li class="linkedIn mb-0">
-                    <a href="#"> <i class="fab fa-linkedin-in me-3"></i>linkedIn</a>
-                    <a class="follow ms-auto" href="#">followers </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="widget mb-0">
-            <h5 class="widget-title fw-600">Tags</h5>
-            <div class="widget-content mt-4">
-              <div class="popular-tag">
-                <ul class="list-unstyled mb-0">
-                  <li><a href="#"> Blog</a></li>
-                  <li><a href="#"> Adventure</a></li>
-                  <li><a href="#"> WordPress</a></li>
-                  <li><a href="#"> Blogger</a></li>
-                  <li><a href="#"> Food</a></li>
-                  <li><a href="#"> Tourism</a></li>
-                  <li><a href="#"> Fashion</a></li>
-                  <li><a href="#"> Travel</a></li>
-                  <li><a href="#"> Magazine</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
   </div>
 </section>
+
+{% if flash != '' and flash != '123' %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+
+{% if delt_flash %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ delt_flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
 <!--=================================
 Blog -->
 

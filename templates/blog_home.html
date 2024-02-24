@@ -29,7 +29,6 @@
                 <a class="cbs-1-a" href="{{ url_for('blog_upload') }}">Create your blog</a>
                 <a class="cbs-1-a" href="{{ url_for('profile_blogs') }}">My Blogs</a>
               </div>
-              
               {% else %}
               <a class="cbs-1-a" href="{{ url_for('login') }}">Login to Create your blog</a>
               {% endif %}
@@ -39,7 +38,7 @@
           <div class="box-shadow border-radius p-3 mb-4 mb-sm-5" id="blog_data_div">
               <div class="blog">
                   <div class="blog-img">
-                      <img class="img-fluid rounded" src="{{ row[7] }}" alt="#"
+                      <img class="img-fluid rounded" src="{{url_for('static', filename=row[7]) }}" alt="#"
                           style="width: 100%; height: 400px; object-fit: fill;">
                   </div>
                   <div class="blog-body d-flex flex-wrap align-items-center">
@@ -49,7 +48,7 @@
                           <span>{{row[1]}} By</span>
                       </div>
                       <div class="user d-flex align-items-center me-3">
-                          <div class="user-img me-2"><img class="img-fluid" src="{{row[4]}}" alt="#"></div>
+                          <div class="user-img me-2"><img class="img-fluid" src="{{url_for('static', filename=row[4]) }}" alt="#"></div>
                           <span style="text-transform: capitalize;">{{row[5]}}</span>
                       </div>
                       <div class="comment d-flex align-items-center">
@@ -57,7 +56,7 @@
                           {{ row[8] }}
                       </div>
                   </div>
-                  <a class="title" href="{{ url_for('blog_single', blog_id = row[0] )}}">{{row[2]}}</a>
+                  <a class="title" href="{{ url_for('blog_single', blog_id = row[0], flash='123' )}}">{{row[2]}}</a>
                   <p class="mt-3">{{row[3]}} ...............</a></p>
                   <p class="mt-3" style="text-transform: capitalize;">{{row[6]}}</p>
               </div>
@@ -182,7 +181,7 @@
               {% for row in latest_blog %}
               <div class="blog blog-style-2 d-flex align-items-center mb-4">
                 <div class="blog-img me-3">
-                  <img  class="img-fluid" src="{{ row[3] }}" alt="#" style="width: 100%;
+                  <img  class="img-fluid" src="{{url_for('static', filename=row[3]) }}" alt="#" style="width: 100%;
     height: 58px;">
                 </div>
                 <div class="blog-body pt-0">
@@ -190,7 +189,7 @@
                     <img class="img-fluid rounded me-2" src="{{ url_for('static', filename='images/on-time.svg')}}" alt="#">
                     <span>{{ row[2] }}</span>
                   </div>
-                  <a href="{{ url_for('blog_single', blog_id=row[0]) }}">{{ row[1] }}</a>
+                  <a href="{{ url_for('blog_single', blog_id=row[0], flash='123') }}">{{ row[1] }}</a>
                 </div>
               </div>
               {% endfor %}
@@ -245,9 +244,25 @@
       </div>
     </div>
   </section>
+
+{% if flash != '' and flash != '123' %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+{% if delt_flash %}
+  <div class="alert alert-warning alert-dismissible fade show ff" role="alert" id="msg-alert-box">
+    <strong></strong> {{ delt_flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <!--=================================
   Blog -->
-
+{% endif %}
 <!-- <script>
     // Listen for the form submission event
     $('#blog_search_form').submit(function(e) {
