@@ -522,6 +522,24 @@ def login():
        if len(result) > 0:
         session['userid'] = result[0][0]
         session['username'] = result[0][1]
+        # Sending email when user loigned
+        url = "https://mail-sender-api1.p.rapidapi.com/"
+            
+        payload = {
+            "sendto": email,
+            "name": "TripOrganizer.com",
+            "replyTo": "Your Email address where users can send their reply",
+            "ishtml": "true",
+            "title": "New Login ",
+            "body": "New Login Found on Your Account"
+        }
+
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": API_KEY_OFFICIAL,
+            "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+        }
+        response = requests.post(url, json=payload, headers=headers)
         return redirect('/TripOrganizer.com')
        else:
         error_message = "Invalid username/email or password"
@@ -3007,12 +3025,40 @@ def pro_tour_booking_details(booking_id):
 @app.route('/TripOrganizer.com/account.pro/package-accepting/<booking_id>', methods=['POST', 'GET'])
 def pro_tour_booking_accept(booking_id):
     cursor = mysql.connection.cursor()
+    email = ""
     try:
         query = "UPDATE package_bookings SET package_status = 1,  package_status_view = 0 WHERE booked_id = %s;"
         cursor.execute(query, (booking_id,))
         mysql.connection.commit()
 
-        flash = "Request Accepted"
+        query1 = """SELECT users.email
+                FROM users
+                JOIN package_bookings ON package_bookings.user_id = users.user_id
+                WHERE package_bookings.booked_id = %s;
+                """
+        cursor.execute(query1, (booking_id,))
+        email = cursor.fetchall()
+        for row in email:
+            emails = row[0]
+
+        flash = "Request Accepted "
+
+        url = "https://mail-sender-api1.p.rapidapi.com/"     
+        payload = {
+            "sendto": email,
+            "name": "TripOrganizer.com",
+            "replyTo": "Your Email address where users can send their reply",
+            "ishtml": "true",
+            "title": "New Login ",
+            "body": "New Login Found on Your Account"
+        }
+
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": API_KEY_OFFICIAL,
+            "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+        }
+        response = requests.post(url, json=payload, headers=headers)
     except Exception as e:
         flash = "Something Wrong.."
 
@@ -3040,7 +3086,17 @@ def pro_tour_booking_reject(booking_id):
         cursor.execute(query, (booking_id,))
         mysql.connection.commit()
 
-        flash = "Request Rejected"
+        query1 = """SELECT users.email
+        FROM users
+        JOIN package_bookings ON package_bookings.user_id = users.user_id
+        WHERE package_bookings.booked_id = %s;
+        """
+        cursor.execute(query1, (booking_id,))
+        email = cursor.fetchall()
+        for row in email:
+            emails = row[0]
+
+        flash = "Request Rejected "
     except Exception as e:
         flash = "Something Wrong.."
 
