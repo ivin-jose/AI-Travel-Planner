@@ -1,0 +1,376 @@
+/*****************************
+    Typography
+*****************************/
+body {
+	font-family: $font-base;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 1.5;
+	color: $body-color;
+	overflow-x: hidden;
+}
+
+a {
+	outline: medium none !important;
+	color: $primary;
+	transition: all 0.3s ease-in-out;
+	text-decoration: none !important;
+
+	&:focus {
+		color: $primary;
+		text-decoration: none !important;
+	}
+
+	&:hover {
+		color: $primary;
+		text-decoration: none !important;
+	}
+
+}
+
+input {
+	outline: medium none !important;
+	color: $primary;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: $font-hedding;
+	font-weight: normal;
+	color: $gray-2;
+	margin-top: 0px;
+	font-weight: 400;
+
+	a {
+		color: inherit;
+	}
+
+}
+
+label {
+	font-weight: normal;
+}
+
+h1 {
+	font-size: 90px;
+	font-style: normal;
+	font-weight: 800;
+	line-height: 1;
+}
+
+h2 {
+	font-size: 36px;
+	font-weight: 400;
+}
+
+h3 {
+	font-size: 28px;
+	font-weight: 400;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 22px;
+}
+
+h6 {
+	font-size: 20px;
+}
+
+p {
+	font-weight: normal;
+	line-height: 1.5;
+}
+
+*::-moz-selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+
+::-moz-selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+
+::selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+.fw-medium{
+	font-weight: 500;
+}
+.fw-600{
+	font-weight: 600;
+}
+
+.border-radius{ border-radius: $border-radius; }
+.border-radius-sm{ border-radius: $border-radius-sm; }
+.border-radius-md{ border-radius: $border-radius-md; }
+.border-radius-lg{ border-radius: $border-radius-lg; }
+
+.box-shadow{ box-shadow: $box-shadow; }
+.box-shadow-sm{ box-shadow: $box-shadow-sm; }
+.box-shadow-lg{ box-shadow: $box-shadow-lg; }
+
+
+/* form-control */
+.form-control, .form-select {
+	border: 1px solid $border-color;
+	border-radius: 4px;
+	height: 60px;
+	padding: 10px 20px;
+	box-shadow: none;
+	font-size: 14px;
+	font-weight: 500;
+	color: $gray-2;
+	background-clip: inherit !important;
+
+	&:focus {
+		box-shadow: none;
+		border-color: $primary;
+	}
+}
+
+.avatar-lg{
+    min-width: 80px;
+    width: 80px;
+}
+
+
+/*Datetimepickers*/
+.datetimepickers {
+	.bootstrap-datetimepicker-widget {
+		width: 100%;
+		table {
+			td.active {
+				background-color: $primary;
+			}
+			td.day {
+				height: 30px;
+				line-height: 20px;
+				width: 40px;
+				border-radius: $border-radius;
+			}
+			td.day.old{
+        color:  rgba($secondary, 0.5)
+			}
+			td.day.new{
+        color:  rgba($secondary, 0.5)
+			}
+
+			td {
+				padding: 12px 13px;
+				border-radius: inherit;
+				font-size: 15px;
+				&:hover {
+					background-color: $primary;
+					color: $white;
+				}
+			}
+			thead{
+        tr{
+        	border-bottom: 2px solid $border-color;
+        }
+			}
+		}
+	}
+}
+
+.datetimepickers.time{
+ .bootstrap-datetimepicker-widget {
+ 	table {
+ 		td{
+ 			padding: 0px;
+      a.btn{
+      	background-color: transparent;
+      	color: $secondary;
+      }
+      span{
+      	transition: all 0.3s ease-in-out;
+      	&:hover{
+      		background-color: $primary;
+      		color: $white;
+      	}
+      }
+      &:hover{
+      	background-color: transparent;
+      	color: $secondary;
+      }
+      .btn-primary{
+      	&:hover{
+      		background-color:$secondary;
+      	}
+      }
+ 		}
+ 	 }
+ }
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu{
+	width: auto;
+	th{
+		font-size: 14px;
+		height: 35px;
+    line-height: 35px;
+    width: 35px;
+    color: $secondary;
+    font-weight: 500;
+	}
+}
+.border-right-0{ border-right: inherit !important; }
+.border-right{ border-right: 1px solid $border-color; }
+
+.form-control::-moz-placeholder {
+	color: $body-color;
+}
+
+.form-control::-ms-input-placeholder {
+	color: $body-color;
+}
+
+.form-control::-webkit-input-placeholder {
+	color: $body-color;
+}
+
+textarea.form-control {
+	height: auto;
+}
+
+.input-group.date {
+	.input-group-text {
+    height: 100%;
+   border-top-left-radius: inherit !important;
+   border-bottom-left-radius: inherit !important;
+   border-radius: $border-radius;
+   background-color: $white;
+   i{
+   	color:$body-color;
+   }
+	}
+}
+
+/* input-group-prepend */
+.input-group-prepend,
+.input-group-append {
+	.input-group-text {
+		width: 50px;
+		background: transparent;
+		border-color: $border-color;
+		box-shadow: none;
+		justify-content: center;
+	}
+
+}
+
+
+/* file-upload */
+.input-group.file-upload{
+	height: 50px;
+
+	.form-control{
+		height: 50px;
+    color: $body-color;
+    border-radius: 3px;
+    border-color: $border-color;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin: 0;
+    opacity: 0;
+    border-radius: 3px;
+	}
+	.input-group-text{
+		height: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $body-color;
+    border-color: $border-color;
+    padding: 15px 90px 15px 20px;
+    border-radius: 3px;
+    transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    line-height: 1.5;
+    background-color: $white;
+    justify-content: space-between;
+    margin-left: 0;
+    &:after{
+    	content: "Browse";
+    	height: 48px;
+    	padding: 14px 25px;
+	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    bottom: 0;
+	    z-index: 3;
+	    display: block;
+	    line-height: 1.5;
+	    color: $gray-2;
+	    background-color: $gray-1;
+	    border-left: inherit;
+	    border-radius:0px 3px 3px 0px;
+    }
+	}
+}
+
+@media (max-width:767px) {
+
+h2 {
+	font-size: 30px;
+}
+
+h3 {
+	font-size: 26px;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+}
+
+
+@media (max-width:575px) {
+
+h2 {
+	font-size: 28px;
+}
+
+h3 {
+	font-size: 24px;
+}
+
+h4 {
+	font-size: 22px;
+}
+
+h5 {
+	font-size: 20px;
+}
+
+h6 {
+	font-size: 18px;
+}
+
+/*Datetimepicker*/
+  .bootstrap-datetimepicker-widget {
+     width: 300px !important;
+     overflow-x:auto !important;
+  }
+
+}
+
+@media (max-width:375px) {
+   .bootstrap-datetimepicker-widget {
+     width: 260px !important;
+     overflow-x:auto !important;
+  }
+}

@@ -1,0 +1,39 @@
+// Font family
+$font-base: 		'Montserrat', sans-serif;
+$font-hedding:	'Playfair Display', serif;
+
+// Colors
+$body-color:		#7c8087;
+$primary:				#3dd1d5;
+$secondary:			#102636;
+$white:					#ffffff;
+$gray-1: 				#f3f9ff; 	// bg light
+$gray-2: 				#091c3a; 	// Hedding color
+
+$black:  				#000000;
+$red:  				 	#ff0000;
+$yellow:  			#ffcc03;
+$blue:  			  #052c52;
+$success:				#0abb0a;
+$danger:				#f52626;
+
+// SVG color
+$filter-1: invert(99%) sepia(67%) saturate(351%) hue-rotate(195deg) brightness(117%) contrast(101%); // white color
+
+$border-color: 	#ededed;
+
+// For button and input border radius
+$border-radius: 6px;
+$border-radius-sm: 4px;
+$border-radius-md: 10px;
+$border-radius-lg: 50%;
+
+
+// box-shadow
+$box-shadow:	  0px 7px 16px 0px rgba($gray-2, .07);
+$box-shadow-sm:	0px 2px 5px 0px rgba($gray-2, .10);
+$box-shadow-lg:  0 1rem 3rem rgba($gray-2, .175);
+$box-shadow-inset: 0px 0px 15px 0px rgba($gray-2, .10) inset;
+
+
+

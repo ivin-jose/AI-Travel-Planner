@@ -1,0 +1,436 @@
+/*****************************
+  Button
+*****************************/
+.btn-link {
+	text-decoration: underline !important;
+	color: $secondary;
+	transition: all 0.3s ease-in-out;
+	&:after {
+		display: none;
+		content: inherit;
+	}
+	&:hover {
+		color: $primary;
+	}
+
+}
+
+button {
+	outline: medium none !important;
+	color: $primary;
+}
+
+/* btn */
+.btn {
+	border: none;
+	z-index: 1;
+	position: relative;
+	font-size: 16px;
+	padding: 15px 40px;
+	overflow: hidden;
+	border-radius: $border-radius-sm;
+	transition: all 0.3s ease-in-out;
+
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+	}
+
+	&:active {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+	}
+}
+
+
+.show {
+	>.btn.dropdown-toggle {
+		&:focus {
+			box-shadow: none;
+			outline: none;
+			color: $white;
+		}
+
+	}
+
+	>.btn-primary.dropdown-toggle {
+		background: $primary;
+		border-color: $primary;
+	}
+
+}
+
+
+.btn.btn-sm {
+	padding: 8px 20px;
+	font-size: 14px;
+}
+
+.btn.btn-md {
+	padding: 10px 30px;
+	font-size: 14px;
+}
+
+.btn.btn-lg {
+	padding: 20px 40px;
+}
+
+.btn.btn-xl {
+	padding: 25px 40px;
+}
+
+.btn-app {
+	display: flex;
+
+	i {
+		font-size: 40px;
+	}
+
+}
+
+.btn.btn-link{
+	padding: 0;
+	background-color: inherit;
+  color: $gray-2;
+  font-size: 14px;
+}
+.btn.btn-link{
+	&:hover{
+		color:$primary;
+		text-decoration: underline !important;
+	}
+	&:focus{
+		color:$primary;
+		text-decoration: underline !important;
+	}
+}
+
+
+.btn.btn-secondary {
+	background: $secondary;
+	color: $white;
+	&:hover {
+		color: $white;
+		background:$primary;
+	}
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+		background: $primary;
+	}
+
+	&:active {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+		background: $primary;
+	}
+
+	&:after {
+		position: absolute;
+		content: "";
+		width: 0;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-color: #40e3e7;
+		transition: all 0.4s ease;
+		border-radius: $border-radius-sm;
+	}
+		&:hover {
+		color: $white;
+		box-shadow: none;
+		outline: none;
+		&:after {
+			left: 0;
+			width: 100%;
+		}
+	}
+
+}
+
+.bg-primary{
+	.btn.btn-secondary {
+   	  background: $secondary;
+			color: $white;
+			&:hover {
+				color: $secondary;
+				background:$white;
+			}
+			&:focus {
+				box-shadow: none;
+				outline: none;
+				color: $secondary;
+				background: $white;
+			}
+
+			&:active {
+				box-shadow: none;
+				outline: none;
+				color: $secondary;
+				background: $white;
+			}
+
+			&:after {
+				position: absolute;
+				content: "";
+				width: 0;
+				height: 100%;
+				top: 0;
+				right: 0;
+				z-index: -1;
+				background-color: $white;
+				transition: all 0.4s ease;
+				border-radius: $border-radius-sm;
+			}
+				&:hover {
+				color: $secondary;
+				box-shadow: none;
+				outline: none;
+				&:after {
+					left: 0;
+					width: 100%;
+				}
+			}
+  }
+}
+
+
+.bg-secondary{
+	.btn.btn-primary {
+   	  background: $primary;
+			color: $white;
+			&:hover {
+				color: $secondary;
+				background:$white;
+			}
+			&:focus {
+				box-shadow: none;
+				outline: none;
+				color: $secondary;
+				background: $white;
+			}
+
+			&:active {
+				box-shadow: none;
+				outline: none;
+				color: $secondary;
+				background: $white;
+			}
+
+			&:after {
+				position: absolute;
+				content: "";
+				width: 0;
+				height: 100%;
+				top: 0;
+				right: 0;
+				z-index: -1;
+				background-color: $white;
+				transition: all 0.4s ease;
+				border-radius: $border-radius-sm;
+			}
+				&:hover {
+				color: $secondary;
+				box-shadow: none;
+				outline: none;
+				&:after {
+					left: 0;
+					width: 100%;
+				}
+			}
+  }
+}
+
+
+.btn.btn-primary {
+	background: $primary;
+	color: $white;
+	&:hover {
+		color: $white;
+		background:$primary;
+	}
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+		background: $primary;
+	}
+
+	&:active {
+		box-shadow: none;
+		outline: none;
+		color: $white;
+		background: $primary;
+	}
+
+	&:after {
+		position: absolute;
+		content: "";
+		width: 0;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-color: #40e3e7;
+		transition: all 0.4s ease;
+		border-radius: $border-radius-sm;
+	}
+		&:hover {
+		color: $white;
+		box-shadow: none;
+		outline: none;
+		&:after {
+			left: 0;
+			width: 100%;
+		}
+	}
+}
+
+
+.btn.btn-light {
+	background: $white;
+	color: $secondary;
+	&:hover {
+		color: $white;
+		// background: $secondary;
+	}
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		color: $secondary;
+		background: $white;
+	}
+
+	&:active {
+		box-shadow: none;
+		outline: none;
+		color: $secondary;
+		background: $white;
+	}
+
+	&:after {
+		position: absolute;
+		content: "";
+		width: 0;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-color: #40e3e7;
+		transition: all 0.4s ease;
+		border-radius: $border-radius-sm;
+	}
+		&:hover {
+		color: $white;
+		box-shadow: none;
+		outline: none;
+		&:after {
+			left: 0;
+			width: 100%;
+		}
+	}
+}
+
+
+
+.btn.btn-outline-primary {
+	border: 2px solid $primary;
+	color: $primary;
+	background: transparent;
+
+	&:hover {
+		background: transparent;
+		color: $white;
+		border: 2px solid $primary;
+	}
+
+	&:focus {
+		background: transparent;
+		color: $primary;
+		border: 2px solid $primary;
+	}
+
+	&:active {
+	background: transparent;
+	color: $primary;
+	border: 2px solid $primary;
+	}
+
+	&:active {
+		&:focus {
+			box-shadow: inherit;
+		}
+	}
+
+	&:after {
+		position: absolute;
+		content: "";
+		width: 0;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-color: #40e3e7;
+		transition: all 0.4s ease;
+		border-radius: 2px;
+	}
+		&:hover {
+		color: $white;
+		box-shadow: none;
+		outline: none;
+		&:after {
+			left: 0;
+			width: 100%;
+		}
+	}
+
+}
+
+.btn-sm{
+ &:after{
+ 	border-radius:$border-radius-sm !important;
+ }
+}
+
+
+.btn.btn-outline-secondary:not(:disabled):not(.disabled):active {
+		background: transparent;
+		color: $white;
+		border: 2px solid $primary;
+}
+
+
+
+
+/* keyframes */
+@keyframes pulse-border {
+  0% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1.5);
+    opacity: 0;
+  }
+
+}
+
+@keyframes sonarWave {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+
+
+

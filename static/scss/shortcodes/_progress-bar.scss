@@ -1,0 +1,12 @@
+/*************************
+        Progress Bar
+*************************/
+.progress {
+    position: relative;
+    overflow: visible;
+    height: .5rem;
+    .progress-bar {
+        border-radius: $border-radius;
+        background-color: $primary;
+    }
+}

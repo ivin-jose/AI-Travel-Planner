@@ -1,0 +1,73 @@
+/*****************************
+  Range Slider
+*****************************/
+.irs--flat {
+  .irs-line {
+    height: 6px;
+  }
+  .irs-bar {
+    background: $primary;
+    height: 6px;
+  }
+  .irs-from {
+    background: transparent;
+    color: $primary;
+    font-size: 13px;
+    font-weight: 600;
+    &:before {
+      display: none;
+    }
+  }
+  .irs-to {
+    background: transparent;
+    color: $primary;
+    font-size: 13px;
+    font-weight: 600;
+    &:before {
+      display: none;
+    }
+  }
+  .irs-single {
+    background: transparent;
+    color: $primary;
+    font-size: 13px;
+    font-weight: 600;
+    &:before {
+      display: none;
+    }
+  }
+  .irs-handle {
+    >i {
+      &:first-child {
+        background: $white;
+        background: $white;
+        width: 12px;
+        width: 12px;
+        height: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border-radius: 50%;
+        border: 2px solid $primary;
+        border: 2px solid $primary;
+        cursor: pointer;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+    &:hover {
+      >i {
+        &:first-child {
+          background: $primary;
+        }
+      }
+    }
+  }
+  .irs-handle.state_hover {
+    >i {
+      &:first-child {
+        background: $primary;
+      }
+    }
+  }
+}

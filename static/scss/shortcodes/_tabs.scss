@@ -1,0 +1,47 @@
+/*****************************
+  Tabs
+*****************************/
+
+.nav-tab{
+ .nav-tabs{
+   border: inherit;
+   .nav-link.active{
+     border-bottom: 2px solid $primary;
+     color: $primary;
+   }
+   .nav-link{
+     border-bottom: 2px solid $border-color;
+     font-weight: bold;
+     color: $body-color;
+     background-color: transparent;
+     border-top: inherit;
+     border-left: inherit;
+     border-right: inherit;
+     padding: 15px 30px;
+   }
+ }
+}
+
+.nav.nav-pills{
+ margin-right: 0;
+
+ .nav-link {
+   padding: 0;
+   border-radius: 0;
+   background-color: inherit;
+ }
+
+
+}
+
+
+@media (max-width:1200px) {
+  .nav-tab {
+    .nav-tabs {
+      .nav-link{
+        padding: 15px 20px;
+      }
+    }
+  }
+
+}

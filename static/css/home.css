@@ -1,0 +1,214 @@
+/*///////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////*/
+
+/* /////////////////////////////
+
+	1. Basic Styles
+	2. Navbar
+	3. Buttons
+	4. Hero
+	5. Marketing
+	6. Testimonials
+	7. Pricing
+	8. Call to Action
+	9. Footer
+	10. Media Queries
+
+   //////////////////////////*/
+
+
+/* ==============================================
+   2. Navbar 
+===============================================*/
+.p-form {
+    display: none;
+ }
+ .bgholder {
+ 	background-image: url('{{ url_for("static", filename="/images/backgrounds/08.png") }}') !important;
+ }
+
+ .destination-find-area {
+ 	align-items: center;
+ }
+
+.custom-navbar {
+	background-color: #ffffff!important;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,.09);
+	height: 70px;
+	max-height: 70px;
+}
+
+.navbar-toggler {
+	font-size: 38px;
+	background-color: transparent;
+}
+
+.navbar-toggler:focus {
+	text-decoration: none;
+	outline: none;
+}
+
+.navbar-toggler-icon {
+	color: #ffffff;
+}
+
+.navbar-collapse {
+	background-color: #ffffff;
+}
+
+.nav-custom-link {
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: .05em;
+	margin-top: 5px;
+}
+
+.nav-right {
+	float: right;
+}
+
+/* ==============================================
+   3. Buttons
+===============================================*/
+
+.btn1 {
+	font-size: 14px;
+	font-weight: 400;
+	border-radius: 3px!important;
+	box-shadow: 0 2px 3px 0 rgba(0,0,0,.05), 0 1px 2px 0 rgba(0,0,0,.08);
+}
+
+.btn1:hover {
+	text-decoration: none;
+}
+
+.btn-regular1 {
+	background-color: #0095f7;
+	color: #ffffff;
+	padding: 10px 25px;
+	width: fit-content;
+	letter-spacing: .1em;
+	margin-top: 25px;
+	display: inline-block;
+}
+
+.btn-regular1:hover {
+	background-color: #0191f0;
+	color: #ffffff;
+}
+
+
+/* ==============================================
+   4. Hero
+===============================================*/
+.align-hero{
+	    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+#hero {
+	
+}
+
+#hero h1 {
+	font-size: 50px;
+	font-weight: 700;
+}
+
+#hero p {
+font-size: 16px;
+    font-weight: 300;
+    /* color: blue; */
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+#hero span {
+	font-weight: 700;
+    color: #0095f7;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+
+
+}
+
+/* ==============================================
+   9. Media Queries
+===============================================*/
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) { 
+
+
+
+@media (max-width: 768px) { 
+	#hero h1 {
+		font-size: 34px!important;
+		margin-bottom: 20px;
+	}
+	#hero p {
+		font-size: 20px!important;
+	}
+}
+
+
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+	.hero-content {
+		margin-top: 100px;
+	}
+}
+
+.container {
+    width: 300px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+#form-style{
+	background: #e4e4e4;
+    padding: 2vh;
+    border-radius: 10px;
+}
+

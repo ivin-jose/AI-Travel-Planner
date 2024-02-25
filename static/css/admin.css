@@ -1,0 +1,408 @@
+        main{
+            overflow: hidden;
+        }
+        hr{
+            width: 20px;
+            background: white;
+            border: 0px;
+        }
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            font-family: 'Rubik', sans-serif;
+        }
+        a, a:hover, a:focus{
+            text-decoration: none;
+        }
+
+        :root{
+            --extradarkbg :#004846;
+            --darkbg: #009894;
+            --lightbg: #02a5a5;
+            --fontcolor: #01564d;
+            --white: white;
+        }
+        .space{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .main_theme{
+            background: var(--darkbg) !important;
+            border: 0px !important;
+        }
+        .btn:hover{
+            background: #4cadad !important;
+        }
+        .main_theme:hover{
+            background: #02a5a5;
+        }
+        .dir{
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+
+/*loginpanel*/
+
+#loginpanel_header{
+    display: flex;
+    align-items: center;
+    height: 10vh;
+    width: 100%;
+    background: var(--extradarkbg);
+    position: fixed;
+
+}
+#dashboard{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: var(--white);
+}
+#sidebar_div{
+    width: 17%;
+    height: 100vh;
+}
+.li_color{
+    color: var(--white);
+}
+li{
+    list-style-type: none;
+}
+ul.sidebar-menu li ul.sub li{
+    background: var(--darkbg);
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+#adminpreloader{
+    background: white url(../images/admin/admin-preloader.gif) no-repeat center center;
+    background-size: 50%;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    text-align: center;
+}
+
+main{
+    overflow: hidden;
+}
+hr{
+    width: 20px;
+    background: white;
+    border: 0px;
+}
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    font-family: 'Rubik', sans-serif;
+}
+a, a:hover, a:focus{
+    text-decoration: none;
+}
+a:hover{
+    color: var(--fontcolor);
+}
+a{
+    color: white;
+    text-transform: uppercase;
+}
+.dropdown-item:active{
+    background: var(--darkbg);
+}
+.white{
+    color: white;
+}
+.darkbg{
+    color: var(--darkbg);
+}
+.extradarkbg{
+    color: var(--extradarkbg);
+}
+
+:root{
+    --extradarkbg :#004846;
+    --darkbg: #009894;
+    --lightbg: #02a5a5;
+    --fontcolor: #01564d;
+    --white: white;
+}
+.space{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.side_space{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.main_theme{
+    background: var(--darkbg) !important;
+    border: 0px !important;
+}
+.btn:hover{
+    background: #4cadad !important;
+}
+.main_theme:hover{
+    background: #02a5a5;
+}
+.row_style{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.row{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+
+
+/* end header */
+
+
+/*sidebar navigation*/
+
+#sidebar {
+    width: 180px;
+    height: 100%;
+    position: fixed;
+    background: #394a59;
+    margin-left: -12px;
+    margin-top: -80px;
+    z-index: 30;
+}
+
+.nav-collapse.collapse {
+    display: inline;
+}
+
+ul.sidebar-menu , ul.sidebar-menu li ul.sub{
+    margin: -2px 0 0;
+    padding: 0;
+}
+
+ul.sidebar-menu {
+    margin-top: 100px;
+}
+
+#sidebar > ul > li > ul.sub {
+    display: none;
+}
+
+#sidebar > ul > li.active > ul.sub, #sidebar > ul > li > ul.sub > li > a {
+    display: block;
+}
+
+ul.sidebar-menu li ul.sub li{
+    background: #394a59;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+ul.sidebar-menu li ul.sub li:last-child{
+    border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+}
+
+ul.sidebar-menu li ul.sub li a {
+    font-size: 12px;
+    padding: 0 0 0 32px;
+    line-height: 35px;
+    height: 35px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    color: #d0d8df;
+    font-size: 14px;
+}
+
+ul.sidebar-menu li ul.sub li a:hover, ul.sidebar-menu li ul.sub li.active a {
+    color: #fff;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+ul.sidebar-menu li{
+    line-height: 20px !important;
+    /*margin-bottom: 5px;
+    margin-left:10px;
+    margin-right:10px;*/
+    
+}
+/*ul.sidebar-menu li:hover{
+    border-bottom: 1px solid #688a7e;
+}*/
+ul.sidebar-menu li.sub-menu{
+    line-height: 15px;
+    font-size: 16px;
+}
+
+ul.sidebar-menu li a span{
+    display: inline-block;
+}
+
+ul.sidebar-menu li a{
+    color: #d0d8df;
+    text-decoration: none;
+    display: block;
+    padding: 15px 0 15px 10px;
+    font-size: 16px;
+    font-weight: 300;
+    outline: none;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    border-right: 1px solid #D7D7D7;
+    border-bottom: 1px solid #D7D7D7;
+}
+/*ul.sidebar-menu li a i{
+    position: relative;
+    top: 2px;
+}*/
+ul.sidebar-menu li.active a, ul.sidebar-menu li a:hover, ul.sidebar-menu li a:focus {
+    background: #2e3b46;
+    color: #fff;
+    display: block;
+    /*border-radius: 4px;
+    -webkit-border-radius: 4px;*/
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;        
+}
+ul.sidebar-menu li a:hover, ul.sidebar-menu li a:focus {
+    border-bottom: 1px solid #d0d8df;
+}
+/*ul.sidebar-menu li.active a,*/ ul.sidebar-menu .sub-menu li.active a{
+    border-bottom: 1px solid #d0d8df;   
+}
+
+ul.sidebar-menu li a i {
+    font-size: 18px;
+    padding-right: 6px;
+    /*color: #688a7e;*/
+}
+
+ul.sidebar-menu li a:hover i, ul.sidebar-menu li a:focus i {
+    color: #fff;
+}
+
+ul.sidebar-menu li.active a i {
+    color: #fff;
+}
+
+
+#sidebar ul > li > a .arrow {
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #A0A0A0;
+    border-top: 4px solid transparent;
+    float: right;
+    height: 0;
+    margin-right: 10px;
+    margin-top: 6px;
+    width: 0;
+}
+#sidebar ul > li > a .menu-arrow { 
+    float: right;    
+    margin-right: 8px;
+    margin-top: 6px;    
+}
+#sidebar > ul > li > a .arrow.open {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #A0A0A0;
+    float: right;
+    height: 0;
+    margin-right: 10px;
+    margin-top: 8px;
+    width: 0;
+}
+
+#sidebar ul > li.active > a .arrow, #sidebar ul > li > a:hover .arrow, #sidebar ul > li > a:focus .arrow {
+    float: right;
+    margin-top: 6px;
+    margin-right: 10px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid #d0d8df;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+#sidebar > ul > li.active > a .arrow.open, #sidebar > ul > li > a:hover .arrow.open, #sidebar > ul > li > a:focus .arrow.open {
+    float: right;
+    margin-top: 8px;
+    margin-right: 10px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid #d0d8df;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+#header{
+    position: fixed;
+}
+.loginpanel_img{
+    object-fit: contain;
+}
+.loginpanel_img:hover{
+    transform: translate(0, -4px);
+    box-shadow: 2px 3px 10px 1px grey;
+    color: black;
+}
+#productnamediv{
+    margin-top: 70px;
+}
+
+/* navbar */
+
+.nvbr {
+    background: var(--darkbg);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    z-index: 40;
+    position: relative;
+}
+
+.nav-user {
+    color: var(--c4) !important;
+    font-size: 17px !important;
+    text-transform: uppercase !important;
+}
+.nav-user:hover {
+    color: var(--c3);;
+}
+
+/* Form error */
+
+#nameError, #passwordError {
+    color: red;
+    font-size: 11px;
+    font-family: sans-serif;
+}
+
+#adminAddText {
+    display: none;
+    opacity: 0.3;
+}
+
+

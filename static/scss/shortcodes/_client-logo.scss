@@ -1,0 +1,28 @@
+/*****************************
+  Client Logo
+*****************************/
+
+
+.client-logo {
+    .owl-carousel {
+     .owl-item {
+        .item  {
+            a {
+            padding: 30px;
+            opacity: 0.6;
+            transition: all 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+        &:hover {
+            opacity: 1;
+            box-shadow: $box-shadow-sm;
+        }
+      }
+      }
+      }
+}
+}
+
+
+
+

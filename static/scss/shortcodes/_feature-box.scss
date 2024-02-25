@@ -1,0 +1,182 @@
+/*****************************
+  Feature Box
+*****************************/
+.feature-box {
+  padding: 40px;
+
+  .icon-box {
+    width: 71%;
+  }
+
+}
+
+.feature-categories {
+  padding: 20px;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+  cursor: pointer;
+  color: $secondary;
+
+  .icon {
+    margin-bottom: 10px;
+
+    object {
+      width: 60px;
+      transition: all 0.3s ease-in-out;
+    }
+
+  }
+
+  a {
+    color: $secondary;
+    font-weight: 600;
+  }
+
+  &:hover {
+    background-color: $white;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius;
+
+    .icon {
+      object {
+        transition: all 0.3s ease-in-out;
+      }
+
+    }
+
+    a {
+      color: $primary;
+    }
+
+  }
+
+}
+
+.feature-section {
+  margin-bottom: -75px;
+}
+
+/*Feature style 02*/
+.feature-box.feature-box-2 {
+  text-align: center;
+  border: 2px solid $border-color;
+  padding: 25px 15px;
+  border-radius: $border-radius;
+
+  img {
+    width: 70px;
+    height: 70px;
+  }
+
+  h5 {
+    padding: 15px 0;
+    font-weight: 600;
+  }
+
+}
+
+/*Feature Categories*/
+.categories-section {
+  margin-top: -120px;
+  z-index: 9;
+  position: relative;
+
+  .feature-categories-2 {
+    background-color: $white;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius;
+
+    .feature-categories {
+      padding: 40px 20px;
+      overflow: hidden;
+      background: $white;
+      position: relative;
+      border-bottom: 5px solid transparent;
+      z-index: 2;
+      &:before{
+        content: '';
+        background: $primary;
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        width: 100%;
+        height: 0%;
+        transition: all 490ms ease;
+        z-index: -1;
+        border-radius: 0;
+      }
+
+      &:hover {
+        border-bottom: 5px solid $secondary;
+        border-radius: 0;
+        &:before{
+          height: 100%;
+          top: 0px;
+        }
+        .icon {
+          object {
+            filter: $filter-1;
+            transition: all 0.3s ease-in-out;
+          }
+
+        }
+
+        a {
+          color: $white;
+        }
+
+      }
+
+       .title{
+
+        font-size: 18px;
+
+       }
+
+    }
+
+  }
+
+}
+
+.categories-section{
+    .feature-categories-2{
+    .owl-carousel {
+      .owl-stage-outer{
+       border-radius:$border-radius;
+
+      }
+    }
+    .owl-stage-outer {
+      border-radius: $border-radius;
+     }
+  }
+}
+
+
+
+
+/*****************************
+    Responsive
+*****************************/
+@media (max-width:1200px) {
+  .feature-box {
+    padding: 25px;
+  }
+
+}
+
+@media (max-width:575px) {
+  .feature-box {
+    display: block !important;
+    padding: 20px;
+
+    .icon-box {
+      display: block !important;
+      width: 100%;
+    }
+
+  }
+
+}

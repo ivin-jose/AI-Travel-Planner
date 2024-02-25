@@ -7,6 +7,7 @@ import os
 from os.path import realpath, dirname, join
 from flask_paginate import Pagination
 from datetime import date
+import random
 
 from werkzeug.utils import secure_filename
 import json
@@ -16,6 +17,12 @@ import PIL
 import tensorflow as tf
 import tensorflow_hub as hub
 from geopy.geocoders import Nominatim
+
+from config_api_file import API_KEY
+from config_api_file import API_KEY_OFFICIAL
+from config_api_file import API_KEY_IVIBCA
+from config_api_file import GPT_API_KEY
+
 app = Flask(__name__)
 
 
@@ -57,12 +64,7 @@ today_date = current_date.strftime("%d-%b-%Y")
 # 2024-01-26
 package_date = current_date.strftime("%Y-%m-%d")
 
-#API KEYS
 
-API_KEY = 'c95354cf6bmsha1d0c084d95867cp1ef7b7jsn022524b64ff9'
-API_KEY_OFFICIAL = 'ffb1f70549msh4f6afa984fb4d18p133e17jsne63de69dbc36'
-API_KEY_IVIBCA = '55a774adc9msh7d2f9d5bc900644p135f9djsn1bea14d5c060'
-GPT_API_KEY = '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'
 
 # Asian Landmark Searching y images
 
@@ -1979,6 +1981,105 @@ def review_deleting(review_id, package_id):
     return redirect(url_for('tour_package_details', package_id=package_id))
 
 
+# Forget password
+
+@app.route('/TripOrganizer.com/recover-account', methods = ['GET', 'POST'])
+def forget_password():
+    return render_template('forget_password.html')
+
+# email verification
+@app.route('/TripOrganizer.com/recover-account-verification', methods = ['GET', 'POST'])
+def forget_password_email_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        email = request.form.get('loginemail')
+        cursor = mysql.connection.cursor()
+
+        # Unwatched Notofications
+        query = """SELECT * FROM USERS WHERE  email = %s"""
+        cursor.execute(query, (email,))
+        verification = cursor.fetchall()
+        try:
+            if verification:
+                password_reset_otp = random.randint(1000, 9999)
+                session['password_reset_otp'] = str(password_reset_otp)
+                url = "https://mail-sender-api1.p.rapidapi.com/"
+            
+                payload = {
+                    "sendto": email,
+                    "name": "TripOrganizer.com",
+                    "replyTo": "Your Email address where users can send their reply",
+                    "ishtml": "true",
+                    "title": "OTP " + str(password_reset_otp),
+                    "body": "Yout otp for login is "+ str(password_reset_otp) + " This only for one time use"
+                }
+
+                headers = {
+                    "content-type": "application/json",
+                    "X-RapidAPI-Key": API_KEY_OFFICIAL,
+                    "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+                }
+                response = requests.post(url, json=payload, headers=headers)
+
+                print(response.json())
+                return render_template('forget_password_otp.html', email=email)
+            else:
+                error_message = "Email verification Failed !!"
+                return render_template('forget_password.html', error_message=error_message)
+        except:
+            error_message = "No Network or something wrong"
+            return render_template('forget_password.html', error_message=error_message)
+    return render_template('forget_password.html')
+
+#Forget password otp verification
+@app.route('/TripOrganizer.com/recover-account-OTP-verification', methods = ['GET', 'POST'])
+def forget_password_otp_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        n1 = request.form.get("n1")
+        n2 = request.form.get("n2")
+        n3 = request.form.get("n3")
+        n4 = request.form.get("n4")
+        email = request.form.get("email")
+        otp = n1 + n2 + n3 + n4
+        if session['password_reset_otp'] == otp:
+            return render_template('forget_password_reset.html', email=email)
+        else:
+            error_message = "Wrong OTP"
+            return render_template('forget_password_otp.html', error_message=error_message, email=email)
+    return render_template('forget_password_otp.html', email=email)
+
+# Forget password
+
+@app.route('/TripOrganizer.com/recover-account-OTP', methods = ['GET', 'POST'])
+def forget_password_otp():
+    return render_template('forget_password_otp.html')
+
+
+# Forget password reset password
+@app.route('/TripOrganizer.com/recover-account-reset-password', methods = ['GET', 'POST'])
+def forget_password_reset():
+    if request.method == 'POST':
+        newpassword = request.form.get('confirmPassword')
+        email = request.form.get('email')
+        try:
+            cursor = mysql.connection.cursor()
+            query = "UPDATE users SET password = %s WHERE email = %s"
+            values = (newpassword, email)
+            cursor.execute(query, values)
+            mysql.connection.commit()
+            flash = "Password Reseted..!! Login Again"
+            return redirect('login')
+        except:
+            flash = "Something wrong"
+            return render_template('forget_password_reset.html', flash=flash)
+
+    return render_template('forget_password_reset.html')
+
+# @app.route('/TripOrganizer.com/recover-account-OTP-verifiation', methods = ['GET', 'POST'])
+# def forget_password_otp_verification():
 
       
 #---------------------------------------------------------
@@ -3303,7 +3404,24 @@ def admin_blog_details(blog_id):
     blog_images = cursor.fetchall()
 
     return render_template('admin/blog_details.html', blog_images=blog_images, blog_comments=blog_comments, blog_id=blog_id)
-   
+
+# Deletion of blog comment
+@app.route('/TripOrganizeradmins.com/delete_blog_comment/<int:comment_id>', methods=['GET', 'POST'])
+def admin_delete_blog_comment(comment_id):
+    cursor = mysql.connection.cursor()
+    delete_query = "DELETE FROM blog_comment WHERE commentid = %s"
+    delete_val = (comment_id,)
+    cursor.execute(delete_query, delete_val)
+    mysql.connection.commit()
+    status_message = "Blog Comment Deleted!!"
+
+    # Fetching blog  after deletion
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM blog"
+    cursor.execute(query)
+    blogs = cursor.fetchall()
+    return render_template('admin/admin_blog.html', blogs=blogs, dlt_status_message=status_message)
+
 # Deletion of blog images
 @app.route('/TripOrganizeradmins.com/delete_blog_images/<int:image_id>', methods=['GET', 'POST'])
 def admin_delete_blog_images(image_id):

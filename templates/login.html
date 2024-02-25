@@ -76,6 +76,7 @@
                         </div>
                         <div class="col-sm-6">
                         </div>
+                        <div class="col-sm-6 mb-3 text-md-end"><a href="{{ url_for('forget_password') }}">Forget Password?</a></div>
                         <div class="col-sm-6 d-grid">
                           <button type="submit" class="btn btn-primary btn-flat" id="loginsubmitbtn">Sign in</button>
                         </div>
@@ -93,6 +94,16 @@
       <!--=================================
         sign in -->
 
+<!-- {% if flash  %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" id="msg-alert-box" style="background-color: grey; color: white;    display: flex;
+    justify-content: space-between;
+    align-items: center;">
+    <strong></strong> {{ flash }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="alert-close" onclick="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %} -->
 <!-- Javascript -->
 <!-- JS Global Compulsory (Do not remove)-->
 <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>

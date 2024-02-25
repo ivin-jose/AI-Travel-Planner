@@ -1,0 +1,116 @@
+/*
+
+Template: Ciyatrip - Tour & Travel Hotel Booking HTML Template
+Version: 1.0.0
+Author: potenzaglobalsolutions
+Design and Developed by: potenzaglobalsolutions.com
+
+NOTE: This is main stylesheet of template, This file contains the styling for the actual Template.
+
+*/
+
+/*==============================================
+[  Table of contents  ]
+================================================
+
+ :: Typography
+ :: Helper Classes
+ :: Shortcodes
+    - Accordion
+    - Blog
+    - Button
+		- Client Logo
+		- Countdown
+    - Counter
+		- Destination
+		- Feature Box
+		- Form
+		- List
+		- Listing
+		- Owl Carousel
+		- Portfolio
+		- Pricing
+		- Progress Bar
+		- Range Slider
+    - Select
+    - Sidebar
+    - Tabs
+    - Team
+    - Testimonial
+    - Timeline
+    - Video
+ :: Header
+   - Header default
+   - Header transparent
+ :: Banner
+   - Banner 01
+   - Banner 02
+   - Banner 03
+   - Banner bg
+ :: Layout
+   - Social Icon
+   - Section Title
+   - Home Search 02
+   - Inner Header
+   - About us
+   - Map Listing
+ :: Sidebar
+   - sidebar
+ :: Blog
+   - Blog
+   - Blog Style Vertical
+   - Blog detail
+ :: Shop
+   - Product
+   - Product Detail
+    - Commentlist
+    - Checkout
+    - Cart
+    - Shop Category
+ :: Not Found
+ :: Footer
+
+======================================
+[ End table content ]
+======================================*/
+
+// Core files
+@import "variables";
+@import "helpers";
+@import "typography";
+
+// Shortcodes
+@import "shortcodes/button";
+@import "shortcodes/list";
+@import "shortcodes/listing";
+@import "shortcodes/tabs";
+@import "shortcodes/range-slider";
+@import "shortcodes/pricing";
+@import "shortcodes/progress-bar";
+@import "shortcodes/accordion";
+@import "shortcodes/countdown";
+@import "shortcodes/counter";
+@import "shortcodes/testimonial";
+@import "shortcodes/destination";
+@import "shortcodes/timeline";
+@import "shortcodes/blog";
+@import "shortcodes/feature-box";
+@import "shortcodes/video";
+@import "shortcodes/team";
+@import "shortcodes/owl-carousel";
+@import "shortcodes/client-logo";
+@import "shortcodes/sidebar";
+@import "shortcodes/form";
+@import "shortcodes/select";
+@import "shortcodes/portfolio";
+
+// Structure
+@import "header";
+@import "layout";
+@import "banner";
+
+// Pages
+@import "shop";
+@import "footer";
+
+// Responsive

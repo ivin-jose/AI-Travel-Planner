@@ -1,0 +1,503 @@
+
+/*****************************
+    Helper Classes
+*****************************/
+// color
+.text-primary {
+  color: $primary !important;
+}
+
+.text-secondary {
+  color: $secondary !important;
+}
+
+.text-white {
+  color: $white;
+}
+
+.text-dark {
+  color: $gray-2 !important;
+}
+
+.text-light {
+  color: $body-color !important;
+}
+
+.text-yellow{
+  color: $yellow !important;
+}
+
+// background
+.bg-primary {
+  background: $primary !important;
+}
+
+.bg-dark {
+  background: $gray-2 !important;
+}
+
+.bg-secondary {
+  background: $secondary !important;
+}
+
+.bg-light {
+  background: $gray-1 !important;
+}
+
+
+// img holder
+.bg-holder {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+}
+
+.bg-holder-bottom {
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+}
+
+
+// Background overlay
+.bg-overlay-half-bottom {
+  position: relative;
+}
+
+.bg-overlay-black-1 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.1);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-2 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.2);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-3 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.3);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.bg-overlay-black-4 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.4);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.bg-overlay-black-5 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.5);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-6 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.6);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-7 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.7);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-8 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.8);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-black-9 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($black, 0.9);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+/*bg-overlay-white*/
+
+.bg-overlay-white-1 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.1);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-2 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.2);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-3 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.3);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.bg-overlay-white-4 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.4);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.bg-overlay-white-5 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.5);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-6 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.6);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-7 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.7);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-8 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.8);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+.bg-overlay-white-9 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($white, 0.9);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+
+.bg-overlay-half-bottom {
+  &:before{
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "";
+    background: linear-gradient(to bottom, rgba($black, 0) 0, rgba($black, 0.4) 100%);
+    top: auto;
+    height: 100%;
+    transition: all .35s;
+  }
+}
+
+
+.bg-overlay-secondary {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($secondary, 0.60);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.bg-overlay-secondary-90 {
+  position: relative;
+  z-index: 1;
+  &:before {
+    background: rgba($secondary, 0.90);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+
+// Page section margin padding
+.space-ptb {
+  padding: 100px 0;
+}
+
+.space-pt {
+  padding: 100px 0 0;
+}
+
+.space-pb {
+  padding: 0 0 100px;
+}
+
+.h-100vh {
+  height: 100vh !important;
+}
+
+
+/* Sticky column */
+.is-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+}
+
+
+// font size
+.font-sm {
+  font-size: 13px;
+}
+
+
+
+.bg-success-soft {
+  background: rgba($success, 0.1) !important;
+}
+
+.bg-danger-soft {
+  background: rgba($danger, 0.1) !important;
+}
+
+.bg-white-soft {
+  background: rgba($white, 0.1);
+}
+
+.bg-dark-soft {
+  background: rgba($black, 0.1);
+}
+
+
+@media (min-width: 1200px){
+
+  .container {
+      max-width: 1200px;
+  }
+
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 1200px) {
+
+  .space-ptb {
+  padding: 80px 0;
+}
+
+.space-pt {
+  padding: 80px 0 0;
+}
+
+.space-pb {
+  padding: 0 0 80px;
+}
+
+}
+
+@media (max-width: 991px) {
+.space-ptb {
+  padding: 60px 0;
+}
+
+.space-pt {
+  padding: 60px 0 0;
+}
+
+.space-pb {
+  padding: 0 0 60px;
+}
+}
+
+@media (max-width: 767px) {
+.space-ptb {
+  padding: 50px 0;
+}
+
+.space-pt {
+  padding: 50px 0 0;
+}
+
+.space-pb {
+  padding: 0 0 50px;
+}
+}
+
+
+
+@media (max-width: 575px) {
+.space-ptb {
+  padding: 40px 0;
+}
+
+.space-pt {
+  padding: 40px 0 0;
+}
+
+.space-pb {
+  padding: 0 0 40px;
+}
+}
+
+
+
+
+

@@ -608,7 +608,7 @@ Blog -->
       <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
         <div class="blog">
           <div class="blog-img">
-            <img  class="img-fluid rounded" src="{{ row[7] }}" alt="" style="width: 100%; height: 200px; object-fit: fill;">
+            <img  class="img-fluid rounded" src="{{ url_for('static', filename=row[7]) }}" alt="" style="width: 100%; height: 200px; object-fit: fill;">
           </div>
           <div class="blog-body d-flex align-items-center">
             <div class="time-card me-3">
@@ -624,7 +624,7 @@ Blog -->
               
             </div>
           </div>
-          <a href="{{ url_for('blog_single', blog_id = row[0] )}}" style="text-transform: capitalize;">{{ row[2] }}</a>
+          <a href="{{ url_for('blog_single', blog_id = row[0], flash='123' )}}" style="text-transform: capitalize;">{{ row[2] }}</a>
         </div>
       </div>
       {% endfor %}

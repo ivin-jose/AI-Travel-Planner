@@ -1,0 +1,143 @@
+/*****************************
+  Countdown
+*****************************/
+
+.countdown-2{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .countdown{
+    padding: 10px;
+    background-color: $secondary;
+    color: $white;
+    border-radius: $border-radius-sm;
+    margin: 5px;
+    width: 66px;
+    height: 66px;
+    span{
+      font-size: 18px;
+      line-height: 1;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+    p{
+      font-size: 12px;
+      text-transform: capitalize;
+      margin-top: 5px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.coming-soon-section{
+    h1 {
+       font-size: 120px;
+       text-shadow: 0px 5px 8px rgba($black, 0.50);
+   }
+ .countdown-2{
+  .countdown{
+    color: $secondary;
+    background-color: inherit;
+    width: inherit;
+    height: inherit;
+   span{
+     font-size: 80px;
+     }
+   p{
+      margin-top: 20px;
+      font-size: 18px;
+      padding: 6px 30px;
+      border-radius: $border-radius;
+      border: 1px solid $border-color;
+   }
+  }
+ }
+ .form-inline{
+  .form-control{
+    height: 60px;
+    padding: 14px 170px 14px 20px;
+  }
+  .btn{
+    &:after{
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+  }
+ }
+}
+
+.coming-soon-top{
+  .navbar{
+   .navbar-brand{
+    img{
+      height: 70px;
+    }
+   }
+  }
+}
+
+@media (max-width:1200px) {
+  .coming-soon-section {
+    h1{
+      font-size: 70px;
+    }
+    .countdown-2{
+    .countdown{
+          span{
+         font-size: 60px;
+         }
+       }
+     }
+  }
+}
+
+@media (max-width:991px) {
+  .coming-soon-section {
+    h1{
+      font-size: 60px;
+    }
+    .countdown-2{
+    .countdown{
+          span{
+         font-size: 50px;
+         }
+       }
+     }
+  }
+}
+
+@media (max-width:767px) {
+  .coming-soon-section {
+    h1{
+      font-size: 46px;
+    }
+    .countdown-2{
+    .countdown{
+          span{
+         font-size: 40px;
+         }
+       }
+     }
+  }
+}
+
+
+
+@media (max-width:575px) {
+  .coming-soon-section {
+    h1{
+      font-size: 36px;
+    }
+
+     .form-inline{
+      .btn{
+          position: inherit;
+          border-radius: $border-radius !important;
+        &:after{
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
+        }
+      }
+     }
+  }
+}

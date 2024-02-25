@@ -1,0 +1,28 @@
+/*****************************
+  counter
+*****************************/
+
+.counter{
+  position: relative;
+ span{
+  font-size: 36px;
+  line-height: 1;
+  color: $primary;
+  font-weight: bold;
+  margin-bottom: 30px;
+ }
+  label{
+    display: block;
+    margin-top: 20px;
+  }
+  &:before{
+    background: $border-color;
+    position: absolute;
+    width: 3px;
+    height: 60px;
+    content: "";
+    right: 30%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
