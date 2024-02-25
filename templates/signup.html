@@ -52,7 +52,7 @@
                   <div class="section-title text-center">
                     <h2 class="primary-text">Create Account</h2>
                    </div>
-                    <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style signup-form" name="signup-form" method="POST">
+                    <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style signup-form" name="signup-form" method="POST" action="{{ url_for('signup') }}">
                       <div class="mb-3 col-sm-12">         
                         <label class="form-label">Username:</label>
                         <label class="error-message" style="color: orange;">{{ username_exist_msg }}</label><br>
@@ -60,10 +60,9 @@
                         <input type="text" class="form-control signupname" placeholder="" name="signupname"  value="{{username}}" >
                       </div>
                       <div class="mb-3 col-sm-12">
-                        <label class="form-label">Email Addres: </label>
-                        <label class="error-message" style="color: orange;">{{ email_exist_msg }}</label><br>
-                        <label class="signupemail-label"  style="color: red;"></label>
-                        <input type="email" class="form-control signupemail" placeholder="" name="signupemail"  value="{{email}}" >
+                        <label class="form-label">Email Addres: {{email}}</label>
+                       
+                        <input type="email" class="form-control signupemail" placeholder="" name="signupemail"  value="{{email}}" hidden>
                       </div>
                       <div class="mb-3 col-sm-12">
                           <label class="form-label">Your Country: </label>

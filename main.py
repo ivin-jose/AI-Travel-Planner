@@ -528,6 +528,78 @@ def login():
 
     return render_template('login.html', error_message=error_message)
 
+# signup first page email validation
+@app.route('/TripOrganizer.com/signup-verify')
+def user_signup_verification():
+    return render_template('signup_verification.html')
+
+@app.route('/TripOrganizer.com/signup-email-verify', methods=['GET', 'POST'])
+def signup_email_verification():
+    error_message = ""
+    if request.method == 'POST':
+        email = request.form.get('email')
+
+        cursor = mysql.connection.cursor()
+        checking_email_unique = "SELECT * FROM users WHERE email = %s"
+        values = (email,)
+        cursor.execute(checking_email_unique, values)
+        result = cursor.fetchall()
+
+        if len(result) > 0:
+            error_message = "Email Already Taken"
+            return render_template('signup_verification.html', error_message=error_message)
+        else:
+            try:
+                signup_otp = random.randint(1000, 9999)
+                session['signup_otp'] = str(signup_otp)
+                url = "https://mail-sender-api1.p.rapidapi.com/"
+            
+                payload = {
+                    "sendto": email,
+                    "name": "TripOrganizer.com",
+                    "replyTo": "Your Email address where users can send their reply",
+                    "ishtml": "true",
+                    "title": "OTP " + str(signup_otp),
+                    "body": "Yout otp for login is "+ str(signup_otp) + " This only for one time use"
+                }
+
+                headers = {
+                    "content-type": "application/json",
+                    "X-RapidAPI-Key": API_KEY_OFFICIAL,
+                    "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+                }
+                response = requests.post(url, json=payload, headers=headers)
+
+                print(response.json())
+                return render_template('signup_otp.html', email=email)
+            except:
+                error_message = "No Network or Something Wrong"
+                return render_template('signup_otp.html', email=email, error_message=error_message)
+
+    return render_template('signup_verification.html', error_message=error_message)
+
+# signup otp verification
+@app.route('/TripOrganizer.com/signup-OTP-verification', methods = ['GET', 'POST'])
+def signup_otp_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        n1 = request.form.get("n1")
+        n2 = request.form.get("n2")
+        n3 = request.form.get("n3")
+        n4 = request.form.get("n4")
+        email = request.form.get("email")
+        otp = n1 + n2 + n3 + n4
+        if session['signup_otp'] == otp:
+            session['signup_otp'] == ""
+            return render_template('signup.html', email=email)
+        else:
+            error_message = "Wrong OTP"
+            return render_template('signup_otp.html', error_message=error_message, email=email)
+    return render_template('signup_otp.html', email=email)
+
+
+#signup
 @app.route('/TripOrganizer.com/signup', methods = ['GET', 'POST'])
 def signup():
     username =''
@@ -577,8 +649,6 @@ def signup():
                 session['userid'] = result[0][0]
                 session['username'] = result[0][1]
                 return redirect('/TripOrganizer.com')
-
-
             return redirect('TripOrganizer.com/login')
 
     return render_template('signup.html', email_exist_msg=email_exist_msg, username=username, email=email,
@@ -2045,6 +2115,7 @@ def forget_password_otp_verification():
         email = request.form.get("email")
         otp = n1 + n2 + n3 + n4
         if session['password_reset_otp'] == otp:
+            session['password_reset_otp'] 
             return render_template('forget_password_reset.html', email=email)
         else:
             error_message = "Wrong OTP"
