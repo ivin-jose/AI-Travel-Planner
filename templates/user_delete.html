@@ -72,10 +72,10 @@
                                 <div class="tab-pane active">
                                     <div class="row">
                                       <div class="col d-flex justify-content-end">
-                                        <a class="btn btn-primary" type="submit" id="deleteuserbtn" style="background-color: red;" href="{{ url_for('logout') }}">Logout</a>
+                                        <a class="btn btn-primary" type="submit" id="deleteuserbtnlogout" style="background-color: red;" href="{{ url_for('logout') }}">Logout</a>
                                       </div>
                                       <div class="col d-flex justify-content-end">
-                                        <a class="btn btn-primary" type="submit" id="deleteuserbtn" style="background-color: white;"><i class="fa-solid fa-trash" style="color: #ff0000;"></i></a>
+                                        <a  class="btn btn-primary" type="submit" id="deleteuserbtn" style="background-color: white;"><i class="fa-solid fa-trash" style="color: #ff0000;"></i></a>
                                       </div>
                                     </div>
                                 </div>
@@ -91,6 +91,54 @@
     </div>
 </div>
 
+<style type="text/css">
+    #delete_confirmation {
+        display: none;
+        width: 40%;
+        height: 30vh;
+        background-color: #009688;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        margin: auto;
+        z-index: 3000;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .dc1 {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 50%;
+    }
+</style>
+<div id="delete_confirmation">
+    <div><p style="color: white; text-align: center;">Everthing will be deleted and you cannot recover anything</div>
+    <div class="dc1">
+        <div class="dc1-1">
+            <a href="{{ url_for('user_deletion') }}" class="btn btn-primary" style="color: red">DELETE</a>
+        </div>
+        <div class="dc1-2">
+            <a id="dltcancel" class="btn btn-primary">CANCEL</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(document).ready(function() {
+        $("#delete_confirmation").hide()
+        $("#deleteuserbtn").click(function() {
+            $("#delete_confirmation").show()
+        })
+        $("#dltcancel").click(function() {
+            $("#delete_confirmation").hide()
+        })
+     })
+</script>
 <script type="text/javascript">
   $(document).ready(function() {
     function validatePassword() {

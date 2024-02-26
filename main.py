@@ -22,6 +22,10 @@ from config_api_file import API_KEY
 from config_api_file import API_KEY_OFFICIAL
 from config_api_file import API_KEY_IVIBCA
 from config_api_file import GPT_API_KEY
+from config_api_file import MAIL_SEND_API_1
+from config_api_file import MAIL_SEND_API_2
+from config_api_file import MAIL_SEND_API_3
+
 
 app = Flask(__name__)
 
@@ -522,6 +526,15 @@ def login():
        if len(result) > 0:
         session['userid'] = result[0][0]
         session['username'] = result[0][1]
+
+        cursor = mysql.connection.cursor()
+        query = "SELECT email FROM users WHERE user_id = %s"
+        values = (session['userid'],)
+        cursor.execute(query, values)
+        result = cursor.fetchall()
+
+        for row in result:
+            email = row[0]
         # Sending email when user loigned
         url = "https://mail-sender-api1.p.rapidapi.com/"
             
@@ -578,7 +591,7 @@ def signup_email_verification():
                     "replyTo": "Your Email address where users can send their reply",
                     "ishtml": "true",
                     "title": "OTP " + str(signup_otp),
-                    "body": "Yout otp for login is "+ str(signup_otp) + " This only for one time use"
+                    "body": "Yout otp for login is " + str(signup_otp) + " This only for one time use"
                 }
 
                 headers = {
@@ -590,8 +603,8 @@ def signup_email_verification():
 
                 print(response.json())
                 return render_template('signup_otp.html', email=email)
-            except:
-                error_message = "No Network or Something Wrong"
+            except Exception as e:
+                error_message = "No Network or Something Wrong!!" + e
                 return render_template('signup_otp.html', email=email, error_message=error_message)
 
     return render_template('signup_verification.html', error_message=error_message)
@@ -1668,19 +1681,47 @@ def user_tour_package_booking():
     travalers = session['persons']
     date = today_date
     flash = ""
+    try:
+        cursor = mysql.connection.cursor()
+        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view, date))
+        mysql.connection.commit()
 
-    cursor = mysql.connection.cursor()
-    query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view, date))
-    mysql.connection.commit()
+        # Get the generated Package Id
+        booking_id = cursor.lastrowid
 
-    # Get the generated Package Id
-    booking_id = cursor.lastrowid
+        # Adding travel lead
+        insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
+        cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
+        mysql.connection.commit()
+        flash = "Request Submitted..!"
+    except Exception as e:
+        flash = "Error " + e
 
-    # Adding travel lead
-    insert_query = "INSERT INTO package_booked_travalers (booking_id, name, identity_document, phone) VALUES (%s, %s, %s, %s)"
-    cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
-    mysql.connection.commit()
+    #selecting email of provider
+    query = "SELECT email FROM pro_users WHERE pro_usersid = %s"
+    cursor.execute(query, (provider,))
+    pro_email = cursor.fetchall()
+
+    for row in pro_email:
+        email = row[0]
+
+    url = "https://mail-sender-api1.p.rapidapi.com/"     
+    payload = {
+    "sendto": email,
+    "name": "TripOrganizer.com",
+    "replyTo": "",
+    "ishtml": "true",
+    "title": "Booking Request",
+    "body": "<p>You Have a new Booking request by <strong style='color: green;'>" + name + "</strong></p><p>Booking ID: <strong style='color: grey;'>" + str(booking_id) + "</strong></p><p>Visit website for more information.</p> <p> Date: "+ date +"</p> <p> Phone: "+ phone +"</p>"
+    }
+    
+    headers = {
+    "content-type": "application/json",
+    "X-RapidAPI-Key": MAIL_SEND_API_3,
+    "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+    }
+    response = requests.post(url, json=payload, headers=headers)
 
     for person in travalers:
         person_name = person.get('name')
@@ -1695,12 +1736,13 @@ def user_tour_package_booking():
         
             # Commit the changes to the database
             mysql.connection.commit()
+
             flash = "Request Submitted..!"
 
         except Exception as e:
             # Rollback the transaction in case of any errors
             mysql.connection.rollback()
-            print("Error:", e)
+            flash = ("Error:", e)
 
 
         except Exception as e:
@@ -1998,8 +2040,34 @@ def user_booking_cancel(booking_id, package_name, provider_id):
 
             # Commit the changes
             mysql.connection.commit()
-            cursor.close()
-            flash_message = "Booking Cancelled..!!"
+            
+            #selecting email of provider
+            query = "SELECT email FROM pro_users WHERE pro_usersid = %s"
+            cursor.execute(query, (provider_id,))
+            pro_email = cursor.fetchall()
+
+            for row in pro_email:
+                email = row[0]
+
+            # sending email to provider which thepackage is cancelled
+
+            url = "https://mail-sender-api1.p.rapidapi.com/"     
+            payload = {
+                "sendto": email,
+                "name": "TripOrganizer.com",
+                "replyTo": "",
+                "ishtml": "true",
+                "title": "Booking Cancellation ",
+                "body": "<p>Booking Cancallation of <h2>" + str(package_name) + "</h2> <span style='color: green'</span> Cancelled</p> Booking ID : " + str(booking_id) + "<p> Check Website for more info</p>"
+            }
+
+            headers = {
+                "content-type": "application/json",
+                "X-RapidAPI-Key": MAIL_SEND_API_2,
+                "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+            }
+            response = requests.post(url, json=payload, headers=headers)
+            flash_message = "Booking Cancelled..!! Your Refund will be proccessed soon.."
 
     except Exception as e:
         print(f"Error: {e}")
@@ -2100,7 +2168,7 @@ def forget_password_email_verification():
                     "replyTo": "Your Email address where users can send their reply",
                     "ishtml": "true",
                     "title": "OTP " + str(password_reset_otp),
-                    "body": "Yout otp for login is "+ str(password_reset_otp) + " This only for one time use"
+                    "body": "Yout otp for Reset Password is "+ str(password_reset_otp) + " This only for one time use"
                 }
 
                 headers = {
@@ -2167,8 +2235,54 @@ def forget_password_reset():
 
     return render_template('forget_password_reset.html')
 
-# @app.route('/TripOrganizer.com/recover-account-OTP-verifiation', methods = ['GET', 'POST'])
-# def forget_password_otp_verification():
+@app.route('/TripOrganizer.com/user-deletion', methods = ['GET', 'POST'])
+def user_deletion():
+    cursor = mysql.connection.cursor()
+    try:
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM blog WHERE userid = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM blog_comment WHERE userid = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM blog_images WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM cancelled_bookings WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM package_bookings WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM package_reviews WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM saved_packages WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM travalers_attendance WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        # Delete from pro_users table
+        delete_query_users = "DELETE FROM users WHERE user_id = %s"
+        cursor.execute(delete_query_users, (str(session['userid']),))
+
+        mysql.connection.commit()
+
+        flash = "User " + session["username"] + "Dleted..!"
+        session.pop('userid', None)  # Remove the user_id from the session
+        session.pop('username', None)
+        return redirect('/TripOrganizer.com')
+    except:
+        return redirect('/TripOrganizer.com')
 
       
 #---------------------------------------------------------
@@ -3047,15 +3161,15 @@ def pro_tour_booking_accept(booking_id):
         payload = {
             "sendto": email,
             "name": "TripOrganizer.com",
-            "replyTo": "Your Email address where users can send their reply",
+            "replyTo": "",
             "ishtml": "true",
-            "title": "New Login ",
-            "body": "New Login Found on Your Account"
+            "title": "Booking Accepted ",
+            "body": "<p>Your Booking request Is<span style='color: green'</span> Accepted</p> Booking ID : " + str(booking_id) + "<p> Contact for More info</p>"
         }
 
         headers = {
             "content-type": "application/json",
-            "X-RapidAPI-Key": API_KEY_OFFICIAL,
+            "X-RapidAPI-Key": MAIL_SEND_API_1,
             "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
         }
         response = requests.post(url, json=payload, headers=headers)
@@ -3097,6 +3211,23 @@ def pro_tour_booking_reject(booking_id):
             emails = row[0]
 
         flash = "Request Rejected "
+        url = "https://mail-sender-api1.p.rapidapi.com/"     
+        payload = {
+            "sendto": email,
+            "name": "TripOrganizer.com",
+            "replyTo": "",
+            "ishtml": "true",
+            "title": "Booking Rejected",
+            "body": "<p>Your Booking request has been <strong style='color: red;'>Rejected</strong></p><p>Booking ID: <strong style='color: red;'>" + str(booking_id) + "</strong></p><p>Contact for more information.</p>"
+        }
+
+
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": MAIL_SEND_API_1,
+            "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+        }
+        response = requests.post(url, json=payload, headers=headers)
     except Exception as e:
         flash = "Something Wrong.."
 
@@ -3164,7 +3295,7 @@ def bookings():
 @app.route('/TripOrganizer.com/account.pro/provider_deletion')
 def provider_deletion():
     # Create a cursor
-    cursor = conn.cursor()
+    cursor = mysql.connection.cursor()
 
     # Delete from pro_users table
     delete_query_pro_users = "DELETE FROM pro_users WHERE provider_id = %s"
@@ -3179,7 +3310,7 @@ def provider_deletion():
     cursor.execute(delete_query_cancelled_bookings, (str(session['proid']),))
 
     # Delete from package_bookings table (assuming this is a different table from the first one)
-    delete_query_another_package_bookings = "DELETE FROM another_package_bookings WHERE provider_id = %s"
+    delete_query_another_package_bookings = "DELETE FROM package_day_programme WHERE pro_id = %s"
     cursor.execute(delete_query_another_package_bookings, (str(session['proid']),))
 
     # Delete from tour_packages table
@@ -3865,6 +3996,32 @@ def admin_booking_cancel(booking_id, package_name, provider_id):
             # Commit the changes
             mysql.connection.commit()
             cursor.close()
+
+            query = "SELECT email FROM pro_users WHERE pro_usersid = %s"
+            cursor.execute(query, (provider_id,))
+            pro_email = cursor.fetchall()
+
+            for row in pro_email:
+                email = row[0]
+
+            # sending email to provider which thepackage is cancelled
+
+            url = "https://mail-sender-api1.p.rapidapi.com/"     
+            payload = {
+                "sendto": email,
+                "name": "TripOrganizer.com",
+                "replyTo": "",
+                "ishtml": "true",
+                "title": "Booking Cancellation ",
+                "body": "<p>Booking Cancallation of <h6>" + str(package_name) + "</h6> <span style='color: green'</span> Accepted</p> Booking ID : " + str(booking_id) + "<p> Check Website for more info</p><h6>Its Done By Admin</p>"
+            }
+
+            headers = {
+                "content-type": "application/json",
+                "X-RapidAPI-Key": MAIL_SEND_API_2,
+                "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+            }
+            response = requests.post(url, json=payload, headers=headers)
             dlt_status_message = "Booking Cancelled..!!"
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM package_bookings"
