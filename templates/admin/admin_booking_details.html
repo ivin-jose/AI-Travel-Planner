@@ -57,11 +57,7 @@
 <br><br>
 <div>
     <div>
-        {% for row in booking_details %}
-            {% for row2 in tour_packages_data %}
-            <a href="{{url_for('admin_booking_cancel', booking_id=row[1], package_name=row2[2], provider_id=row2[1]) }}" style="color: blue;">Cancel this Trip</a>
-              {% endfor %}
-          {% endfor %}
+
     </div>
     <div>
         

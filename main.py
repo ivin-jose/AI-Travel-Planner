@@ -25,6 +25,7 @@ from config_api_file import GPT_API_KEY
 from config_api_file import MAIL_SEND_API_1
 from config_api_file import MAIL_SEND_API_2
 from config_api_file import MAIL_SEND_API_3
+from config_api_file import MAIL_SEND_API_4
 
 
 app = Flask(__name__)
@@ -2400,10 +2401,37 @@ def pro_login():
        cursor.execute(query, values)
        result = cursor.fetchall()
        
+       query = "SELECT email FROM pro_users WHERE (email = %s OR company = %s) AND password = %s"
+       values = (email_or_username, email_or_username, password)
+       cursor.execute(query, values)
+       result1 = cursor.fetchall()
+
+       for row in result1:
+        email = row[0]
+
        if len(result) > 0:
         session['proid'] = result[0][0]
         session['prouserid'] = result[0][1]
         session['prousercompany'] = result[0][2]
+
+        url = "https://mail-sender-api1.p.rapidapi.com/"     
+        payload = {
+            "sendto": email,
+            "name": "TripOrganizer.com",
+            "replyTo": "",
+            "ishtml": "true",
+            "title": "NEW LOGIN ",
+            "body": "<p>New login found on your account..</p>"
+        }
+
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": MAIL_SEND_API_2,
+            "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+        }
+        response = requests.post(url, json=payload, headers=headers)
+        dlt_status_message = "Booking Cancelled..!!"
+
         return redirect('/TripOrganizer.com/account.pro')
        else:
         error_message = "Invalid username/email or password"
@@ -3356,6 +3384,97 @@ def provider_searching():
         return render_template('pro/search_results.html', bookings=all_d, se=all_d)
     else:
         return redirect('pro.login')
+
+# Forget password
+
+@app.route('/TripOrganizer.com/account.pro/recover-account', methods = ['GET', 'POST'])
+def pro_forget_password():
+    return render_template('pro/pro_forget_password.html')
+
+# email verification
+@app.route('/TripOrganizer.com/account.pro/recover-account-verification', methods = ['GET', 'POST'])
+def pro_forget_password_email_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        email = request.form.get('loginemail')
+        cursor = mysql.connection.cursor()
+
+        # Unwatched Notofications
+        query = """SELECT * FROM pro_users WHERE  email = %s"""
+        cursor.execute(query, (email,))
+        verification = cursor.fetchall()
+        try:
+            if verification:
+                pro_password_reset_otp = random.randint(1000, 9999)
+                session['pro_password_reset_otp'] = str(pro_password_reset_otp)
+                url = "https://mail-sender-api1.p.rapidapi.com/"
+            
+                payload = {
+                    "sendto": email,
+                    "name": "TripOrganizer.com",
+                    "replyTo": "Your Email address where users can send their reply",
+                    "ishtml": "true",
+                    "title": "OTP " + str(pro_password_reset_otp),
+                    "body": "Yout otp for Reset Password is "+ str(pro_password_reset_otp) + " This only for one time use"
+                }
+
+                headers = {
+                    "content-type": "application/json",
+                    "X-RapidAPI-Key": API_KEY_OFFICIAL,
+                    "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+                }
+                response = requests.post(url, json=payload, headers=headers)
+
+                print(response.json())
+                return render_template('pro/pro_forget_password_otp.html', email=email)
+            else:
+                error_message = "Email verification Failed !!"
+                return render_template('pro/pro_forget_password.html', error_message=error_message)
+        except:
+            error_message = "No Network or something wrong"
+            return render_template('pro/pro_forget_password.html', error_message=error_message)
+    return render_template('pro/pro_forget_password.html')
+
+#Forget password otp verification
+@app.route('/TripOrganizer.com/account.pro/recover-account-OTP-verification', methods = ['GET', 'POST'])
+def pro_forget_password_otp_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        n1 = request.form.get("n1")
+        n2 = request.form.get("n2")
+        n3 = request.form.get("n3")
+        n4 = request.form.get("n4")
+        email = request.form.get("email")
+        pro_otp = n1 + n2 + n3 + n4
+        if session['pro_password_reset_otp'] == pro_otp:
+            session['pro_password_reset_otp'] 
+            return render_template('pro/pro_forget_password_reset.html', email=email)
+        else:
+            error_message = "Wrong OTP"
+            return render_template('pro/pro_forget_password_otp.html', error_message=error_message, email=email)
+    return render_template('pro/pro_forget_password_otp.html', email=email)
+
+# Forget password reset password
+@app.route('/TripOrganizer.com/account.pro/recover-account-reset-password', methods = ['GET', 'POST'])
+def pro_forget_password_reset():
+    if request.method == 'POST':
+        newpassword = request.form.get('confirmPassword')
+        email = request.form.get('email')
+        try:
+            cursor = mysql.connection.cursor()
+            query = "UPDATE pro_users SET password = %s WHERE email = %s"
+            values = (newpassword, email)
+            cursor.execute(query, values)
+            mysql.connection.commit()
+            flash = "Password Reseted..!! Login Again"
+            return redirect('/TripOrganizer.com/account.pro/login')
+        except:
+            flash = "Something wrong"
+            return render_template('pro/pro_forget_password_reset.html', flash=flash)
+
+    return render_template('pro/pro_forget_password_reset.html')
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------
@@ -3928,6 +4047,8 @@ def admin_booking_details(booking_id, package_id):
 @app.route('/TripOrganizeradmins.com/admin-user-booking-cancel/<booking_id>/<package_name>/<provider_id>', methods=['POST', 'GET'])
 def admin_booking_cancel(booking_id, package_name, provider_id):
     pro_view = "0"
+    bookings=""
+    dlt_status_message=""
     try:
         # Create a new cursor for the delete queries
         delete_cursor = mysql.connection.cursor()
@@ -3984,7 +4105,7 @@ def admin_booking_cancel(booking_id, package_name, provider_id):
         checking_booking = cursor.fetchall()
 
         if checking_booking:
-            flash_message = "Already Cancelled.."
+            dlt_status_message = "Already Cancelled.."
         else:
             query_inserting = """
                 INSERT INTO cancelled_bookings (booking_id, user_id, provider_id, pro_view, package_name, cancelled_date)
@@ -4032,7 +4153,7 @@ def admin_booking_cancel(booking_id, package_name, provider_id):
     except Exception as e:
         print(f"Error: {e}")
         flash_message = "Something went wrong."
-    return render_template('admin/admin_bookings.html', bookings=bookings, error_message="")
+    return render_template('admin/admin_bookings.html', bookings=bookings, error_message=dlt_status_message)
 
 
 
