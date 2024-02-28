@@ -1682,10 +1682,18 @@ def user_tour_package_booking():
     travalers = session['persons']
     date = today_date
     flash = ""
+
+    cursor = mysql.connection.cursor()
+    query = """SELECT * FROM tour_packages WHERE  package_id = %s"""
+    cursor.execute(query, (package_id,))
+    result = cursor.fetchall()
+    for row in result:
+        expiry_date = row[0]
+
     try:
         cursor = mysql.connection.cursor()
-        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view, date))
+        query = "INSERT INTO package_bookings (user_id, package_id, viewed, package_provider_id, package_status, package_status_view, date, expiry_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, (session['userid'], package_id, view, provider, package_status, package_status_view, date, expiry_date))
         mysql.connection.commit()
 
         # Get the generated Package Id
@@ -3315,7 +3323,15 @@ def bookings():
     cursor.execute(query, (session['proid'],))
     all_d = cursor.fetchall()
 
-    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d)
+    query = """SELECT * FROM cancelled_bookings
+        WHERE provider_id = %s ORDER BY booking_id DESC;
+    """
+    cursor.execute(query, (session['proid'],))
+    cancelled_bookings = cursor.fetchall()
+
+
+
+    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d, cancelled_bookings=cancelled_bookings)
 
 
 # Provider account and datas deletion
@@ -3475,6 +3491,76 @@ def pro_forget_password_reset():
             return render_template('pro/pro_forget_password_reset.html', flash=flash)
 
     return render_template('pro/pro_forget_password_reset.html')
+
+
+@app.route('/TripOrganizer.com/account.pro/signup-verify')
+def pro_signup_verification():
+    return render_template('pro/pro_signup_verification.html')
+
+@app.route('/TripOrganizer.com/account.pro/signup-email-verify', methods=['GET', 'POST'])
+def pro_signup_email_verification():
+    error_message = ""
+    if request.method == 'POST':
+        email = request.form.get('email')
+
+        cursor = mysql.connection.cursor()
+        checking_email_unique = "SELECT * FROM pro_users WHERE email = %s"
+        values = (email,)
+        cursor.execute(checking_email_unique, values)
+        result = cursor.fetchall()
+
+        if len(result) > 0:
+            error_message = "Email Already Taken"
+            return render_template('pro/pro_signup_verification.html', error_message=error_message)
+        else:
+            try:
+                pro_signup_otp = random.randint(1000, 9999)
+                session['pro_signup_otp'] = str(pro_signup_otp)
+                url = "https://mail-sender-api1.p.rapidapi.com/"
+            
+                payload = {
+                    "sendto": email,
+                    "name": "TripOrganizer.com",
+                    "replyTo": "Your Email address where users can send their reply",
+                    "ishtml": "true",
+                    "title": "OTP " + str(pro_signup_otp),
+                    "body": "Yout otp for SignUp is " + str(pro_signup_otp) + " This only for one time use"
+                }
+
+                headers = {
+                    "content-type": "application/json",
+                    "X-RapidAPI-Key": MAIL_SEND_API_4,
+                    "X-RapidAPI-Host": "mail-sender-api1.p.rapidapi.com"
+                }
+                response = requests.post(url, json=payload, headers=headers)
+
+                print(response.json())
+                return render_template('pro/pro_signup_otp.html', email=email)
+            except Exception as e:
+                error_message = "No Network or Something Wrong!!" + e
+                return render_template('pro/pro_signup_otp.html', email=email, error_message=error_message)
+
+    return render_template('pro/pro_signup_verification.html', error_message=error_message)
+
+# signup otp verification
+@app.route('/TripOrganizer.com/account.pro/signup-OTP-verification', methods = ['GET', 'POST'])
+def pro_signup_otp_verification():
+    error_message = ""
+    email = ""
+    if request.method == 'POST':
+        n1 = request.form.get("n1")
+        n2 = request.form.get("n2")
+        n3 = request.form.get("n3")
+        n4 = request.form.get("n4")
+        email = request.form.get("email")
+        otp = n1 + n2 + n3 + n4
+        if session['pro_signup_otp'] == otp:
+            session['pro_signup_otp'] == ""
+            return render_template('pro/pro_signup.html', email=email)
+        else:
+            error_message = "Wrong OTP"
+            return render_template('pro/pro_signup_otp.html', error_message=error_message, email=email)
+    return render_template('pro/pro_signup_otp.html', email=email)
 #---------------------------------------------------------
 #---------------------------------------------------------
 #---------------------------------------------------------

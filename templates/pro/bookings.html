@@ -7,19 +7,20 @@
                 <div class="col">
                 <div class="row">
                   <div class="col mb-3">
-                    <div class="card">
+                    <div class="card" style="width: 140%">
                       <div class="card-body">
                       	<button id="all_bookings_btn" class="btn btn-primary">All</button>
                       	<button id="pending_bookings_btn" class="btn btn-primary">Show Pending</button>
-						<button id="accepted_bookings_btn" class="btn btn-primary">Show Accepted</button>
-						<button id="rejected_bookings_btn" class="btn btn-primary">Show Rejected</button>
+												<button id="accepted_bookings_btn" class="btn btn-primary">Show Accepted</button>
+												<button id="rejected_bookings_btn" class="btn btn-primary">Show Rejected</button>
+												<button id="cancelled_bookings_btn" class="btn btn-primary" style="background-color: red;">Cancelled Bookings</button>
                         <div class="e-profile">
                           <div class="row">
 
                             <div class="col-12 col-sm-auto mb-3">
                               
                               
-                          </div>
+                          </div> 
 
                           <ul class="nav nav-tabs">
                             <li class="nav-item"><a href="" class="active nav-link">Booking Details</a></li>
@@ -45,7 +46,7 @@
   								  	{% for row in all %}
   									    <tr>
   									      <td>{{row[0]}}</td>
-  									      <td>{{row[10]}}</td>
+  									      <td>{{row[11]}}</td>
   									      <td>{% if row[5] == 1 %}
   									      	Accepted
   									      	{% endif %}
@@ -81,7 +82,7 @@
 							  	{% for row in accepted %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[10]}}</td>
+								      <td>{{row[11]}}</td>
 								      <td>Granted</td>
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
 								      <td></td>
@@ -109,7 +110,7 @@
 							  	{% for row in rejected %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[10]}}</td>
+								      <td>{{row[11]}}</td>
 								      <td>Rejected</td>
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
 								      <td></td>
@@ -137,7 +138,7 @@
 							  	{% for row in pending %}
 								    <tr>
 								      <td>{{row[0]}}</td>
-								      <td>{{row[10]}}</td>
+								      <td>{{row[11]}}</td>
 								      <td>Pending</td>
 								      
 								      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}"></a></td>
@@ -150,6 +151,38 @@
 							  </tbody>
 							</table>
 						</div>
+
+						<!-- END -->
+
+						<!-- CANCELLED BOOKINGS -->
+						<div id="cancelled_bookings">
+  							    <h6>Cancelled Bookings : </h6>
+  							  	<table class="table table-dark">
+  								  <thead>
+  								    <tr>
+  								       <th>Booking Id</th>
+  								      <th scope="col">Tour Name</th>
+  								      <th scope="col">Status</th>
+  								      <th scope="col">Date</th>
+  								      <th>More</th>
+  								    </tr>
+  								  </thead>
+  								  <tbody>
+  								  	{% for row in cancelled_bookings %}
+  									    <tr>
+  									      <td>{{row[1]}}</td>
+  									      <td>{{row[5]}}</td>
+  									      <td>Cancelled</td>
+  									      <td>{{ row[6] }}</td>
+  									      <td><a href="{{ url_for('pro_tour_booking_details', booking_id=row[0])}}">view details</a></td>
+  									    </td>
+  									    </tr>
+  								    {% endfor %}
+  								  </tbody>
+  								</table>
+  							</div>
+  							<!-- END -->
+                          	<!-- CANCELLED Bookings  -->
 
                       </div>
 
@@ -180,21 +213,42 @@ $(document).ready(function() {
   $("#all_bookings").hide()
   $("#pending_bookings").show();
   $("#accepted_bookings").hide();
+  $("#cancelled_bookings").hide()
   $("#rejected_bookings").hide();
+
+  $("#pending_bookings_btn").css("background-color", "#3dd1d5");
+  $("#rejected_bookings_btn").css("background-color", "grey");
+  $("#accepted_bookings_btn").css("background-color", "grey");
+  $("#cancelled_bookings_btn").css("background-color", "grey");
+  $("#all_bookings_btn").css("background-color", "grey");
 
   // Click event handlers for buttons
   $("#pending_bookings_btn").click(function() {
     $("#pending_bookings").show();
     $("#accepted_bookings").hide();
     $("#rejected_bookings").hide();
+    $("#cancelled_bookings").hide()
     $("#all_bookings").hide()
+
+  $("#pending_bookings_btn").css("background-color", "#3dd1d5");
+  $("#rejected_bookings_btn").css("background-color", "grey");
+  $("#accepted_bookings_btn").css("background-color", "grey");
+  $("#cancelled_bookings_btn").css("background-color", "grey");
+  $("#all_bookings_btn").css("background-color", "grey");
   });
 
   $("#accepted_bookings_btn").click(function() {
     $("#pending_bookings").hide();
     $("#accepted_bookings").show();
     $("#rejected_bookings").hide();
+    $("#cancelled_bookings").hide()
     $("#all_bookings").hide()
+
+		$("#pending_bookings_btn").css("background-color", "grey");
+		$("#rejected_bookings_btn").css("background-color", "grey");
+		$("#accepted_bookings_btn").css("background-color", "#3dd1d5");
+		$("#cancelled_bookings_btn").css("background-color", "grey");
+		$("#all_bookings_btn").css("background-color", "grey");
   });
 
   $("#rejected_bookings_btn").click(function() {
@@ -202,12 +256,39 @@ $(document).ready(function() {
     $("#accepted_bookings").hide();
     $("#rejected_bookings").show();
     $("#all_bookings").hide()
+    $("#cancelled_bookings").hide()
+
+		$("#pending_bookings_btn").css("background-color", "grey");
+		$("#rejected_bookings_btn").css("background-color", "#3dd1d5");
+		$("#accepted_bookings_btn").css("background-color", "grey");
+		$("#cancelled_bookings_btn").css("background-color", "grey");
+		$("#all_bookings_btn").css("background-color", "grey");
   });
   $("#all_bookings_btn").click(function() {
     $("#pending_bookings").hide();
     $("#accepted_bookings").hide();
     $("#rejected_bookings").hide();
     $("#all_bookings").show()
+    $("#cancelled_bookings").hide()
+
+		$("#pending_bookings_btn").css("background-color", "grey");
+		$("#rejected_bookings_btn").css("background-color", "grey");
+		$("#accepted_bookings_btn").css("background-color", "grey");
+		$("#cancelled_bookings_btn").css("background-color", "grey");
+		$("#all_bookings_btn").css("background-color", "#3dd1d5");
+  });
+    $("#cancelled_bookings_btn").click(function() {
+    $("#pending_bookings").hide();
+    $("#accepted_bookings").hide();
+    $("#rejected_bookings").hide();
+    $("#all_bookings").hide()
+    $("#cancelled_bookings").show()
+
+		$("#pending_bookings_btn").css("background-color", "grey");
+		$("#rejected_bookings_btn").css("background-color", "grey");
+		$("#accepted_bookings_btn").css("background-color", "grey");
+		$("#cancelled_bookings_btn").css("background-color", "red");
+		$("#all_bookings_btn").css("background-color", "grey");
   });
 });
 </script>

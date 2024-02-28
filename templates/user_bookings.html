@@ -187,7 +187,7 @@
       <section class="date">
         <time datetime="23th feb">
         	<!-- Assuming row[10] contains the date string '2021-02-23' -->
-        	{% set date_string = row[11] %}
+        	{% set date_string = row[12] %}
 
 					{% set day = date_string[-2:] %}
 					{% set month = date_string[5:7] %}
@@ -226,18 +226,18 @@
         </time>
       </section>
       <section class="card-cont">
-        <h3>{{ row[10] }}</h3>
+        <h3>{{ row[11] }}</h3>
         <div class="even-date">
          <i class="fa fa-calendar"></i>
          <time>
            <span style="padding-left: 10px">
-           		{% if row[11] <= (session['todate']) %}
+           		{% if row[10] <= (session['todate']) %}
            			<span style="color: red;"> Expired</span>
            			{% if row[7] == None %}
      							<span style="text-transform: capitalize;">(Not attendented)</span>
 			     			{% endif %}
            		{% else %}
-           			Booked on {{row[5]}}
+           			Booked on {{row[9]}}
            		{% endif %}
            	</span>
          </time>
@@ -245,7 +245,7 @@
         <div class="even-info">
           <i class="fa fa-map"  style="padding-right: 10px"></i>
           <p>
-          	{% if row[11] <= (session['todate']) %}
+          	{% if row[10] <= (session['todate']) %}
           				The Date is Expired
           	{% else %}
 			          	<!-- Checking the status -->
@@ -279,7 +279,9 @@
 <center><h2><strong>You have no bookings..!</strong></h2></center>
 </div>
 {% endif %}
-
+<br>
+<center><h2>Cancelled Bookings</h2></center>
+<br>
 {% if cancelled_bookings %}
 	<section class="container">
   <div class="row">
@@ -304,7 +306,7 @@
          <i class="fa fa-calendar"></i>
          <time>
            <span style="padding-left: 10px">
-           		{{ row[6] }}
+           		Cancelled on : {{ row[6] }}
            	</span>
          </time>
         </div>
@@ -312,7 +314,8 @@
           <i class="fa fa-map-marker"  style="padding-right: 10px"></i>
           <p>
           	<!-- Checking the status -->
-			        	<span style="color: red;">Status : Cancelled</span>
+	        	<span style="color: red;">Status : Cancelled</span><br>
+            <span>Refund is Processing.....</span>
           </p>
         </div>
         <a style="background-color: grey">Details</a>
