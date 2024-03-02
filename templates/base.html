@@ -189,8 +189,8 @@
                   <div class="topbar-right ms-auto justify-content-center">
                     <div class="social d-inline-flex">
                       <ul class="list-unstyled">
-                        <li><a href="#"> <i class="fa-brands fa-facebook-f"></i> </a></li>
-                        <li><a href="#"> <i class="fab fa-twitter"></i> </a></li>
+                        <li><a href="www.facebook.com"> <i class="fa-brands fa-facebook-f"></i> </a></li>
+                        <li><a href="www.google.com"> <i class="fab fa-twitter"></i> </a></li>
                         <li><a href="#"> <i class="fa-brands fa-linkedin"></i> </a></li>
                         <li><a href="#"> <i class="fab fa-instagram"></i> </a></li>
                       </ul>
@@ -227,27 +227,26 @@
               <li class="nav-item dropdown {% if 'blog_home'  in request.url_rule.endpoint %}active{% endif %}">
                 <a class="nav-link" href="{{ url_for('blog_home') }}" role="button" >Blog</i></a>
               </li>
-              <li class="nav-item dropdown">
-                <!-- inner -->
+
+              <!-- NOTIFICATION BELL ICON -->
+<!--               <li class="nav-item dropdown">
                 <div class="add-listing nav-link">
                   <div class="woo-action">
                     <ul class="list-unstyled">
+                       {% if 'username' in session %}
                       <li class="cart dropdown">
-                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">                       
                           <span class="cart-icon"><i class="fa-regular fa-bell" style="color: #050505;"></i></object></span>
                           {% if booking_notifications %}
                           <span class="cart-count">{{ booking_notifications|length }}</span></button>
                           {% endif %}
-                          <div class="dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <!-- list -->
-                            <ul class="cart-list ps-0">
-                              <!-- 1 -->
-                              <li class="d-flex">
+                          <div class="dropdown-menu-right" aria-labelledby="dropdownMenuButton">                          
+                            <ul class="cart-list ps-0">                          
+                            <li class="d-flex">
                                 <a class="remove-item" href="#"><i class="fas fa-times"></i></a>
                                 <h6 class="noti-date"></h6>
                                 <div class="cart-info">
-                                {% if booking_notifications %}
-                               
+                                {% if booking_notifications %}                            
                                     {% for notification in booking_notifications %}
                                   <a href="{{ url_for('user_booking_details_not', booking_id=notification[0]) }}">    
                                           {% if notification[5] == 0 %}
@@ -261,10 +260,8 @@
                                    <p style="color: black;">No notifications for you</p> 
                                   {% endif %}
                                 </div>
-
-                              </li>                      <!--  -->
+                              </li>         
                             </ul>
-                            <!--end  list  -->
                             <div class="cart-footer">
                               <div class="d-inline-block d-sm-flex">
                                 
@@ -272,10 +269,11 @@
                             </div>
                           </div>
                         </li>
+                        {% endif %} 
                       </ul>
                     </div>
                   </div>                
-                </li>
+                </li> -->
             
 
                 <li class="nav-item dropdown">
@@ -374,7 +372,7 @@ footer-->
               <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
               <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
               <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
-              <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+              <li><a href="www.instagram.com"><i class="fab fa-instagram"></i></a></li>
             </ul>
           </div>
         </div>

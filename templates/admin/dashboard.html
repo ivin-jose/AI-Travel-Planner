@@ -18,8 +18,29 @@
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 900" id="adminAddPlus">+</button>
 
+<button type="button" class="btn btn-primary btn btn-primary main_theme space" data-bs-toggle="modal" data-bs-target="#passwordModal" style="font-weight: 900" id="adminAddPluxss">Chnage Password</button>
+
 <button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">ADD ADMIN</button>
 
+<!-- <button class="btn btn-primary btn btn-primary main_theme space" id="adminAddText">Change Password</button> -->
+
+{% if password_status_message %}
+<div class="modal fade" id="password_status_message" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: green;">Status</h5>
+                <button type="button" class="" data-dismiss="modal" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ password_status_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 
 <!-- admin adding status Modal -->
@@ -88,6 +109,34 @@
     </div>
   </div>
 </div>
+
+<!-- Modal change passwords form  -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url_for('changepassword_admin')}}" method="POST" id="admin_changepassword_Form" >
+            <span id="nameErrorp" class="error" style="color: red"></span>
+            <input type="text" placeholder="Current Password" name="current_password" value="" class="form-control space" id="current_password">
+            <input type="text" placeholder="New Password" name="newPassword" value="" class="form-control space" id="newPassword">
+            <input type="text" placeholder="Confirm Password" name="confirmpassword" value="" class="form-control space" id="confirmpassword">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary main_theme">Save</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <div>
 
 
@@ -138,9 +187,14 @@
 
 
 </main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
     $(document).ready(function () {
+        {% if password_status_message %}
+            $('#password_status_message').modal('show');
+            $('#passwordModal')[0].reset();
+        {% endif %}
         {% if add_status_message %}
             $('#statusModal').modal('show');
             $('#admin_Add_Form')[0].reset();
@@ -167,5 +221,46 @@
 </script>
 
 
+<script type="text/javascript">
 
+$(document).ready(function() {
+    $('#admin_changepassword_Form').submit(function() {
+        var currentPassword = $("#current_password").val();
+        var newPassword = $("#newPassword").val();
+        var confirmPassword = $("#confirmpassword").val();
+        var hasNumber = /\d/.test(newPassword); // Regular expression to check if the new password contains any number
+
+        // Reset errors
+        $('#nameErrorp').text('');
+
+        // Check if all fields are filled
+        if (currentPassword === '' || newPassword === '' || confirmPassword === '') {
+            $('#nameErrorp').text('Please fill in all fields.');
+            return false;
+        }
+
+        // Check if passwords match
+        if (newPassword !== confirmPassword) {
+            $('#nameErrorp').text('New password and confirm password must match.');
+            return false;
+        }
+
+        // Check password length
+        if (newPassword.length < 6) {
+            $('#nameErrorp').text('Password must be at least 6 characters long.');
+            return false;
+        }
+
+        // Check if the new password contains any number
+        if (!hasNumber) {
+            $('#nameErrorp').text('Password must include at least one number.');
+            return false;
+        }
+
+        // If all conditions pass, the form will be submitted
+        return true;
+    });
+});
+
+</script>
 {% endblock %}

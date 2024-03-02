@@ -62,7 +62,7 @@
                     <h2 class="primary-text">Sign in Account</h2>
                    </div>
 
-                      <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style login-form" method="POST">
+                      <form class="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style login-form" action="{{ url_for('pro_login') }}" method="POST">
                         <div class="mb-3 col-sm-12">
                           <label class="error-message" style="color: orange;">{{ error_message }}</label><br>
                           <label class="form-label">Username: </label>

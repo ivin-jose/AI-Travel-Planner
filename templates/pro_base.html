@@ -177,11 +177,17 @@
                  <a class="nav-link" href="{{ url_for('bookings') }}">Bookings</i></a>
               </li>
               <li class="nav-item dropdown  {% if 'pro_settings'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="{{ url_for('pro_settings') }}">Profile</i></a>
+                <a class="nav-link" href="{{ url_for('pro_settings') }}"><i class="fa-solid fa-user"></i>
+              </i></a>
               </li>
 
               <li class="nav-item dropdown {% if 'pro_notifications'  in request.url_rule.endpoint %}active{% endif %}">
-                <a class="nav-link" href="{{ url_for('pro_notifications')}}" role="button" >Notifications</i></a>
+                <a class="nav-link" href="{{ url_for('pro_notifications')}}" role="button" ><i class="fa-solid fa-envelope"></i>
+                {% if session['pro_notification_num'] %}
+                <b style="color: #3dd1d5">({{ session['pro_notification_num'] }})</b>
+                {% else %}
+                (0)
+                {% endif %}</a>
               </li>
              <!-- <a href="sign-up.html" class="btn btn-primary menu-btn ms-4 d-none d-xl-block">Sign In</a> -->
             </div>

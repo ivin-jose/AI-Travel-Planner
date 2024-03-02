@@ -9,6 +9,7 @@ from flask_paginate import Pagination
 from datetime import date
 import random
 
+
 from werkzeug.utils import secure_filename
 import json
 import numpy as np
@@ -244,7 +245,6 @@ def search_image():
             filename = secure_filename(image.filename)
             new_filename = 'place.jpg'
             image.save(os.path.join(app.config['UPLOAD'], new_filename))
-            
             try:
                 model_url = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
                 labels = "C:/Flask Projects/Ai_trip_planner/try.csv"
@@ -410,7 +410,7 @@ def home():
     if 'userid' in session:
         notification = "Root"
         cursor = mysql.connection.cursor()
-        query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2"
+        query = "SELECT * FROM package_bookings WHERE user_id = %s AND (user_view_status IS NULL OR user_view_status != 1) AND package_status != 2 LIMIT 2"
         values = (str(session['userid']),)
         cursor.execute(query, values)
         booking_notifications = cursor.fetchall()
@@ -1684,7 +1684,7 @@ def user_tour_package_booking():
     flash = ""
 
     cursor = mysql.connection.cursor()
-    query = """SELECT * FROM tour_packages WHERE  package_id = %s"""
+    query = """SELECT from_date FROM tour_packages WHERE  package_id = %s"""
     cursor.execute(query, (package_id,))
     result = cursor.fetchall()
     for row in result:
@@ -1704,6 +1704,8 @@ def user_tour_package_booking():
         cursor.execute(insert_query, (booking_id, name, user_identity_document, phone))
         mysql.connection.commit()
         flash = "Request Submitted..!"
+
+        #creating a qr code to view the booking details
     except Exception as e:
         flash = "Error " + e
 
@@ -2306,7 +2308,7 @@ def user_deletion():
 
 # Business Pro Account home page
 
-@app.route('/TripOrganizer.com/account.pro')
+@app.route('/TripOrganizer.com/account.pro', methods=['GET', 'POST'])
 def pro_account():
     session['todate'] = package_date
     if 'prousercompany' in session:
@@ -2355,6 +2357,12 @@ def pro_account():
         cursor.execute(query2, (str(session['proid']),))
         result2 = cursor.fetchone()
 
+        # Accessing the actual count values from the result tuples
+        count1 = result1[0]
+        count2 = result2[0]
+
+        session['pro_notification_num'] = count1 + count2
+
         query = """ SELECT tp.*, pi.image_path
            FROM tour_packages tp
            LEFT JOIN (
@@ -2374,27 +2382,26 @@ def pro_account():
         cursor.close()
         return render_template('pro/home.html', unwatched=unwatched, tour_packages_data=tour_packages_data, current_date=current_date,
          matching_tournames=matching_tournames, noti_count=result1, noti_count1=result2, tour_packages_data_out_dated=tour_packages_data_out_dated)
-    return render_template('pro/section.html')
+    return render_template('pro/pro_login.html')
 
 # Current day tour list of users
 @app.route('/TripOrganizer.com/account.pro/travalers-list/<package_id>')
 def travalers_list(package_id):
     cursor = mysql.connection.cursor()
     query = """ SELECT pb.user_id, pb.booked_id, pbt.travaler_id, pbt.*, pb.attendance
-FROM package_bookings pb
-JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
-WHERE pb.package_id = %s;
-
-
+                FROM package_bookings pb
+                JOIN package_booked_travalers pbt ON pb.booked_id = pbt.booking_id
+                WHERE pb.package_id = %s
+                AND pb.expiry_date > %s;
             """
-    cursor.execute(query, (package_id,))
+    cursor.execute(query, (package_id, package_date))
 
     travalers_list = cursor.fetchall()
     return render_template('pro/travalers_list.html', travalers_list=travalers_list, package_id=package_id)
 
 
 # company login
-@app.route('/TripOrganizer.com/account.pro/login', methods = ['GET', 'POST'])
+@app.route('/TripOrganizer.com/account.pro/login', methods=['GET', 'POST'])
 def pro_login():
     session['today_date'] = today_date
     error_message = ''
@@ -2729,6 +2736,7 @@ def pro_password_change2():
 
 @app.route('/TripOrganizer.com/account.pro/notifcations')
 def pro_notifications():
+    session['pro_notification_num'] = None
     if 'prousercompany' in session:
         cursor = mysql.connection.cursor()
 
@@ -3287,52 +3295,54 @@ def pro_tour_booking_reject(booking_id):
 @app.route('/TripOrganizer.com/account.pro/bookings')
 def bookings():
     session['todate'] = package_date
-    # Assuming session['today_date'] is a string in the format '12-AUG-2021'
-    today_date_str = today_date
-    session['today_date'] = datetime.strptime(today_date_str, '%d-%b-%Y')
-    cursor = mysql.connection.cursor()
-    query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE pb.package_provider_id = %s AND package_status = %s;
-    """
-    cursor.execute(query, (session['proid'], 1))
-    accepted = cursor.fetchall()
-    # Rejected Details
-    query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE pb.package_provider_id = %s AND package_status = %s;
-    """
-    cursor.execute(query, (session['proid'], 0))
-    rejected = cursor.fetchall()
-    # Pending Details
-    query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE pb.package_provider_id = %s AND package_status = %s;
-    """
-    cursor.execute(query, (session['proid'], 2))
-    pending = cursor.fetchall()
-    
-    query = """SELECT pb.*, tp.tourname
-        FROM package_bookings pb
-        INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
-        WHERE pb.package_provider_id = %s;
-    """
-    cursor.execute(query, (session['proid'],))
-    all_d = cursor.fetchall()
+    if 'prousercompany' in session:
+        # Assuming session['today_date'] is a string in the format '12-AUG-2021'
+        today_date_str = today_date
+        session['today_date'] = datetime.strptime(today_date_str, '%d-%b-%Y')
+        cursor = mysql.connection.cursor()
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.package_provider_id = %s AND package_status = %s;
+        """
+        cursor.execute(query, (session['proid'], 1))
+        accepted = cursor.fetchall()
+        # Rejected Details
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.package_provider_id = %s AND package_status = %s;
+        """
+        cursor.execute(query, (session['proid'], 0))
+        rejected = cursor.fetchall()
+        # Pending Details
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.package_provider_id = %s AND package_status = %s;
+        """
+        cursor.execute(query, (session['proid'], 2))
+        pending = cursor.fetchall()
+        
+        query = """SELECT pb.*, tp.tourname
+            FROM package_bookings pb
+            INNER JOIN tour_packages tp ON pb.package_id = tp.package_id
+            WHERE pb.package_provider_id = %s;
+        """
+        cursor.execute(query, (session['proid'],))
+        all_d = cursor.fetchall()
 
-    query = """SELECT * FROM cancelled_bookings
-        WHERE provider_id = %s ORDER BY booking_id DESC;
-    """
-    cursor.execute(query, (session['proid'],))
-    cancelled_bookings = cursor.fetchall()
+        query = """SELECT * FROM cancelled_bookings
+            WHERE provider_id = %s ORDER BY booking_id DESC;
+        """
+        cursor.execute(query, (session['proid'],))
+        cancelled_bookings = cursor.fetchall()
 
 
 
-    return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d, cancelled_bookings=cancelled_bookings)
-
+        return render_template('pro/bookings.html', rejected=rejected, accepted=accepted, pending=pending, all = all_d, cancelled_bookings=cancelled_bookings)
+    else:
+        return render_template('pro/pro_login.html')
 
 # Provider account and datas deletion
 
@@ -3655,7 +3665,36 @@ def add_admin():
  else:
     return redirect('admin')
 
+
+# Change password admin
+
+
 ''' Delete admins '''
+@app.route('/TripOrganizeradmins.com/password-change_admin', methods=['GET', 'POST'])
+def changepassword_admin():
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        newpassword = request.form.get('confirmpassword')
+
+        cursor = mysql.connection.cursor()
+        # Check if admin already exists
+        query = "SELECT * FROM admin WHERE password = %s AND adminid = %s"
+        cursor.execute(query, (current_password, session['adminid']))
+        admin = cursor.fetchone()
+
+        # Fetch all admins again after adding the new one
+        query = "SELECT * FROM admin"
+        cursor.execute(query)
+        admins = cursor.fetchall()
+        if admin:
+            query = "UPDATE admin SET password = %s WHERE password = %s AND adminid = %s"
+            cursor.execute(query, (newpassword, current_password, session['adminid']))
+            password_status_message = "Password Updated Succefully.." 
+            mysql.connection.commit()
+            return render_template('admin/dashboard.html',admins = admins, password_status_message=password_status_message)
+        else:
+            password_status_message="Wrong Password..!"
+    return render_template('admin/dashboard.html', password_status_message=password_status_message, admins=admins)
 
 @app.route('/TripOrganizeradmins.com/delete_admin/<int:aid>', methods=['GET', 'POST'])
 def delete_admin(aid):
