@@ -50,7 +50,7 @@
       <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">user ID</th>
+      <th scope="col">S({{ pro_users|length }})</th>
       <th scope="col">Company</th>
       <th scope="col">E-mail</th>
       <th scope="col">Joined Date</th>
@@ -66,7 +66,7 @@
     <tbody>
 {% for row in pro_users %}
 <tr>
-  <th scope="row">{{ row[0] }}</th>
+  <th scope="row">{{ loop.index }}</th>
   <td>{{ row[2] }}</td>
   <td>{{ row[3] }}</td>
   <td>{{ row[11] }}</td>

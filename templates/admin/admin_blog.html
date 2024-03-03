@@ -50,8 +50,8 @@
       <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">blog ID</th>
-      <th scope="col">user ID</th>
+      <th scope="col">S {{ blogs|length }}</th>
+      <th scope="col">user </th>
       <th scope="col">Date</th>
       <th scope="col">Heading</th>
       <th scope="col">Content</th>
@@ -64,11 +64,11 @@
     <tbody>
 {% for row in blogs %}
 <tr>
-  <th scope="row">{{ row[0] }}</th>
-  <td>{{ row[1] }}</td>
+  <th scope="row">{{ loop.index }}</th>
+  <td style="text-transform: capitalize;">{{ row[12] }}</td>
   <td>{{ row[2] }}</td>
   <td><a href="{{ url_for('admin_blog_details', blog_id=row[0]) }}" style="color: blue;">{{ row[3] }}</a></td>
-  <td>{{ row[4] }}</td>
+  <td style="text-align: justify;">{{ row[4] }}</td>
 
 <td>
   {% if row[5] == '1' %} adventure, {% endif %}

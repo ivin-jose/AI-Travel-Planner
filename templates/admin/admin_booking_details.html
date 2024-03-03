@@ -67,7 +67,7 @@
 <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">Travaler ID</th>
+      <th scope="col">S ({{booking_details|length}})</th>
       <th scope="col">Booking ID</th>
       <th scope="col">Name</th>
       <th scope="col">Identity document</th>
@@ -78,7 +78,7 @@
 
 {% for row in booking_details %}
 <tr>
-    <th scope="row">{{ row[0] }}</th>
+    <th scope="row">{{ loop.index }}</th>
     <td>{{ row[1] }}</td>
     <td>{{ row[2] }}</td>
     <td>{{ row[3] }}</td>
@@ -94,8 +94,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Package ID</th>
-          <th scope="col">Pro ID</th>
+          <th scope="col">S ({{tour_packages_data|length}})</th>
           <th scope="col">Tour</th>
           <th scope="col">No of days</th>
           <th scope="col">From</th>
@@ -111,14 +110,13 @@
   <tbody>
     {% for row in tour_packages_data %}
     <tr>
-      <th scope="row">{{ row[0] }}</th>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
+      <th scope="row">{{ loop.index }}</th>
+      <td style="text-transform: capitalize; color: orange;">{{ row[2] }}</td>
       <td>{{ row[3] }}</td>
       <td>{{ row[4] }}</td>
       <td>{{ row[5] }}</td>
       <td>{{ row[6] }}</td>
-      <td>{{ row[7] }}</td>
+      <td style="text-align: justify;">{{ row[7] }}</td>
       <td>{{ row[8] }}</td>
       <td>{{ row[9] }}</td>
       {% endfor %}
@@ -131,9 +129,7 @@
 <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">Day ID</th>
-      <th scope="col">Package ID</th>
-      <th scope="col">Pro ID</th>
+      <th scope="col">S ({{tour_packages_day|length}})</th>
       <th scope="col">Day</th>
       <th scope="col">Programme</th>
   </tr>
@@ -143,9 +139,7 @@
 <tbody>
     {% for row in tour_packages_day %}
     <tr>
-      <th scope="row">{{ row[0] }}</th>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
+      <th scope="row">{{ loop.index }}</th>
       <td>{{ row[3] }}</td>
       <td>{{ row[4] }}</td>
       {% endfor %}
@@ -161,9 +155,7 @@
 <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">Image ID</th>
-      <th scope="col">Package ID</th>
-      <th scope="col">Pro ID</th>
+      <th scope="col">S ({{tour_packages_image|length}})</th>
       <th scope="col">Image</th>
       <th scope="col">More</th>
   </tr>
@@ -173,9 +165,7 @@
 <tbody>
     {% for row in tour_packages_image %}
     <tr>
-      <th scope="row">{{ row[0] }}</th>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
+      <th scope="row">{{ loop.index  }}</th>
       <td><img src="{{ url_for('static', filename=row[3]) }}" width="100" height="100"></td>
       <td>{{ row[4] }}</td>
         <!-- Add unique IDs for the Remove link and its associated close button -->

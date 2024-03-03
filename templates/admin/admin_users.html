@@ -50,7 +50,7 @@
 <table class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">user ID</th>
+      <th scope="col">S {{ users|length }}</th>
       <th scope="col">user name</th>
       <th scope="col">E-mail</th>
       <th scope="col">Joined Date</th>
@@ -65,7 +65,7 @@
     <tbody>
 {% for row in users %}
 <tr>
-  <th scope="row">{{ row[0] }}</th>
+  <th scope="row">{{ loop.index }}</th>
   <td>{{ row[1] }}</td>
   <td>{{ row[2] }}</td>
   <td>{{ row[4] }}</td>

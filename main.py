@@ -3858,7 +3858,10 @@ def search_pro_user():
 @app.route('/TripOrganizeradmins.com/admin-blogs')
 def blogs_admin():
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM blog"
+    query = """ SELECT blog.*, users.username
+                FROM blog
+                JOIN users ON blog.userid = users.user_id;
+            """
     cursor.execute(query)
     blogs = cursor.fetchall()
     return render_template('admin/admin_blog.html', blogs=blogs)
@@ -3887,8 +3890,16 @@ def search_admin_blog():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
         cursor = mysql.connection.cursor()
-        query = "SELECT * FROM blog WHERE heading LIKE %s OR content LIKE %s OR userid LIKE %s OR blogid LIKE %s"
-        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        query = """ SELECT blog.*, users.username
+                    FROM blog
+                    JOIN users ON blog.userid = users.user_id
+                    WHERE blog.heading LIKE %s
+                       OR blog.content LIKE %s
+                       OR blog.userid LIKE %s
+                       OR blog.blogid LIKE %s
+                       OR users.username LIKE %s;
+                    """
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
         blogs = cursor.fetchall()
         return render_template('admin/admin_blog.html', blogs=blogs)
 
@@ -3896,12 +3907,20 @@ def search_admin_blog():
 @app.route('/TripOrganizeradmins.com/blog-details/<int:blog_id>', methods=['GET', 'POST'])
 def admin_blog_details(blog_id):
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM blog_comment WHERE blogid = %s"
+    query = """SELECT blog_comment.*, users.username
+                FROM blog_comment
+                JOIN users ON blog_comment.userid = users.user_id
+                WHERE blog_comment.blogid = %s;
+                """
     cursor.execute(query, (blog_id,))
     blog_comments = cursor.fetchall()
 
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM blog_images WHERE blog_id = %s"
+    query = """SELECT blog_images.*, users.username
+                FROM blog_images
+                JOIN users ON blog_images.user_id = users.user_id
+                WHERE blog_images.blog_id = %s;
+                """
     cursor.execute(query, (blog_id,))
     blog_images = cursor.fetchall()
 
@@ -3950,8 +3969,12 @@ def search_admin_blog_comment():
         search_value = request.form.get('search_value')
         blog_id = request.form.get('blog_id')
         cursor = mysql.connection.cursor()
-        query = "SELECT * FROM blog_comment WHERE (comment LIKE %s OR userid LIKE %s OR blogid LIKE %s) AND blogid = %s"
-        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', blog_id))
+        query = """SELECT blog_comment.*, users.username
+                    FROM blog_comment
+                    JOIN users ON blog_comment.userid = users.user_id
+                    WHERE (blog_comment.comment LIKE %s OR blog_comment.userid LIKE %s OR blog_comment.blogid LIKE %s OR users.username LIKE %s) AND blog_comment.blogid = %s;
+                    """
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', blog_id))
         blog_comments = cursor.fetchall()
         return render_template('admin/blog_details.html', blog_comments=blog_comments,blog_id=blog_id)
 
@@ -3961,7 +3984,10 @@ def search_admin_blog_comment():
 @app.route('/TripOrganizeradmins.com/packages_admin')
 def packages_admin():
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM tour_packages"
+    query = """SELECT tour_packages.*, pro_users.company
+                FROM tour_packages
+                JOIN pro_users ON tour_packages.pro_id = pro_users.pro_usersid;
+                """
     cursor.execute(query)
     packages = cursor.fetchall()
     return render_template('admin/admin_packages.html',packages=packages)
@@ -3970,14 +3996,16 @@ def packages_admin():
 @app.route('/TripOrganizeradmins.com/packages-details/<int:package_id>', methods=['GET', 'POST'])
 def admin_package_details(package_id):
     # SELECTING TOUR PACKAGE
-    query1 = """SELECT tp.*, pi.image_path
-        FROM tour_packages tp
-        LEFT JOIN (
-            SELECT package_id, MIN(image_path) AS image_path
-            FROM package_images
-            GROUP BY package_id
-        ) pi ON tp.package_id = pi.package_id
-        WHERE tp.package_id = %s;"""
+    query1 = """SELECT tp.*, pi.image_path, pu.company
+FROM tour_packages tp
+LEFT JOIN (
+    SELECT package_id, MIN(image_path) AS image_path
+    FROM package_images
+    GROUP BY package_id
+) pi ON tp.package_id = pi.package_id
+LEFT JOIN pro_users pu ON tp.pro_id = pu.pro_usersid
+WHERE tp.package_id = %s;
+"""
 
     # Execute the query and retrieve the data
     cursor = mysql.connection.cursor()
@@ -4016,8 +4044,12 @@ def search_admin_packages():
     if request.method == 'POST':
         search_value = request.form.get('search_value')
         cursor = mysql.connection.cursor()
-        query = "SELECT * FROM tour_packages WHERE tourname LIKE %s OR description LIKE %s OR package_id LIKE %s"
-        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))
+        query = """SELECT tour_packages.*, pro_users.company
+                    FROM tour_packages
+                    JOIN pro_users ON tour_packages.pro_id = pro_users.pro_usersid
+                    WHERE tourname LIKE %s OR description LIKE %s OR package_id LIKE %s OR pro_users.company LIKE %s;
+            """
+        cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', f'%{search_value}%', f'%{search_value}%'))            
         packages = cursor.fetchall()
         return render_template('admin/admin_packages.html', packages=packages)
 
@@ -4051,7 +4083,11 @@ def search_admin_package_review():
         search_value = request.form.get('search_value')
         package_id = request.form.get('package_id')
         cursor = mysql.connection.cursor()
-        query = "SELECT * FROM package_reviews WHERE (review LIKE %s OR user_id LIKE %s) AND package_id = %s"
+        query = """SELECT pr.*, u.username
+                    FROM package_reviews pr
+                    JOIN users u ON pr.user_id = u.user_id
+                    WHERE (pr.review LIKE %s OR pr.user_id LIKE %s) AND pr.package_id = %s;
+                    """
         cursor.execute(query, (f'%{search_value}%', f'%{search_value}%', package_id))
         package_reviews = cursor.fetchall()
         return render_template('admin/admin_packages_details.html', package_reviews=package_reviews,package_id=package_id)
@@ -4122,7 +4158,12 @@ def admin_remove_package(package_id):
 @app.route('/TripOrganizeradmins.com/bookings_admin')
 def bookings_admin():
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM package_bookings"
+    query = """ SELECT pb.*, u.username, tp.tourname, pu.company
+                FROM package_bookings pb
+                JOIN users u ON pb.user_id = u.user_id
+                JOIN tour_packages tp ON pb.package_id = tp.package_id
+                JOIN pro_users pu ON pb.package_provider_id = pu.pro_usersid;
+            """
     cursor.execute(query)
     bookings = cursor.fetchall()
     return render_template('admin/admin_bookings.html', bookings=bookings)

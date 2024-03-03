@@ -50,7 +50,8 @@
       <table  class="table table-striped" style="font-family: system-ui;">
   <thead>
     <tr>
-      <th scope="col">Booked ID</th>
+      <th scope="col">S({{ bookings|length }})</th>  
+      <th scope="col">Booking ID</th>
       <th scope="col">user ID</th>
       <th scope="col">Package ID</th>
       <th scope="col">Provider ID</th>
@@ -63,10 +64,11 @@
     <tbody>
 {% for row in bookings %}
 <tr>
-  <th scope="row">{{ row[0] }}</th>
-  <td>{{ row[1] }}</td>
-  <td>{{ row[2] }}</td>
-  <td>{{ row[4] }}</td>
+  <th scope="row">{{ loop.index }}</th>
+  <td>{{ row[0] }}</td>
+  <td>{{ row[11] }}</td>
+  <td>{{ row[12] }}</td>
+  <td>{{ row[13] }}</td>
   <td>
     {% if row[5] == 0 %}
         Rejected
